@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "projects": [
-    {
-      "name": "frontend",
+  "services": {
+    "frontend": {
       "root": "./"
     }
-  ]
+  }
 }
