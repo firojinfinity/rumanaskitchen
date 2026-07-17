@@ -126,17 +126,23 @@ export default function App() {
       setIsAdminAuthenticated(true);
     }
 
-    const handleHashChange = () => {
-      if (window.location.hash === '#admin') {
+    const handleRoutingChange = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (hash === '#admin' || path === '/admin' || path === '/admin/') {
         setCurrentView('admin');
       } else {
         setCurrentView('customer');
       }
     };
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    handleRoutingChange();
+    window.addEventListener('hashchange', handleRoutingChange);
+    window.addEventListener('popstate', handleRoutingChange);
+    return () => {
+      window.removeEventListener('hashchange', handleRoutingChange);
+      window.removeEventListener('popstate', handleRoutingChange);
+    };
   }, []);
 
   // Ken Burns Slideshow Effect
@@ -325,6 +331,17 @@ export default function App() {
     triggerToast(status ? "All items set to Available" : "All items set to Sold Out");
   };
 
+  const navigateToHome = () => {
+    const path = window.location.pathname;
+    if (path === '/admin' || path === '/admin/') {
+      window.history.pushState({}, '', '/');
+      // Trigger manual state updates since pushState doesn't trigger popstate automatically
+      setCurrentView('customer');
+    } else {
+      window.location.hash = '';
+    }
+  };
+
   // Filter Logic
   const filteredItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -349,12 +366,12 @@ export default function App() {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <div style={{ fontWeight: 800, color: 'var(--primary)', fontSize: '1.25rem', cursor: 'pointer' }} onClick={() => { window.location.hash = ''; }}>
+        <div style={{ fontWeight: 800, color: 'var(--primary)', fontSize: '1.25rem', cursor: 'pointer' }} onClick={navigateToHome}>
           🍳 Rumana's Kitchen
         </div>
         <div>
           {currentView === 'admin' && (
-            <button className="btn-secondary" onClick={() => { window.location.hash = ''; }}>
+            <button className="btn-secondary" onClick={navigateToHome}>
               🍽️ Back to Menu
             </button>
           )}
