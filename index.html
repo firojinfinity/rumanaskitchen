@@ -869,146 +869,7 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* Floating Wheel Badge (bottom left) */
-    .wheel-badge {
-      position: fixed;
-      bottom: 30px;
-      left: 30px;
-      background: var(--accent);
-      color: var(--text);
-      padding: 12px 24px;
-      border-radius: 30px;
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      z-index: 998;
-      font-weight: 700;
-      transition: var(--transition-smooth);
-      border: 2px solid white;
-    }
 
-    .wheel-badge:hover {
-      transform: scale(1.1);
-      background: var(--primary);
-      color: white;
-    }
-
-    .wheel-badge-text {
-      font-size: 14px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Wheel Modal Overlay */
-    .wheel-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(45, 31, 27, 0.75);
-      backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1001;
-      opacity: 0;
-      pointer-events: none;
-      transition: var(--transition-smooth);
-    }
-
-    .wheel-modal.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .wheel-modal-content {
-      background: white;
-      border-radius: var(--border-radius-lg);
-      padding: 40px;
-      width: 90%;
-      max-width: 440px;
-      text-align: center;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      transform: scale(0.9);
-      transition: var(--transition-smooth);
-    }
-
-    .wheel-modal.open .wheel-modal-content {
-      transform: scale(1);
-    }
-
-    .wheel-modal-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: var(--text-muted);
-    }
-
-    .wheel-container {
-      position: relative;
-      width: 290px;
-      height: 290px;
-      margin: 0 auto;
-    }
-
-    .wheel-pointer {
-      position: absolute;
-      top: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 26px;
-      color: var(--primary);
-      z-index: 10;
-    }
-
-    #wheelCanvas {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      box-shadow: var(--shadow-md);
-    }
-
-    .spin-btn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
-      background: white;
-      border: 4px solid var(--primary);
-      border-radius: 50%;
-      font-weight: 800;
-      color: var(--primary);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      box-shadow: var(--shadow-sm);
-      z-index: 5;
-      transition: var(--transition-smooth);
-    }
-
-    .spin-btn:hover {
-      transform: translate(-50%, -50%) scale(1.1);
-      background: var(--bg-alt);
-    }
-
-    .wheel-result {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--primary);
-      min-height: 27px;
-    }
 
     /* Toast Notification */
     .toast {
@@ -1089,6 +950,32 @@
       }
     }
 
+    /* Item Availability (Sold Out state) */
+    .card[data-available="false"] {
+      opacity: 0.65;
+    }
+    .card[data-available="false"] .add-to-cart-btn {
+      display: none;
+    }
+    .card[data-available="false"] .card-image-container::after {
+      content: "Sold Out";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(45, 31, 27, 0.65);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      backdrop-filter: blur(2px);
+    }
+
     /* Responsive Styles */
     @media (max-width: 1024px) {
       .hero-title {
@@ -1133,22 +1020,6 @@
       .hero-title {
         font-size: 1.8rem;
       }
-      .wheel-modal-content {
-        padding: 30px 15px;
-      }
-      .wheel-container {
-        width: 240px;
-        height: 240px;
-      }
-      .wheel-pointer {
-        top: -10px;
-        font-size: 20px;
-      }
-      .spin-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 11px;
-      }
     }
   </style>
 </head>
@@ -1168,9 +1039,9 @@
     <div class="hero-overlay"></div>
     
     <div class="hero-content">
-      <span class="hero-badge">Rumana's Kitchen</span>
-      <h1 class="hero-title">Bringing the authentic flavours of Minakhan, where Bengal meets the Sundarbans.</h1>
-      <p class="hero-subtitle">Fresh • Homemade • Delicious</p>
+      <span class="hero-badge">Fresh • Homemade • Delicious</span>
+      <h1 class="hero-title">Rumana's Kitchen</h1>
+      <p class="hero-subtitle">Bringing the authentic flavours of Minakhan, where Bengal meets the Sundarbans.</p>
       
       <div class="hero-details">
         <div class="hero-detail-item">
@@ -1215,7 +1086,7 @@
     <div class="menu-grid" id="menuGrid">
       
       <!-- Card 1 -->
-      <div class="card" data-category="biryani" data-diet="nonveg" data-name="chicken biriyani full">
+      <div class="card" data-category="biryani" data-diet="nonveg" data-name="chicken biriyani (full)">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-nonveg">Non-Veg</span>
@@ -1224,17 +1095,17 @@
           <img class="card-img" src="biriyani.jpg" alt="Chicken Biriyani">
         </div>
         <div class="card-body">
-          <h3 class="card-title">Chicken Biriyani Full</h3>
-          <p class="card-desc">Traditional slow-cooked Dum Biriyani of Bengal, enriched with aromatic spices and tender chicken.</p>
+          <h3 class="card-title">Chicken Biriyani (Full)</h3>
+          <p class="card-desc">Traditional Dum Chicken Biriyani of Bengal</p>
           <div class="card-footer">
             <div class="card-price">200</div>
-            <button class="add-to-cart-btn" onclick="addToCart('Chicken Biriyani Full', 200)">+</button>
+            <button class="add-to-cart-btn" onclick="addToCart('Chicken Biriyani (Full)', 200)">+</button>
           </div>
         </div>
       </div>
 
       <!-- Card 2 -->
-      <div class="card" data-category="biryani" data-diet="nonveg" data-name="chicken biriyani half">
+      <div class="card" data-category="biryani" data-diet="nonveg" data-name="chicken biriyani (half)">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-nonveg">Non-Veg</span>
@@ -1243,17 +1114,17 @@
           <img class="card-img" src="biriyani.jpg" alt="Chicken Biriyani">
         </div>
         <div class="card-body">
-          <h3 class="card-title">Chicken Biriyani Half</h3>
-          <p class="card-desc">Traditional slow-cooked Dum Biriyani of Bengal, perfect portion for a light craving.</p>
+          <h3 class="card-title">Chicken Biriyani (Half)</h3>
+          <p class="card-desc">Traditional Dum Chicken Biriyani of Bengal</p>
           <div class="card-footer">
             <div class="card-price">150</div>
-            <button class="add-to-cart-btn" onclick="addToCart('Chicken Biriyani Half', 150)">+</button>
+            <button class="add-to-cart-btn" onclick="addToCart('Chicken Biriyani (Half)', 150)">+</button>
           </div>
         </div>
       </div>
 
       <!-- Card 3 -->
-      <div class="card" data-category="biryani" data-diet="nonveg" data-name="mutton biriyani full">
+      <div class="card" data-category="biryani" data-diet="nonveg" data-name="mutton biriyani (full)">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-nonveg">Non-Veg</span>
@@ -1262,17 +1133,17 @@
           <img class="card-img" src="mutton.jpg" alt="Mutton Biriyani">
         </div>
         <div class="card-body">
-          <h3 class="card-title">Mutton Biriyani Full</h3>
-          <p class="card-desc">Authentic Mutton Dum Biriyani featuring melt-in-the-mouth mutton pieces and fragrant rice.</p>
+          <h3 class="card-title">Mutton Biriyani (Full)</h3>
+          <p class="card-desc">Authentic Mutton Dum Biriyani of Bengal</p>
           <div class="card-footer">
             <div class="card-price">300</div>
-            <button class="add-to-cart-btn" onclick="addToCart('Mutton Biriyani Full', 300)">+</button>
+            <button class="add-to-cart-btn" onclick="addToCart('Mutton Biriyani (Full)', 300)">+</button>
           </div>
         </div>
       </div>
 
       <!-- Card 4 -->
-      <div class="card" data-category="biryani" data-diet="nonveg" data-name="mutton biriyani half">
+      <div class="card" data-category="biryani" data-diet="nonveg" data-name="mutton biriyani (half)">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-nonveg">Non-Veg</span>
@@ -1281,11 +1152,11 @@
           <img class="card-img" src="mutton.jpg" alt="Mutton Biriyani">
         </div>
         <div class="card-body">
-          <h3 class="card-title">Mutton Biriyani Half</h3>
-          <p class="card-desc">Authentic Mutton Dum Biriyani in a half-size presentation, loaded with pure spice notes.</p>
+          <h3 class="card-title">Mutton Biriyani (Half)</h3>
+          <p class="card-desc">Authentic Mutton Dum Biriyani of Bengal</p>
           <div class="card-footer">
             <div class="card-price">220</div>
-            <button class="add-to-cart-btn" onclick="addToCart('Mutton Biriyani Half', 220)">+</button>
+            <button class="add-to-cart-btn" onclick="addToCart('Mutton Biriyani (Half)', 220)">+</button>
           </div>
         </div>
       </div>
@@ -1301,7 +1172,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Mutton Kasha</h3>
-          <p class="card-desc">Rich, thick, slow-cooked mutton curry in deep brown gravy. Standard 5 pieces per plate.</p>
+          <p class="card-desc">5 pieces per plate</p>
           <div class="card-footer">
             <div class="card-price">280</div>
             <button class="add-to-cart-btn" onclick="addToCart('Mutton Kasha', 280)">+</button>
@@ -1316,11 +1187,11 @@
             <span class="badge badge-nonveg">Non-Veg</span>
             <span class="badge badge-category">Curry</span>
           </div>
-          <img class="card-img" src="biriyani.jpg" alt="Chicken Kasha">
+          <img class="card-img" src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80" onerror="this.onerror=null; this.src='mutton.jpg';" alt="Chicken Kasha">
         </div>
         <div class="card-body">
           <h3 class="card-title">Chicken Kasha</h3>
-          <p class="card-desc">Robust spiced chicken curry with thick golden gravy. Standard 6 pieces per plate.</p>
+          <p class="card-desc">6 pieces per plate</p>
           <div class="card-footer">
             <div class="card-price">180</div>
             <button class="add-to-cart-btn" onclick="addToCart('Chicken Kasha', 180)">+</button>
@@ -1339,7 +1210,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Fish Curry</h3>
-          <p class="card-desc">Freshly sourced river fish in light, flavorful Bengali mustard-style gravy. 2 pieces per plate.</p>
+          <p class="card-desc">2 pieces per plate</p>
           <div class="card-footer">
             <div class="card-price">170</div>
             <button class="add-to-cart-btn" onclick="addToCart('Fish Curry', 170)">+</button>
@@ -1358,7 +1229,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Mixed Veg Curry</h3>
-          <p class="card-desc">Assortment of fresh garden vegetables, cooked to perfection with traditional Bengali temperings.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">80</div>
             <button class="add-to-cart-btn" onclick="addToCart('Mixed Veg Curry', 80)">+</button>
@@ -1373,11 +1244,11 @@
             <span class="badge badge-veg">Veg</span>
             <span class="badge badge-category">Curry</span>
           </div>
-          <img class="card-img" src="veg.jpg" alt="Aloo Gobi">
+          <img class="card-img" src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80" onerror="this.onerror=null; this.src='veg.jpg';" alt="Aloo Gobi">
         </div>
         <div class="card-body">
           <h3 class="card-title">Aloo Gobi Curry</h3>
-          <p class="card-desc">Spiced combination of gold potatoes and tender cauliflower florets in standard light gravy.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">80</div>
             <button class="add-to-cart-btn" onclick="addToCart('Aloo Gobi Curry', 80)">+</button>
@@ -1386,55 +1257,55 @@
       </div>
 
       <!-- Card 10 -->
-      <div class="card" data-category="curries" data-diet="veg" data-name="vindi aloo curry">
+      <div class="card" data-category="curries" data-diet="veg" data-name="bhindi aloo curry">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-veg">Veg</span>
             <span class="badge badge-category">Curry</span>
           </div>
-          <img class="card-img" src="veg.jpg" alt="Vindi Aloo">
+          <img class="card-img" src="https://images.unsplash.com/photo-1645177625150-fe803e0cae79?auto=format&fit=crop&w=600&q=80" onerror="this.onerror=null; this.src='veg.jpg';" alt="Bhindi Aloo">
         </div>
         <div class="card-body">
-          <h3 class="card-title">Vindi Aloo Curry</h3>
-          <p class="card-desc">Spicy okra (Bhindi) sautéed with potato chunks and rich dry masalas.</p>
+          <h3 class="card-title">Bhindi Aloo Curry</h3>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">80</div>
-            <button class="add-to-cart-btn" onclick="addToCart('Vindi Aloo Curry', 80)">+</button>
+            <button class="add-to-cart-btn" onclick="addToCart('Bhindi Aloo Curry', 80)">+</button>
           </div>
         </div>
       </div>
 
       <!-- Card 11 -->
-      <div class="card" data-category="curries" data-diet="veg" data-name="patta govi curry">
+      <div class="card" data-category="curries" data-diet="veg" data-name="patta gobi curry">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-veg">Veg</span>
             <span class="badge badge-category">Curry</span>
           </div>
-          <img class="card-img" src="veg.jpg" alt="Patta Govi">
+          <img class="card-img" src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80" onerror="this.onerror=null; this.src='veg.jpg';" alt="Patta Gobi">
         </div>
         <div class="card-body">
-          <h3 class="card-title">Patta Govi Curry</h3>
-          <p class="card-desc">Finely shredded green cabbage slow-cooked with fresh peas and soft spices.</p>
+          <h3 class="card-title">Patta Gobi Curry</h3>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">80</div>
-            <button class="add-to-cart-btn" onclick="addToCart('Patta Govi Curry', 80)">+</button>
+            <button class="add-to-cart-btn" onclick="addToCart('Patta Gobi Curry', 80)">+</button>
           </div>
         </div>
       </div>
 
       <!-- Card 12 -->
-      <div class="card" data-category="snacks" data-diet="nonveg" data-name="chicken pakora boneless">
+      <div class="card" data-category="snacks" data-diet="nonveg" data-name="chicken pakora (boneless)">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-nonveg">Non-Veg</span>
             <span class="badge badge-category">Snack</span>
           </div>
-          <img class="card-img" src="friedrice.jpg" alt="Chicken Pakora">
+          <img class="card-img" src="https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80" onerror="this.onerror=null; this.src='biriyani.jpg';" alt="Chicken Pakora">
         </div>
         <div class="card-body">
           <h3 class="card-title">Chicken Pakora (Boneless)</h3>
-          <p class="card-desc">Crispy, deep-fried chicken cubes flavored with green chilies and fresh curry leaves. 500g pack.</p>
+          <p class="card-desc">500 g</p>
           <div class="card-footer">
             <div class="card-price">400</div>
             <button class="add-to-cart-btn" onclick="addToCart('Chicken Pakora (Boneless)', 400)">+</button>
@@ -1453,7 +1324,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Paneer Masala</h3>
-          <p class="card-desc">Soft cottage cheese cubes simmered in a mildly sweet tomato-cashew curry.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">110</div>
             <button class="add-to-cart-btn" onclick="addToCart('Paneer Masala', 110)">+</button>
@@ -1472,7 +1343,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Choley Paneer Masala</h3>
-          <p class="card-desc">Hearty chickpeas and paneer cooked together in a flavorful onion-tomato gravy.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">100</div>
             <button class="add-to-cart-btn" onclick="addToCart('Choley Paneer Masala', 100)">+</button>
@@ -1481,20 +1352,20 @@
       </div>
 
       <!-- Card 15 -->
-      <div class="card" data-category="snacks" data-diet="veg" data-name="dhokla with chutney">
+      <div class="card" data-category="snacks" data-diet="veg" data-name="dhokla">
         <div class="card-image-container">
           <div class="card-badges">
             <span class="badge badge-veg">Veg</span>
             <span class="badge badge-category">Snack</span>
           </div>
-          <img class="card-img" src="veg.jpg" alt="Dhokla">
+          <img class="card-img" src="https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg" onerror="this.onerror=null; this.src='veg.jpg';" alt="Dhokla">
         </div>
         <div class="card-body">
-          <h3 class="card-title">Dhokla With Chutney</h3>
-          <p class="card-desc">Soft, spongy steamed cakes served with tangy green chutney. 5 pieces per portion.</p>
+          <h3 class="card-title">Dhokla</h3>
+          <p class="card-desc">5 pcs</p>
           <div class="card-footer">
             <div class="card-price">50</div>
-            <button class="add-to-cart-btn" onclick="addToCart('Dhokla With Chutney', 50)">+</button>
+            <button class="add-to-cart-btn" onclick="addToCart('Dhokla', 50)">+</button>
           </div>
         </div>
       </div>
@@ -1510,7 +1381,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Fried Rice</h3>
-          <p class="card-desc">Fragrant long-grain Basmati rice tossed with fresh chopped vegetables and aromatic spices.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">120</div>
             <button class="add-to-cart-btn" onclick="addToCart('Fried Rice', 120)">+</button>
@@ -1525,11 +1396,11 @@
             <span class="badge badge-veg">Veg</span>
             <span class="badge badge-category">Rice</span>
           </div>
-          <img class="card-img" src="veg.jpg" alt="Plain Rice">
+          <img class="card-img" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Steamed_rice_in_bowl_01.jpg" onerror="this.onerror=null; this.src='friedrice.jpg';" alt="Plain Rice">
         </div>
         <div class="card-body">
           <h3 class="card-title">Plain Rice</h3>
-          <p class="card-desc">Perfectly steamed fluffy long-grain Basmati rice, ideal pair for curries.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">60</div>
             <button class="add-to-cart-btn" onclick="addToCart('Plain Rice', 60)">+</button>
@@ -1544,11 +1415,11 @@
             <span class="badge badge-veg">Veg</span>
             <span class="badge badge-category">Snack</span>
           </div>
-          <img class="card-img" src="veg.jpg" alt="Dal Pakora">
+          <img class="card-img" src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Onion_Pakora_01.jpg" onerror="this.onerror=null; this.src='veg.jpg';" alt="Dal Pakora">
         </div>
         <div class="card-body">
           <h3 class="card-title">Dal Pakora</h3>
-          <p class="card-desc">Spiced, crispy lentil patties fried to perfection. Best evening tea companion. 500g pack.</p>
+          <p class="card-desc">500 g</p>
           <div class="card-footer">
             <div class="card-price">200</div>
             <button class="add-to-cart-btn" onclick="addToCart('Dal Pakora', 200)">+</button>
@@ -1557,6 +1428,44 @@
       </div>
 
       <!-- Card 19 -->
+      <div class="card" data-category="snacks" data-diet="veg" data-name="normal paratha">
+        <div class="card-image-container">
+          <div class="card-badges">
+            <span class="badge badge-veg">Veg</span>
+            <span class="badge badge-category">Snack</span>
+          </div>
+          <img class="card-img" src="paratha.jpg" alt="Normal Paratha">
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Normal Paratha</h3>
+          <p class="card-desc">Per piece</p>
+          <div class="card-footer">
+            <div class="card-price">20</div>
+            <button class="add-to-cart-btn" onclick="addToCart('Normal Paratha', 20)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 20 -->
+      <div class="card" data-category="snacks" data-diet="veg" data-name="laccha paratha">
+        <div class="card-image-container">
+          <div class="card-badges">
+            <span class="badge badge-veg">Veg</span>
+            <span class="badge badge-category">Snack</span>
+          </div>
+          <img class="card-img" src="paratha.jpg" alt="Laccha Paratha">
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Laccha Paratha</h3>
+          <p class="card-desc">Per piece</p>
+          <div class="card-footer">
+            <div class="card-price">30</div>
+            <button class="add-to-cart-btn" onclick="addToCart('Laccha Paratha', 30)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 21 -->
       <div class="card" data-category="sweets" data-diet="veg" data-name="gravy sawaiyan">
         <div class="card-image-container">
           <div class="card-badges">
@@ -1567,7 +1476,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Gravy Sawaiyan</h3>
-          <p class="card-desc">Rich roasted vermicelli milk dessert enriched with condensed milk and chopped dry fruits.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">70</div>
             <button class="add-to-cart-btn" onclick="addToCart('Gravy Sawaiyan', 70)">+</button>
@@ -1575,7 +1484,7 @@
         </div>
       </div>
 
-      <!-- Card 20 -->
+      <!-- Card 22 -->
       <div class="card" data-category="sweets" data-diet="veg" data-name="dry sawaiyan">
         <div class="card-image-container">
           <div class="card-badges">
@@ -1586,7 +1495,7 @@
         </div>
         <div class="card-body">
           <h3 class="card-title">Dry Sawaiyan</h3>
-          <p class="card-desc">Stir-fried roasted vermicelli sweetened with clean sugar syrup and cardamom hints.</p>
+          <p class="card-desc">Per plate</p>
           <div class="card-footer">
             <div class="card-price">50</div>
             <button class="add-to-cart-btn" onclick="addToCart('Dry Sawaiyan', 50)">+</button>
@@ -1668,7 +1577,7 @@
         <p style="color: var(--text-muted); margin-top: 10px; font-size: 14px;">Scan the QR using any UPI app (GPay, PhonePe, Paytm, etc.)</p>
         
         <div class="qr-container">
-          <img class="qr-image" src="upi_qr.png" alt="UPI Payment QR">
+          <img class="qr-image" src="upi_qr.jpeg" alt="UPI Payment QR">
         </div>
 
         <p style="font-weight: 500; font-size: 14px; margin-bottom: 5px;">UPI Address</p>
@@ -1711,28 +1620,7 @@
     <div class="cart-badge-count" id="cartCount">0</div>
   </div>
 
-  <!-- <!-- Floating Wheel Badge (bottom left) -->
-  <div class="wheel-badge" id="wheelBadge" onclick="toggleWheelModal(true)">
-    <span>🎡</span>
-    <span class="wheel-badge-text">Test Luck!</span>
-  </div>
 
-  <!-- Wheel Modal -->
-  <div class="wheel-modal" id="wheelModal">
-    <div class="wheel-modal-content">
-      <button class="wheel-modal-close" onclick="toggleWheelModal(false)">✕</button>
-      <h3 class="serif" style="color: var(--primary); margin-bottom: 8px; font-size: 1.8rem;">🎡 Spin to Win!</h3>
-      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Test your luck to win direct discounts or treats on your order!</p>
-      
-      <div class="wheel-container">
-        <div class="wheel-pointer">▼</div>
-        <canvas id="wheelCanvas" width="300" height="300"></canvas>
-        <button class="spin-btn" id="spinButton" onclick="spinWheel()">SPIN</button>
-      </div>
-      
-      <div class="wheel-result" id="wheelResult"></div>
-    </div>
-  </div> -->
 
   <!-- Toast Element -->
   <div class="toast" id="toast">UPI ID copied to clipboard!</div>
@@ -1747,6 +1635,21 @@
 
   <!-- JavaScript Modules -->
   <script>
+    /* 0. Dinner Mode (Biriyani Specialties Only) Toggle */
+    // Change this to true to show ONLY Biriyani items (Dinner Mode)
+    const BIRIYANI_ONLY_MODE = false;
+
+    if (BIRIYANI_ONLY_MODE) {
+      document.addEventListener('DOMContentLoaded', () => {
+        const subtitle = document.querySelector('.section-header .section-subtitle');
+        const title = document.querySelector('.section-header .section-title');
+        const controls = document.querySelector('.menu-controls');
+        if (subtitle) subtitle.innerText = "Dinner Special Menu";
+        if (title) title.innerText = "Biriyani Specialties Only";
+        if (controls) controls.style.display = 'none';
+      });
+    }
+
     /* 1. Dynamic Background Slideshow crossfade */
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
@@ -1775,8 +1678,9 @@
         
         const matchesSearch = name.includes(searchTerm);
         const matchesFilter = (activeFilter === 'all' || category === activeFilter);
+        const fitsBiriyaniOnly = !BIRIYANI_ONLY_MODE || name.includes('biriyani');
 
-        if (matchesSearch && matchesFilter) {
+        if (matchesSearch && matchesFilter && fitsBiriyaniOnly) {
           card.style.display = 'flex';
           card.style.opacity = '1';
         } else {
@@ -1798,7 +1702,6 @@
 
     /* 3. Interactive Shopping Cart System */
     let cart = {};
-    let activeDiscount = null;
 
     function addToCart(name, price) {
       if (cart[name]) {
@@ -1860,44 +1763,10 @@
         cartItemsContainer.appendChild(itemEl);
       }
 
-      // Apply Spin wheel rewards
-      let originalTotal = total;
-      let discountAmount = 0;
-      let freeTreat = "";
-
-      if (activeDiscount && total > 0) {
-        if (activeDiscount.includes("10% Off")) {
-          discountAmount = Math.round(total * 0.1);
-          total -= discountAmount;
-        } else if (activeDiscount.includes("15% Off")) {
-          discountAmount = Math.round(total * 0.15);
-          total -= discountAmount;
-        } else if (activeDiscount.includes("Flat ₹50")) {
-          discountAmount = Math.min(total, 50);
-          total -= discountAmount;
-        } else if (activeDiscount.includes("Free Sweets")) {
-          freeTreat = "🎁 Free Sweet Sawaiyan portion";
-        } else if (activeDiscount.includes("Free Dal Pakora")) {
-          freeTreat = "🎁 Free Dal Pakora portion";
-        }
-      }
-
       total = Math.max(0, total);
       cartTotal.innerText = `₹${total}`;
       cartCount.innerText = count;
-
-      if (activeDiscount && count > 0) {
-        cartDiscountNote.style.display = 'block';
-        if (discountAmount > 0) {
-          cartDiscountNote.innerText = `Saved ₹${discountAmount} via spin reward (${activeDiscount})`;
-        } else if (freeTreat) {
-          cartDiscountNote.innerText = `Includes: ${freeTreat}!`;
-        } else {
-          cartDiscountNote.style.display = 'none';
-        }
-      } else {
-        cartDiscountNote.style.display = 'none';
-      }
+      cartDiscountNote.style.display = 'none';
 
       if (count > 0) {
         cartBadge.style.display = 'flex';
@@ -1920,33 +1789,7 @@
         messageText += `• ${name} x ${item.qty} (₹${item.price} each) - ₹${itemTotal}\n`;
       }
 
-      let originalTotal = total;
-      let discountText = "";
-      
-      if (activeDiscount) {
-        if (activeDiscount.includes("10% Off")) {
-          const amt = Math.round(total * 0.1);
-          total -= amt;
-          discountText = `🎁 *Spin Wheel Reward (10% Off):* -₹${amt}\n`;
-        } else if (activeDiscount.includes("15% Off")) {
-          const amt = Math.round(total * 0.15);
-          total -= amt;
-          discountText = `🎁 *Spin Wheel Reward (15% Off):* -₹${amt}\n`;
-        } else if (activeDiscount.includes("Flat ₹50")) {
-          const amt = Math.min(total, 50);
-          total -= amt;
-          discountText = `🎁 *Spin Wheel Reward (Flat ₹50 Off):* -₹${amt}\n`;
-        } else if (activeDiscount.includes("Free Sweets")) {
-          discountText = `🎁 *Spin Wheel Reward:* + Free Sweet Sawaiyan portion!\n`;
-        } else if (activeDiscount.includes("Free Dal Pakora")) {
-          discountText = `🎁 *Spin Wheel Reward:* + Free Dal Pakora portion!\n`;
-        }
-      }
-
       total = Math.max(0, total);
-      if (discountText) {
-        messageText += `\n${discountText}`;
-      }
 
       messageText += `\n💵 *Total Bill Amount:* ₹${total}\n`;
       messageText += `⏰ *Pickup Location:* Near Pine Block Veg Shop\n\n_Please confirm availability and pick-up timing._`;
@@ -1974,116 +1817,7 @@
       }, 2500);
     }
 
-    /* 6. Spin the Wheel interactive mechanics */
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const prizes = [
-      "10% Off", 
-      "Free Sweets", 
-      "Try Again", 
-      "15% Off", 
-      "Free Dal Pakora", 
-      "Flat ₹50 Off"
-    ];
-    const colors = ["#9E2A2B", "#E09F3E", "#FFF6F0", "#3E5C76", "#25D366", "#8338ec"];
-    const textColors = ["#ffffff", "#2D1F1B", "#2D1F1B", "#ffffff", "#ffffff", "#ffffff"];
-    const numSegments = prizes.length;
-    const arcSize = (2 * Math.PI) / numSegments;
-    let startAngle = 0;
-    let isSpinning = false;
 
-    function drawWheel(currentAngle = 0) {
-      ctx.clearRect(0, 0, 300, 300);
-      for (let i = 0; i < numSegments; i++) {
-        const angle = currentAngle + i * arcSize;
-        ctx.beginPath();
-        ctx.fillStyle = colors[i];
-        ctx.moveTo(150, 150);
-        ctx.arc(150, 150, 145, angle, angle + arcSize);
-        ctx.lineTo(150, 150);
-        ctx.fill();
-
-        ctx.save();
-        ctx.fillStyle = textColors[i];
-        ctx.translate(150, 150);
-        ctx.rotate(angle + arcSize / 2);
-        ctx.textAlign = "right";
-        ctx.font = "bold 13px Outfit";
-        ctx.fillText(prizes[i], 135, 5);
-        ctx.restore();
-      }
-
-      // Draw center circle core
-      ctx.beginPath();
-      ctx.arc(150, 150, 145, 0, 2 * Math.PI);
-      ctx.strokeStyle = "rgba(45, 31, 27, 0.15)";
-      ctx.lineWidth = 4;
-      ctx.stroke();
-    }
-
-    // Initialize rendering on load
-    window.addEventListener('load', () => drawWheel(0));
-
-    function toggleWheelModal(show) {
-      const modal = document.getElementById('wheelModal');
-      if (show) {
-        modal.classList.add('open');
-      } else {
-        modal.classList.remove('open');
-      }
-    }
-
-    function spinWheel() {
-      if (isSpinning) return;
-      
-      const spinBtn = document.getElementById('spinButton');
-      spinBtn.disabled = true;
-      isSpinning = true;
-      document.getElementById('wheelResult').innerText = "Spinning the wheel...";
-
-      const spins = 6 + Math.floor(Math.random() * 4); // 6 to 9 spins
-      let randomSegment = Math.floor(Math.random() * numSegments);
-      
-      // Calculate target angle to align target segment with top pointer (3 * Math.PI / 2)
-      const targetAngle = (3 * Math.PI / 2) - (randomSegment * arcSize) - (arcSize / 2);
-      const totalRotation = spins * 2 * Math.PI + targetAngle - startAngle;
-
-      let startTimestamp = null;
-      const duration = 4000; // 4 seconds spin duration
-
-      function animate(timestamp) {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const elapsed = timestamp - startTimestamp;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Ease out cubic function
-        const easeProgress = 1 - Math.pow(1 - progress, 3);
-        const currentRotAngle = startAngle + totalRotation * easeProgress;
-        
-        drawWheel(currentRotAngle);
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          startAngle = currentRotAngle;
-          isSpinning = false;
-          spinBtn.disabled = false;
-          const result = prizes[randomSegment];
-          
-          if (result === "Try Again") {
-            document.getElementById('wheelResult').innerHTML = "❌ Try again next time! Keep cooking!";
-            activeDiscount = null;
-          } else {
-            document.getElementById('wheelResult').innerHTML = `🎉 Congratulations! You won <strong>${result}</strong>! Applied to cart.`;
-            activeDiscount = result;
-            updateCartUI();
-            showToast(`🎉 Congratulations! Won: ${result}!`);
-          }
-        }
-      }
-      
-      requestAnimationFrame(animate);
-    }
   </script>
 </body>
 </html>
