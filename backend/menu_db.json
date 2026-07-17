@@ -1,0 +1,233 @@
+{
+    "dinnerMode": false,
+    "items": [
+        {
+            "available": false,
+            "category": "biryani",
+            "description": "Traditional Dum Chicken Biriyani of Bengal",
+            "diet": "nonveg",
+            "id": 1,
+            "image": "biriyani.jpg",
+            "name": "Chicken Biriyani (Full)",
+            "price": 200
+        },
+        {
+            "available": false,
+            "category": "biryani",
+            "description": "Traditional Dum Chicken Biriyani of Bengal",
+            "diet": "nonveg",
+            "id": 2,
+            "image": "biriyani.jpg",
+            "name": "Chicken Biriyani (Half)",
+            "price": 150
+        },
+        {
+            "available": false,
+            "category": "biryani",
+            "description": "Authentic Mutton Dum Biriyani of Bengal",
+            "diet": "nonveg",
+            "id": 3,
+            "image": "mutton.jpg",
+            "name": "Mutton Biriyani (Full)",
+            "price": 300
+        },
+        {
+            "available": false,
+            "category": "biryani",
+            "description": "Authentic Mutton Dum Biriyani of Bengal",
+            "diet": "nonveg",
+            "id": 4,
+            "image": "mutton.jpg",
+            "name": "Mutton Biriyani (Half)",
+            "price": 220
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "5 pieces per plate",
+            "diet": "nonveg",
+            "id": 5,
+            "image": "mutton.jpg",
+            "name": "Mutton Kasha",
+            "price": 280
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "6 pieces per plate",
+            "diet": "nonveg",
+            "fallbackImage": "mutton.jpg",
+            "id": 6,
+            "image": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80",
+            "name": "Chicken Kasha",
+            "price": 180
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "2 pieces per plate",
+            "diet": "nonveg",
+            "id": 7,
+            "image": "fish.jpg",
+            "name": "Fish Curry",
+            "price": 170
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "Per plate",
+            "diet": "veg",
+            "id": 8,
+            "image": "veg.jpg",
+            "name": "Mixed Veg Curry",
+            "price": 80
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "Per plate",
+            "diet": "veg",
+            "fallbackImage": "veg.jpg",
+            "id": 9,
+            "image": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+            "name": "Aloo Gobi Curry",
+            "price": 80
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "Per plate",
+            "diet": "veg",
+            "fallbackImage": "veg.jpg",
+            "id": 10,
+            "image": "https://images.unsplash.com/photo-1645177625150-fe803e0cae79?auto=format&fit=crop&w=600&q=80",
+            "name": "Bhindi Aloo Curry",
+            "price": 80
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "Per plate",
+            "diet": "veg",
+            "fallbackImage": "veg.jpg",
+            "id": 11,
+            "image": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
+            "name": "Patta Gobi Curry",
+            "price": 80
+        },
+        {
+            "available": false,
+            "category": "snacks",
+            "description": "500 g",
+            "diet": "nonveg",
+            "fallbackImage": "biriyani.jpg",
+            "id": 12,
+            "image": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+            "name": "Chicken Pakora (Boneless)",
+            "price": 400
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "Per plate",
+            "diet": "veg",
+            "id": 13,
+            "image": "paneer.jpg",
+            "name": "Paneer Masala",
+            "price": 110
+        },
+        {
+            "available": false,
+            "category": "curries",
+            "description": "Per plate",
+            "diet": "veg",
+            "id": 14,
+            "image": "paneer.jpg",
+            "name": "Choley Paneer Masala",
+            "price": 100
+        },
+        {
+            "available": false,
+            "category": "snacks",
+            "description": "5 pcs",
+            "diet": "veg",
+            "fallbackImage": "veg.jpg",
+            "id": 15,
+            "image": "https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg",
+            "name": "Dhokla",
+            "price": 50
+        },
+        {
+            "available": false,
+            "category": "biryani",
+            "description": "Per plate",
+            "diet": "veg",
+            "id": 16,
+            "image": "friedrice.jpg",
+            "name": "Fried Rice",
+            "price": 120
+        },
+        {
+            "available": false,
+            "category": "biryani",
+            "description": "Per plate",
+            "diet": "veg",
+            "fallbackImage": "friedrice.jpg",
+            "id": 17,
+            "image": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Steamed_rice_in_bowl_01.jpg",
+            "name": "Plain Rice",
+            "price": 60
+        },
+        {
+            "available": false,
+            "category": "snacks",
+            "description": "500 g",
+            "diet": "veg",
+            "fallbackImage": "veg.jpg",
+            "id": 18,
+            "image": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Onion_Pakora_01.jpg",
+            "name": "Dal Pakora",
+            "price": 200
+        },
+        {
+            "available": false,
+            "category": "snacks",
+            "description": "Per piece",
+            "diet": "veg",
+            "id": 19,
+            "image": "paratha.jpg",
+            "name": "Normal Paratha",
+            "price": 20
+        },
+        {
+            "available": false,
+            "category": "snacks",
+            "description": "Per piece",
+            "diet": "veg",
+            "id": 20,
+            "image": "paratha.jpg",
+            "name": "Laccha Paratha",
+            "price": 30
+        },
+        {
+            "available": false,
+            "category": "sweets",
+            "description": "Per plate",
+            "diet": "veg",
+            "id": 21,
+            "image": "sawaiyan.jpg",
+            "name": "Gravy Sawaiyan",
+            "price": 70
+        },
+        {
+            "available": false,
+            "category": "sweets",
+            "description": "Per plate",
+            "diet": "veg",
+            "id": 22,
+            "image": "sawaiyan.jpg",
+            "name": "Dry Sawaiyan",
+            "price": 50
+        }
+    ]
+}
