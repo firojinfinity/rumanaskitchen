@@ -17,42 +17,32 @@ DEFAULT_MENU = {
     "items": [
         {
             "id": 1,
-            "name": "Chicken Biriyani (Full)",
+            "name": "Chicken Biriyani",
             "category": "biryani",
             "diet": "nonveg",
             "image": "biriyani.jpg",
             "description": "Traditional Dum Chicken Biriyani of Bengal",
             "price": 200,
-            "available": True
-        },
-        {
-            "id": 2,
-            "name": "Chicken Biriyani (Half)",
-            "category": "biryani",
-            "diet": "nonveg",
-            "image": "biriyani.jpg",
-            "description": "Traditional Dum Chicken Biriyani of Bengal",
-            "price": 150,
+            "hasSizes": True,
+            "prices": {
+                "half": 100,
+                "full": 200
+            },
             "available": True
         },
         {
             "id": 3,
-            "name": "Mutton Biriyani (Full)",
+            "name": "Mutton Biriyani",
             "category": "biryani",
             "diet": "nonveg",
             "image": "mbiriyani.jpg",
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "price": 300,
-            "available": True
-        },
-        {
-            "id": 4,
-            "name": "Mutton Biriyani (Half)",
-            "category": "biryani",
-            "diet": "nonveg",
-            "image": "mbiriyani.jpg",
-            "description": "Authentic Mutton Dum Biriyani of Bengal",
-            "price": 220,
+            "hasSizes": True,
+            "prices": {
+                "half": 150,
+                "full": 300
+            },
             "available": True
         },
         {
@@ -242,9 +232,49 @@ DEFAULT_MENU = {
             "description": "Per plate",
             "price": 50,
             "available": True
+        },
+        {
+            "id": 23,
+            "name": "Fried Rice",
+            "category": "biryani",
+            "diet": "veg",
+            "image": "friedrice.jpg",
+            "description": "Per plate",
+            "price": 120,
+            "available": True
         }
     ]
 }
+
+def migrate_and_merge(loaded_data):
+    # Ensure dinnerMode and announcement exist
+    if 'dinnerMode' not in loaded_data:
+        loaded_data['dinnerMode'] = DEFAULT_MENU['dinnerMode']
+    if 'announcement' not in loaded_data:
+        loaded_data['announcement'] = DEFAULT_MENU['announcement']
+        
+    items = loaded_data.get('items', [])
+    
+    # 1. Remove ID 2 and ID 4 if they exist (old Half Biriyanis)
+    items = [item for item in items if item.get('id') not in (2, 4)]
+    
+    # 2. Check if ID 1 and ID 3 have hasSizes. If not, update them to combined versions from DEFAULT_MENU
+    default_biriyanis = {item['id']: item for item in DEFAULT_MENU['items'] if item['id'] in (1, 3)}
+    for i, item in enumerate(items):
+        item_id = item.get('id')
+        if item_id in (1, 3) and not item.get('hasSizes'):
+            items[i] = default_biriyanis[item_id]
+            
+    # 3. Add any other missing items from DEFAULT_MENU
+    loaded_ids = {item.get('id') for item in items}
+    for default_item in DEFAULT_MENU['items']:
+        if default_item['id'] not in loaded_ids:
+            items.append(default_item)
+            
+    # Sort items by id
+    items = sorted(items, key=lambda x: x.get('id', 999))
+    loaded_data['items'] = items
+    return loaded_data
 
 def load_db():
     if not os.path.exists(DB_PATH):
@@ -253,8 +283,15 @@ def load_db():
         return DEFAULT_MENU
     try:
         with open(DB_PATH, 'r') as f:
-            return json.load(f)
-    except Exception:
+            data = json.load(f)
+        # Migrate and auto-heal
+        updated_data = migrate_and_merge(data)
+        # If anything was modified, save it
+        if updated_data != data:
+            save_db(updated_data)
+        return updated_data
+    except Exception as e:
+        print(f"Error loading/migrating DB: {e}")
         return DEFAULT_MENU
 
 def save_db(data):
