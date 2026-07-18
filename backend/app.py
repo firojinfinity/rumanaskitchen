@@ -39,7 +39,7 @@ DEFAULT_MENU = {
             "name": "Mutton Biriyani (Full)",
             "category": "biryani",
             "diet": "nonveg",
-            "image": "mutton.jpg",
+            "image": "mbiriyani.jpg",
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "price": 300,
             "available": True
@@ -49,7 +49,7 @@ DEFAULT_MENU = {
             "name": "Mutton Biriyani (Half)",
             "category": "biryani",
             "diet": "nonveg",
-            "image": "mutton.jpg",
+            "image": "mbiriyani.jpg",
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "price": 220,
             "available": True
