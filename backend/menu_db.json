@@ -14,7 +14,7 @@
             "price": 200,
             "prices": {
                 "full": 200,
-                "half": 150
+                "half": 100
             }
         },
         {
@@ -29,7 +29,7 @@
             "price": 300,
             "prices": {
                 "full": 300,
-                "half": 220
+                "half": 150
             }
         },
         {
