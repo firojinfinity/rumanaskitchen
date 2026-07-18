@@ -219,6 +219,16 @@
             "image": "sawaiyan.jpg",
             "name": "Dry Sawaiyan",
             "price": 50
+        },
+        {
+            "available": true,
+            "category": "biryani",
+            "description": "Per plate",
+            "diet": "veg",
+            "id": 23,
+            "image": "friedrice.jpg",
+            "name": "Fried Rice",
+            "price": 120
         }
     ]
 }

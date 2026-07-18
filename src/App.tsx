@@ -46,7 +46,8 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 19, name: "Normal Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 20, available: true },
   { id: 20, name: "Laccha Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 30, available: true },
   { id: 21, name: "Gravy Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 70, available: true },
-  { id: 22, name: "Dry Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 50, available: true }
+  { id: 22, name: "Dry Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 50, available: true },
+  { id: 23, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true }
 ];
 
 export default function App() {
