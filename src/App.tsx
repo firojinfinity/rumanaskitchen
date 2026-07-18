@@ -19,6 +19,9 @@ interface CartItem {
   name: string;
   price: number;
   qty: number;
+  size?: 'half' | 'full';
+  hasSizes?: boolean;
+  prices?: { half: number; full: number };
 }
 
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://YOUR_BACKEND_RENDER_URL_HERE.onrender.com');
@@ -85,7 +88,6 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState<string>('');
   const [announcement, setAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
   const [editedAnnouncement, setEditedAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
-  const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: 'half' | 'full' }>({ 1: 'full', 3: 'full' });
 
   // Fetch Menu from Backend
   const fetchMenu = async () => {
@@ -174,17 +176,37 @@ export default function App() {
   };
 
   // Add to Cart
-  const addToCart = (name: string, price: number) => {
+  const addToCart = (name: string, price: number, hasSizes?: boolean, prices?: { half: number; full: number }) => {
     setCart(prev => {
       const updated = { ...prev };
       if (updated[name]) {
         updated[name].qty += 1;
       } else {
-        updated[name] = { name, price, qty: 1 };
+        updated[name] = { 
+          name, 
+          price, 
+          qty: 1,
+          hasSizes,
+          size: hasSizes ? 'full' : undefined,
+          prices
+        };
       }
       return updated;
     });
     triggerToast(`${name} added to cart!`);
+  };
+
+  // Update Cart Item Size
+  const updateCartItemSize = (name: string, newSize: 'half' | 'full') => {
+    setCart(prev => {
+      const updated = { ...prev };
+      const item = updated[name];
+      if (item && item.prices) {
+        item.size = newSize;
+        item.price = item.prices[newSize];
+      }
+      return updated;
+    });
   };
 
   // Change Quantity in Cart
@@ -214,7 +236,10 @@ export default function App() {
     let messageText = "Hello Rumana's Kitchen! 🍽️\nI would like to place a custom homemade order:\n\n";
     Object.values(cart).forEach(item => {
       const itemTotal = item.price * item.qty;
-      messageText += `• ${item.name} x ${item.qty} (₹${item.price} each) - ₹${itemTotal}\n`;
+      const displayName = item.hasSizes && item.size
+        ? `${item.name} (${item.size === 'half' ? 'Half' : 'Full'})`
+        : item.name;
+      messageText += `• ${displayName} x ${item.qty} (₹${item.price} each) - ₹${itemTotal}\n`;
     });
 
     messageText += `\n💵 *Total Bill Amount:* ₹${totalCartPrice}\n`;
@@ -568,69 +593,17 @@ export default function App() {
                         <h3 className="card-title">{item.name}</h3>
                         <p className="card-desc">{item.description}</p>
                         
-                        {item.hasSizes && (
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            marginBottom: '15px'
-                          }}>
-                            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Portion:</span>
-                            <div style={{
-                              display: 'flex',
-                              background: 'rgba(92, 30, 10, 0.05)',
-                              padding: '2px',
-                              borderRadius: '20px',
-                              gap: '2px'
-                            }}>
-                              {(['half', 'full'] as const).map(sz => {
-                                const selectedSize = selectedSizes[item.id] || 'full';
-                                const isActive = selectedSize === sz;
-                                return (
-                                  <button
-                                    key={sz}
-                                    onClick={() => setSelectedSizes(prev => ({ ...prev, [item.id]: sz }))}
-                                    style={{
-                                      border: 'none',
-                                      background: isActive ? 'var(--primary)' : 'transparent',
-                                      color: isActive ? 'white' : 'var(--text)',
-                                      fontSize: '11px',
-                                      fontWeight: 700,
-                                      padding: '4px 10px',
-                                      borderRadius: '15px',
-                                      cursor: 'pointer',
-                                      textTransform: 'capitalize',
-                                      transition: 'all 0.2s'
-                                    }}
-                                  >
-                                    {sz}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-
                         <div className="card-footer">
                           <div className="card-price">
                             {item.hasSizes && item.prices 
-                              ? item.prices[selectedSizes[item.id] || 'full'] 
+                              ? `${item.prices.half} - ₹${item.prices.full}` 
                               : item.price
                             }
                           </div>
                           {item.available && (
                             <button
                               className="add-to-cart-btn"
-                              onClick={() => {
-                                if (item.hasSizes && item.prices) {
-                                  const size = selectedSizes[item.id] || 'full';
-                                  const sizeLabel = size === 'half' ? 'Half' : 'Full';
-                                  const price = item.prices[size];
-                                  addToCart(`${item.name} (${sizeLabel})`, price);
-                                } else {
-                                  addToCart(item.name, item.price);
-                                }
-                              }}
+                              onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices)}
                             >
                               +
                             </button>
@@ -739,6 +712,34 @@ export default function App() {
                     <div className="cart-item-info">
                       <span className="cart-item-name">{item.name}</span>
                       <span className="cart-item-price">₹{item.price} each</span>
+                      
+                      {item.hasSizes && item.prices && (
+                        <div style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
+                          {(['half', 'full'] as const).map(sz => {
+                            const isActive = item.size === sz;
+                            return (
+                              <button
+                                key={sz}
+                                onClick={() => updateCartItemSize(item.name, sz)}
+                                style={{
+                                  border: isActive ? '1px solid var(--primary)' : '1px solid rgba(158, 42, 43, 0.18)',
+                                  background: isActive ? 'var(--primary)' : 'transparent',
+                                  color: isActive ? 'white' : 'var(--text)',
+                                  fontSize: '10px',
+                                  fontWeight: 700,
+                                  padding: '3px 8px',
+                                  borderRadius: '12px',
+                                  cursor: 'pointer',
+                                  textTransform: 'capitalize',
+                                  transition: 'all 0.15s ease'
+                                }}
+                              >
+                                {sz}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                     <div className="cart-item-qty">
                       <button className="qty-btn" onClick={() => changeQty(item.name, -1)}>-</button>

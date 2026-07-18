@@ -7,14 +7,14 @@
             "category": "biryani",
             "description": "Traditional Dum Chicken Biriyani of Bengal",
             "diet": "nonveg",
+            "hasSizes": true,
             "id": 1,
             "image": "biriyani.jpg",
             "name": "Chicken Biriyani",
             "price": 200,
-            "hasSizes": true,
             "prices": {
-                "half": 150,
-                "full": 200
+                "full": 200,
+                "half": 150
             }
         },
         {
@@ -22,18 +22,18 @@
             "category": "biryani",
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "diet": "nonveg",
+            "hasSizes": true,
             "id": 3,
             "image": "mbiriyani.jpg",
             "name": "Mutton Biriyani",
             "price": 300,
-            "hasSizes": true,
             "prices": {
-                "half": 220,
-                "full": 300
+                "full": 300,
+                "half": 220
             }
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "5 pieces per plate",
             "diet": "nonveg",
@@ -43,7 +43,7 @@
             "price": 280
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "6 pieces per plate",
             "diet": "nonveg",
@@ -54,7 +54,7 @@
             "price": 180
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "2 pieces per plate",
             "diet": "nonveg",
@@ -64,7 +64,7 @@
             "price": 170
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "Per plate",
             "diet": "veg",
@@ -74,7 +74,7 @@
             "price": 80
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "Per plate",
             "diet": "veg",
@@ -85,7 +85,7 @@
             "price": 80
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "Per plate",
             "diet": "veg",
@@ -96,7 +96,7 @@
             "price": 80
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "Per plate",
             "diet": "veg",
@@ -107,7 +107,7 @@
             "price": 80
         },
         {
-            "available": false,
+            "available": true,
             "category": "snacks",
             "description": "500 g",
             "diet": "nonveg",
@@ -118,7 +118,7 @@
             "price": 400
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "Per plate",
             "diet": "veg",
@@ -128,7 +128,7 @@
             "price": 110
         },
         {
-            "available": false,
+            "available": true,
             "category": "curries",
             "description": "Per plate",
             "diet": "veg",
@@ -138,7 +138,7 @@
             "price": 100
         },
         {
-            "available": false,
+            "available": true,
             "category": "snacks",
             "description": "5 pcs",
             "diet": "veg",
@@ -159,7 +159,7 @@
             "price": 130
         },
         {
-            "available": false,
+            "available": true,
             "category": "biryani",
             "description": "Per plate",
             "diet": "veg",
@@ -170,7 +170,7 @@
             "price": 60
         },
         {
-            "available": false,
+            "available": true,
             "category": "snacks",
             "description": "500 g",
             "diet": "veg",
@@ -181,7 +181,7 @@
             "price": 200
         },
         {
-            "available": false,
+            "available": true,
             "category": "snacks",
             "description": "Per piece",
             "diet": "veg",
@@ -191,7 +191,7 @@
             "price": 20
         },
         {
-            "available": false,
+            "available": true,
             "category": "snacks",
             "description": "Per piece",
             "diet": "veg",
@@ -201,7 +201,7 @@
             "price": 30
         },
         {
-            "available": false,
+            "available": true,
             "category": "sweets",
             "description": "Per plate",
             "diet": "veg",
@@ -211,7 +211,7 @@
             "price": 70
         },
         {
-            "available": false,
+            "available": true,
             "category": "sweets",
             "description": "Per plate",
             "diet": "veg",
