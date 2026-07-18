@@ -4,7 +4,7 @@
         {
             "available": false,
             "category": "biryani",
-            "description": "Traditional Dum Chicken Biriyani of Bengal.",
+            "description": "Traditional Dum Chicken Biriyani of Bengal",
             "diet": "nonveg",
             "id": 1,
             "image": "biriyani.jpg",
@@ -27,7 +27,7 @@
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "diet": "nonveg",
             "id": 3,
-            "image": "mutton.jpg",
+            "image": "mbiriyani.jpg",
             "name": "Mutton Biriyani (Full)",
             "price": 300
         },
@@ -37,7 +37,7 @@
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "diet": "nonveg",
             "id": 4,
-            "image": "mutton.jpg",
+            "image": "mbiriyani.jpg",
             "name": "Mutton Biriyani (Half)",
             "price": 220
         },
