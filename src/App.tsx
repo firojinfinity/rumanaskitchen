@@ -29,7 +29,7 @@ const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === '
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 200, hasSizes: true, prices: { half: 100, full: 200 }, available: true, stockCount: 20 },
-  { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mutton.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, hasSizes: true, prices: { half: 150, full: 300 }, available: true, stockCount: 20 },
+  { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mbiriyani.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, hasSizes: true, prices: { half: 150, full: 300 }, available: true, stockCount: 20 },
   { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true, stockCount: 20 },
   { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80", fallbackImage: "mutton.jpg", description: "6 pieces per plate", price: 180, available: true, stockCount: 20 },
   { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true, stockCount: 20 },
