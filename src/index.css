@@ -1295,7 +1295,7 @@ input:checked + .slider:before {
 .scrolling-marquee {
   display: inline-block;
   white-space: nowrap;
-  animation: marquee-scroll 25s linear infinite;
+  animation: marquee-scroll 45s linear infinite;
   padding-left: 100%;
 }
 
