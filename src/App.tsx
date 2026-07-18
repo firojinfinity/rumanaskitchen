@@ -39,7 +39,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 12, name: "Chicken Pakora (Boneless)", category: "snacks", diet: "nonveg", image: "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80", fallbackImage: "biriyani.jpg", description: "500 g", price: 400, available: true },
   { id: 13, name: "Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 110, available: true },
   { id: 14, name: "Choley Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 100, available: true },
-  { id: 15, name: "Dhokla", category: "snacks", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg", fallbackImage: "veg.jpg", description: "5 pcs", price: 50, available: true },
+  { id: 15, name: "Dhokla", category: "sweets", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg", fallbackImage: "veg.jpg", description: "5 pcs", price: 50, available: true },
   { id: 16, name: "Prawn Curry", category: "curries", diet: "nonveg", image: "prawn.png", description: "Per plate", price: 130, available: true },
   { id: 17, name: "Plain Rice", category: "biryani", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/2/2c/Steamed_rice_in_bowl_01.jpg", fallbackImage: "friedrice.jpg", description: "Per plate", price: 60, available: true },
   { id: 18, name: "Dal Pakora", category: "snacks", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Onion_Pakora_01.jpg", fallbackImage: "veg.jpg", description: "500 g", price: 200, available: true },

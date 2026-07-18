@@ -163,7 +163,7 @@ DEFAULT_MENU = {
         {
             "id": 15,
             "name": "Dhokla",
-            "category": "snacks",
+            "category": "sweets",
             "diet": "veg",
             "image": "dhokla.jpg",
             "fallbackImage": "dhokla.jpg",
