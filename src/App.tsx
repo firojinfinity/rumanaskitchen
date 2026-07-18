@@ -435,24 +435,31 @@ export default function App() {
 
             {/* Menu Section */}
             <section id="menu">
-              <div className="section-header">
+              <div className="section-header" style={{ marginBottom: '20px' }}>
                 <span className="section-subtitle">
                   {dinnerMode ? "Dinner Special Menu" : "Specially Curated"}
                 </span>
                 <h2 className="section-title">
                   {dinnerMode ? "Biriyani Specialties Only" : "Our Culinary Menu"}
                 </h2>
+              </div>
+
+              {/* Centered Available counter */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '25px'
+              }}>
                 <div style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
                   background: 'rgba(43, 147, 72, 0.1)',
                   color: '#2b9348',
-                  padding: '6px 16px',
+                  padding: '8px 20px',
                   borderRadius: '20px',
                   fontSize: '13px',
-                  fontWeight: 700,
-                  marginTop: '12px'
+                  fontWeight: 700
                 }}>
                   <div className="pulse-dot" />
                   {dinnerMode
@@ -475,7 +482,7 @@ export default function App() {
                   width: '100%',
                   borderRadius: '30px',
                   boxShadow: '0 4px 12px rgba(158, 42, 43, 0.12)',
-                  marginBottom: '30px'
+                  marginBottom: '35px'
                 }}>
                   <div className="scrolling-marquee">
                     <span>📢 {announcement}</span>
