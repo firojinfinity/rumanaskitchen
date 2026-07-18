@@ -250,6 +250,18 @@
             "price": 120,
             "available": true,
             "stockCount": 20
+        },
+        {
+            "id": 24,
+            "name": "Aloo Paratha",
+            "category": "snacks",
+            "diet": "veg",
+            "image": "alooparatha.jpg",
+            "fallbackImage": "alooparatha.jpg",
+            "description": "Per piece",
+            "price": 45,
+            "available": true,
+            "stockCount": 20
         }
     ]
 }

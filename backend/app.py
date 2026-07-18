@@ -243,6 +243,17 @@ DEFAULT_MENU = {
             "description": "Per plate",
             "price": 120,
             "available": True
+        },
+        {
+            "id": 24,
+            "name": "Aloo Paratha",
+            "category": "snacks",
+            "diet": "veg",
+            "image": "alooparatha.jpg",
+            "fallbackImage": "alooparatha.jpg",
+            "description": "Per piece",
+            "price": 45,
+            "available": True
         }
     ]
 }
