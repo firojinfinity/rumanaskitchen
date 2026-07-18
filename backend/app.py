@@ -13,6 +13,7 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'rumana123')
 # Seed data
 DEFAULT_MENU = {
     "dinnerMode": False,
+    "announcement": "Welcome to Rumana's Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.",
     "items": [
         {
             "id": 1,
@@ -172,12 +173,12 @@ DEFAULT_MENU = {
         },
         {
             "id": 16,
-            "name": "Fried Rice",
-            "category": "biryani",
-            "diet": "veg",
-            "image": "friedrice.jpg",
+            "name": "Prawn Curry",
+            "category": "curries",
+            "diet": "nonveg",
+            "image": "prawn.png",
             "description": "Per plate",
-            "price": 120,
+            "price": 130,
             "available": True
         },
         {

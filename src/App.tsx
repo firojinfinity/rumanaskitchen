@@ -37,7 +37,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 13, name: "Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 110, available: true },
   { id: 14, name: "Choley Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 100, available: true },
   { id: 15, name: "Dhokla", category: "snacks", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg", fallbackImage: "veg.jpg", description: "5 pcs", price: 50, available: true },
-  { id: 16, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true },
+  { id: 16, name: "Prawn Curry", category: "curries", diet: "nonveg", image: "prawn.png", description: "Per plate", price: 130, available: true },
   { id: 17, name: "Plain Rice", category: "biryani", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/2/2c/Steamed_rice_in_bowl_01.jpg", fallbackImage: "friedrice.jpg", description: "Per plate", price: 60, available: true },
   { id: 18, name: "Dal Pakora", category: "snacks", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Onion_Pakora_01.jpg", fallbackImage: "veg.jpg", description: "500 g", price: 200, available: true },
   { id: 19, name: "Normal Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 20, available: true },
@@ -51,7 +51,7 @@ export default function App() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [dinnerMode, setDinnerMode] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  
+
   // Search and Filter
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [activeFilter, setActiveFilter] = useState<string>('all');
@@ -83,6 +83,8 @@ export default function App() {
   const [authError, setAuthError] = useState<string>('');
   const [editedItems, setEditedItems] = useState<MenuItem[]>([]);
   const [saveStatus, setSaveStatus] = useState<string>('');
+  const [announcement, setAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
+  const [editedAnnouncement, setEditedAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
 
   // Fetch Menu from Backend
   const fetchMenu = async () => {
@@ -94,6 +96,9 @@ export default function App() {
         setMenuItems(data.items);
         setEditedItems(JSON.parse(JSON.stringify(data.items))); // Deep clone
         setDinnerMode(data.dinnerMode);
+        const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
+        setAnnouncement(msg);
+        setEditedAnnouncement(msg);
       } else {
         throw new Error("HTTP error " + res.status);
       }
@@ -107,10 +112,16 @@ export default function App() {
         setMenuItems(data.items);
         setEditedItems(JSON.parse(JSON.stringify(data.items)));
         setDinnerMode(data.dinnerMode);
+        const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
+        setAnnouncement(msg);
+        setEditedAnnouncement(msg);
       } else {
         setMenuItems(DEFAULT_MENU_ITEMS);
         setEditedItems(JSON.parse(JSON.stringify(DEFAULT_MENU_ITEMS)));
         setDinnerMode(false);
+        const localAnnounce = localStorage.getItem('rumana_announcement_backup') || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
+        setAnnouncement(localAnnounce);
+        setEditedAnnouncement(localAnnounce);
       }
     } finally {
       setLoading(false);
@@ -195,16 +206,16 @@ export default function App() {
   // WhatsApp Order Checkouts
   const handleCheckout = () => {
     if (totalCartCount === 0) return;
-    
+
     let messageText = "Hello Rumana's Kitchen! 🍽️\nI would like to place a custom homemade order:\n\n";
     Object.values(cart).forEach(item => {
       const itemTotal = item.price * item.qty;
       messageText += `• ${item.name} x ${item.qty} (₹${item.price} each) - ₹${itemTotal}\n`;
     });
-    
+
     messageText += `\n💵 *Total Bill Amount:* ₹${totalCartPrice}\n`;
     messageText += `⏰ *Pickup Location:* Near Pine Block Veg Shop\n\n_Please confirm availability and pick-up timing._`;
-    
+
     const encodedText = encodeURIComponent(messageText);
     const whatsappURL = `https://wa.me/918331810574?text=${encodedText}`;
     window.open(whatsappURL, '_blank');
@@ -282,7 +293,6 @@ export default function App() {
     }
   };
 
-  // Save changes from Admin Panel
   const handleSaveChanges = async () => {
     setSaveStatus('Saving changes...');
     try {
@@ -294,11 +304,13 @@ export default function App() {
         },
         body: JSON.stringify({
           dinnerMode,
+          announcement: editedAnnouncement,
           items: editedItems
         })
       });
       if (res.ok) {
         setMenuItems(JSON.parse(JSON.stringify(editedItems)));
+        setAnnouncement(editedAnnouncement);
         setSaveStatus('Changes saved and published successfully!');
         triggerToast("Menu updated successfully!");
         setTimeout(() => setSaveStatus(''), 3000);
@@ -308,8 +320,10 @@ export default function App() {
     } catch (err) {
       // Local backup fallback
       setMenuItems(JSON.parse(JSON.stringify(editedItems)));
-      const backupData = { dinnerMode, items: editedItems };
+      setAnnouncement(editedAnnouncement);
+      const backupData = { dinnerMode, announcement: editedAnnouncement, items: editedItems };
       localStorage.setItem('rumana_menu_backup', JSON.stringify(backupData));
+      localStorage.setItem('rumana_announcement_backup', editedAnnouncement);
       setSaveStatus('Server offline. Changes saved locally in your browser.');
       triggerToast("Changes saved locally.");
       setTimeout(() => setSaveStatus(''), 3000);
@@ -388,8 +402,8 @@ export default function App() {
             <header>
               <div className="hero-slideshow-container">
                 {slideshowImages.map((img, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className={`slide ${index === currentSlide ? 'active' : ''}`}
                     style={{ backgroundImage: `url(${img})` }}
                   />
@@ -400,8 +414,8 @@ export default function App() {
                 <span className="hero-badge">Fresh • Homemade • Delicious</span>
                 <h1 className="hero-title">Rumana's Kitchen</h1>
                 <p className="hero-subtitle">
-                  {dinnerMode 
-                    ? "Dinner Special: Fresh authentic Biriyani straight from our Bengal-Sundarbans pots!" 
+                  {dinnerMode
+                    ? "Dinner Special: Fresh authentic Biriyani straight from our Bengal-Sundarbans pots!"
                     : "Bringing the authentic flavours of Minakhan, where Bengal meets the Sundarbans."}
                 </p>
                 <div className="hero-details">
@@ -428,17 +442,56 @@ export default function App() {
                 <h2 className="section-title">
                   {dinnerMode ? "Biriyani Specialties Only" : "Our Culinary Menu"}
                 </h2>
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'rgba(43, 147, 72, 0.1)',
+                  color: '#2b9348',
+                  padding: '6px 16px',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  marginTop: '12px'
+                }}>
+                  <div className="pulse-dot" />
+                  {dinnerMode
+                    ? `${menuItems.filter(item => item.available && item.name.toLowerCase().includes('biriyani')).length} Biriyani Specialties Online`
+                    : `${menuItems.filter(item => item.available).length} / ${menuItems.length} Dishes Available Today`
+                  }
+                </div>
               </div>
+
+              {/* Dynamic Scrolling Announcement Banner */}
+              {announcement && (
+                <div style={{
+                  background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
+                  color: 'white',
+                  padding: '10px 0',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  width: '100%',
+                  borderRadius: '30px',
+                  boxShadow: '0 4px 12px rgba(158, 42, 43, 0.12)',
+                  marginBottom: '30px'
+                }}>
+                  <div className="scrolling-marquee">
+                    <span>📢 {announcement}</span>
+                  </div>
+                </div>
+              )}
 
               {/* Filter controls (hide if Dinner Mode forces Biriyani only) */}
               {!dinnerMode && (
                 <div className="menu-controls">
                   <div className="search-wrapper">
                     <span className="search-icon">🔍</span>
-                    <input 
-                      type="text" 
-                      className="search-input" 
-                      placeholder="Search for your favorite dish..." 
+                    <input
+                      type="text"
+                      className="search-input"
+                      placeholder="Search for your favorite dish..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -471,9 +524,9 @@ export default function App() {
               ) : (
                 <div className="menu-grid">
                   {filteredItems.map(item => (
-                    <div 
-                      key={item.id} 
-                      className="card" 
+                    <div
+                      key={item.id}
+                      className="card"
                       data-available={item.available ? "true" : "false"}
                     >
                       <div className="card-image-container">
@@ -488,9 +541,9 @@ export default function App() {
                             {item.available ? '✅ Available' : '❌ Not Available'}
                           </span>
                         </div>
-                        <img 
-                          className="card-img" 
-                          src={item.image} 
+                        <img
+                          className="card-img"
+                          src={item.image}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             if (item.fallbackImage) {
@@ -499,7 +552,7 @@ export default function App() {
                               target.src = 'veg.jpg';
                             }
                           }}
-                          alt={item.name} 
+                          alt={item.name}
                         />
                       </div>
                       <div className="card-body">
@@ -508,8 +561,8 @@ export default function App() {
                         <div className="card-footer">
                           <div className="card-price">{item.price}</div>
                           {item.available && (
-                            <button 
-                              className="add-to-cart-btn" 
+                            <button
+                              className="add-to-cart-btn"
                               onClick={() => addToCart(item.name, item.price)}
                             >
                               +
@@ -538,8 +591,8 @@ export default function App() {
                   <span className="about-badge">Our Story</span>
                   <h2 className="about-title">Flavors Prepared Directly from the Heart</h2>
                   <p className="about-text">
-                    At Rumana's Kitchen, we believe that food is a celebration of local values. Every dish is cooked with carefully chosen fresh ingredients, native recipes, and a gentle homemade touch. 
-                    <br/><br/>
+                    At Rumana's Kitchen, we believe that food is a celebration of local values. Every dish is cooked with carefully chosen fresh ingredients, native recipes, and a gentle homemade touch.
+                    <br /><br />
                     We bring you authentic Minakhan spice layers, aromatic biryanis, slow-roasted rich curries, and traditional snacks. From our kitchen to your table, we promise pure hygiene, authenticity, and unforgettable taste.
                   </p>
                 </div>
@@ -552,7 +605,7 @@ export default function App() {
                 <span className="section-subtitle">How It Works</span>
                 <h2 className="section-title">Order Concierge & Payment</h2>
               </div>
-              
+
               <div className="service-grid">
                 <div className="concierge-card">
                   <div className="card-icon">📲</div>
@@ -571,8 +624,9 @@ export default function App() {
                     </div>
                   </div>
                   <p className="about-text" style={{ fontSize: '14px', marginTop: '10px' }}>
-                    ⚡ Confirmations are completed on WhatsApp only after receipt of payment screenshot.<br/>
-                    📍 Strict Pickup Only: Near Pine Block Veg Shop. (No Home Delivery).
+                    ⚡ Confirmations are completed on WhatsApp only after receipt of payment screenshot.<br />
+                    📍 Strict Pickup Only: Near Pine Block Veg Shop. (No Home Delivery).<br />
+                    📧 Email: <a href="mailto:rizwangazi2018@gmail.com" style={{ color: 'var(--primary)', fontWeight: 600 }}>rizwangazi2018@gmail.com</a>
                   </p>
                   <button onClick={handleCheckout} className="btn-whatsapp">
                     💬 Open Chat & Order
@@ -667,9 +721,9 @@ export default function App() {
                 <form onSubmit={handleAdminLogin}>
                   <div className="form-group">
                     <label className="form-label">Password</label>
-                    <input 
-                      type="password" 
-                      className="form-input" 
+                    <input
+                      type="password"
+                      className="form-input"
                       placeholder="••••••••"
                       value={passwordInput}
                       onChange={(e) => setPasswordInput(e.target.value)}
@@ -705,10 +759,10 @@ export default function App() {
                 </div>
 
                 {saveStatus && (
-                  <div style={{ 
-                    padding: '12px 20px', 
-                    borderRadius: '8px', 
-                    background: saveStatus.includes('successfully') ? '#e8f5e9' : '#ffebee', 
+                  <div style={{
+                    padding: '12px 20px',
+                    borderRadius: '8px',
+                    background: saveStatus.includes('successfully') ? '#e8f5e9' : '#ffebee',
                     color: saveStatus.includes('successfully') ? '#2e7d32' : '#c62828',
                     marginBottom: '20px',
                     fontWeight: 600,
@@ -727,14 +781,29 @@ export default function App() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span className="toggle-label">{dinnerMode ? 'ACTIVE (Biriyani Only)' : 'INACTIVE (Full Menu)'}</span>
                     <label className="switch">
-                      <input 
-                        type="checkbox" 
-                        checked={dinnerMode} 
-                        onChange={handleToggleDinnerMode} 
+                      <input
+                        type="checkbox"
+                        checked={dinnerMode}
+                        onChange={handleToggleDinnerMode}
                       />
                       <span className="slider"></span>
                     </label>
                   </div>
+                </div>
+
+                {/* Dynamic Announcement Setting */}
+                <div className="dinner-toggle-banner" style={{ marginTop: '20px', flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
+                  <div className="dinner-banner-text" style={{ width: '100%' }}>
+                    <h3>📢 Dynamic Scrolling Announcement Message</h3>
+                    <p>Type your message below. It will scroll dynamically at the top of the customer's explore menu. (Leave blank to hide).</p>
+                  </div>
+                  <textarea
+                    className="form-input"
+                    style={{ width: '100%', minHeight: '60px', padding: '10px', fontSize: '14px', fontFamily: 'inherit', resize: 'vertical' }}
+                    placeholder="E.g., Sunday Special Dhokla is available today! Place your orders before 12 PM."
+                    value={editedAnnouncement}
+                    onChange={(e) => setEditedAnnouncement(e.target.value)}
+                  />
                 </div>
 
                 {/* Items Admin List */}
@@ -753,9 +822,9 @@ export default function App() {
                   {editedItems.map(item => (
                     <div key={item.id} className="admin-card">
                       <div className="admin-card-info">
-                        <img 
-                          className="admin-card-img" 
-                          src={item.image} 
+                        <img
+                          className="admin-card-img"
+                          src={item.image}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             if (item.fallbackImage) {
@@ -764,12 +833,12 @@ export default function App() {
                               target.src = 'veg.jpg';
                             }
                           }}
-                          alt={item.name} 
+                          alt={item.name}
                         />
                         <div className="admin-card-details">
                           <div className="admin-card-name">{item.name}</div>
                           <div className="admin-card-meta">
-                            Category: <strong style={{textTransform: 'capitalize'}}>{item.category}</strong> | Price: <strong>₹{item.price}</strong> | Status: <strong style={{color: item.available ? '#2e7d32' : '#c62828'}}>{item.available ? 'Available' : 'Sold Out'}</strong>
+                            Category: <strong style={{ textTransform: 'capitalize' }}>{item.category}</strong> | Price: <strong>₹{item.price}</strong> | Status: <strong style={{ color: item.available ? '#2e7d32' : '#c62828' }}>{item.available ? 'Available' : 'Sold Out'}</strong>
                           </div>
                         </div>
                       </div>
@@ -778,19 +847,19 @@ export default function App() {
                         <div className="admin-card-inputs">
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <label className="form-label" style={{ fontSize: '11px', marginBottom: 0 }}>Item Name</label>
-                            <input 
-                              type="text" 
-                              className="form-input input-name" 
+                            <input
+                              type="text"
+                              className="form-input input-name"
                               value={item.name}
                               onChange={(e) => handleEditItemField(item.id, 'name', e.target.value)}
                             />
                           </div>
-                          
+
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <label className="form-label" style={{ fontSize: '11px', marginBottom: 0 }}>Price (₹)</label>
-                            <input 
-                              type="number" 
-                              className="form-input input-price" 
+                            <input
+                              type="number"
+                              className="form-input input-price"
                               value={item.price}
                               onChange={(e) => handleEditItemField(item.id, 'price', parseInt(e.target.value) || 0)}
                             />
@@ -798,9 +867,9 @@ export default function App() {
 
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <label className="form-label" style={{ fontSize: '11px', marginBottom: 0 }}>Description / Qty</label>
-                            <input 
-                              type="text" 
-                              className="form-input" 
+                            <input
+                              type="text"
+                              className="form-input"
                               style={{ width: '220px' }}
                               value={item.description}
                               onChange={(e) => handleEditItemField(item.id, 'description', e.target.value)}
@@ -812,9 +881,9 @@ export default function App() {
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                           <span className="toggle-label" style={{ fontSize: '10px' }}>In Stock</span>
                           <label className="switch">
-                            <input 
-                              type="checkbox" 
-                              checked={item.available} 
+                            <input
+                              type="checkbox"
+                              checked={item.available}
                               onChange={(e) => handleEditItemField(item.id, 'available', e.target.checked)}
                             />
                             <span className="slider"></span>

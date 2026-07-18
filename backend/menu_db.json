@@ -1,5 +1,6 @@
 {
     "dinnerMode": false,
+    "announcement": "Welcome to Rumana's Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.",
     "items": [
         {
             "available": false,
@@ -158,14 +159,14 @@
             "price": 50
         },
         {
-            "available": false,
-            "category": "biryani",
+            "available": true,
+            "category": "curries",
             "description": "Per plate",
-            "diet": "veg",
+            "diet": "nonveg",
             "id": 16,
-            "image": "friedrice.jpg",
-            "name": "Fried Rice",
-            "price": 120
+            "image": "prawn.png",
+            "name": "Prawn Curry",
+            "price": 130
         },
         {
             "available": false,
