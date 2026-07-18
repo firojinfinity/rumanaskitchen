@@ -1,5 +1,6 @@
 import os
 import json
+import copy
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -271,6 +272,11 @@ def migrate_and_merge(loaded_data):
         if default_item['id'] not in loaded_ids:
             items.append(default_item)
             
+    # 4. Ensure all items have a stockCount (default to 20 if missing)
+    for item in items:
+        if 'stockCount' not in item or item['stockCount'] is None:
+            item['stockCount'] = 20
+            
     # Sort items by id
     items = sorted(items, key=lambda x: x.get('id', 999))
     loaded_data['items'] = items
@@ -285,9 +291,10 @@ def load_db():
         with open(DB_PATH, 'r') as f:
             data = json.load(f)
         # Migrate and auto-heal
+        original_data = copy.deepcopy(data)
         updated_data = migrate_and_merge(data)
         # If anything was modified, save it
-        if updated_data != data:
+        if updated_data != original_data:
             save_db(updated_data)
         return updated_data
     except Exception as e:

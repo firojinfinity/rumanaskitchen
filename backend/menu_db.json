@@ -15,7 +15,8 @@
             "prices": {
                 "full": 200,
                 "half": 100
-            }
+            },
+            "stockCount": 20
         },
         {
             "available": true,
@@ -30,7 +31,8 @@
             "prices": {
                 "full": 300,
                 "half": 150
-            }
+            },
+            "stockCount": 20
         },
         {
             "available": true,
@@ -40,7 +42,8 @@
             "id": 5,
             "image": "mutton.jpg",
             "name": "Mutton Kasha",
-            "price": 280
+            "price": 280,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -51,7 +54,8 @@
             "id": 6,
             "image": "ccurry.jpg",
             "name": "Chicken Kasha",
-            "price": 180
+            "price": 180,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -61,7 +65,8 @@
             "id": 7,
             "image": "fish (1).jpg",
             "name": "Fish Curry",
-            "price": 170
+            "price": 170,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -71,7 +76,8 @@
             "id": 8,
             "image": "veg.jpg",
             "name": "Mixed Veg Curry",
-            "price": 80
+            "price": 80,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -82,7 +88,8 @@
             "id": 9,
             "image": "fgovialoo.jpg",
             "name": "Aloo Gobi Curry",
-            "price": 80
+            "price": 80,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -93,7 +100,8 @@
             "id": 10,
             "image": "valoo.jpg",
             "name": "Bhindi Aloo Curry",
-            "price": 80
+            "price": 80,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -104,7 +112,8 @@
             "id": 11,
             "image": "pgovi.jpg",
             "name": "Patta Gobi Curry",
-            "price": 80
+            "price": 80,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -115,7 +124,8 @@
             "id": 12,
             "image": "cpakora.jpg",
             "name": "Chicken Pakora (Boneless)",
-            "price": 400
+            "price": 400,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -125,7 +135,8 @@
             "id": 13,
             "image": "paneer.jpg",
             "name": "Paneer Masala",
-            "price": 110
+            "price": 110,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -135,7 +146,8 @@
             "id": 14,
             "image": "cpaneer.jpg",
             "name": "Choley Paneer Masala",
-            "price": 100
+            "price": 100,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -146,7 +158,8 @@
             "id": 15,
             "image": "dhokla.jpg",
             "name": "Dhokla",
-            "price": 50
+            "price": 50,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -156,7 +169,8 @@
             "id": 16,
             "image": "prawn.png",
             "name": "Prawn Curry",
-            "price": 130
+            "price": 130,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -167,7 +181,8 @@
             "id": 17,
             "image": "price.jpg",
             "name": "Plain Rice",
-            "price": 60
+            "price": 60,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -178,7 +193,8 @@
             "id": 18,
             "image": "dalpakora.jpg",
             "name": "Dal Pakora",
-            "price": 200
+            "price": 200,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -188,7 +204,8 @@
             "id": 19,
             "image": "nparatha.jpg",
             "name": "Normal Paratha",
-            "price": 20
+            "price": 20,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -198,7 +215,8 @@
             "id": 20,
             "image": "paratha.jpg",
             "name": "Laccha Paratha",
-            "price": 30
+            "price": 30,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -208,7 +226,8 @@
             "id": 21,
             "image": "gsawaiyan.jpg",
             "name": "Gravy Sawaiyan",
-            "price": 70
+            "price": 70,
+            "stockCount": 20
         },
         {
             "available": true,
@@ -218,7 +237,19 @@
             "id": 22,
             "image": "sawaiyan.jpg",
             "name": "Dry Sawaiyan",
-            "price": 50
+            "price": 50,
+            "stockCount": 20
+        },
+        {
+            "id": 23,
+            "name": "Fried Rice",
+            "category": "biryani",
+            "diet": "veg",
+            "image": "friedrice.jpg",
+            "description": "Per plate",
+            "price": 120,
+            "available": true,
+            "stockCount": 20
         }
     ]
 }

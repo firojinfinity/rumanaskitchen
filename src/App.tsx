@@ -13,6 +13,7 @@ interface MenuItem {
   available: boolean;
   hasSizes?: boolean;
   prices?: { half: number; full: number };
+  stockCount?: number;
 }
 
 interface CartItem {
@@ -27,27 +28,27 @@ interface CartItem {
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://YOUR_BACKEND_RENDER_URL_HERE.onrender.com');
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
-  { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 200, hasSizes: true, prices: { half: 100, full: 200 }, available: true },
-  { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mutton.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, hasSizes: true, prices: { half: 150, full: 300 }, available: true },
-  { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true },
-  { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80", fallbackImage: "mutton.jpg", description: "6 pieces per plate", price: 180, available: true },
-  { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true },
-  { id: 8, name: "Mixed Veg Curry", category: "curries", diet: "veg", image: "veg.jpg", description: "Per plate", price: 80, available: true },
-  { id: 9, name: "Aloo Gobi Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true },
-  { id: 10, name: "Bhindi Aloo Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1645177625150-fe803e0cae79?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true },
-  { id: 11, name: "Patta Gobi Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true },
-  { id: 12, name: "Chicken Pakora (Boneless)", category: "snacks", diet: "nonveg", image: "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80", fallbackImage: "biriyani.jpg", description: "500 g", price: 400, available: true },
-  { id: 13, name: "Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 110, available: true },
-  { id: 14, name: "Choley Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 100, available: true },
-  { id: 15, name: "Dhokla", category: "sweets", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg", fallbackImage: "veg.jpg", description: "5 pcs", price: 50, available: true },
-  { id: 16, name: "Prawn Curry", category: "curries", diet: "nonveg", image: "prawn.png", description: "Per plate", price: 130, available: true },
-  { id: 17, name: "Plain Rice", category: "biryani", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/2/2c/Steamed_rice_in_bowl_01.jpg", fallbackImage: "friedrice.jpg", description: "Per plate", price: 60, available: true },
-  { id: 18, name: "Dal Pakora", category: "snacks", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Onion_Pakora_01.jpg", fallbackImage: "veg.jpg", description: "500 g", price: 200, available: true },
-  { id: 19, name: "Normal Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 20, available: true },
-  { id: 20, name: "Laccha Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 30, available: true },
-  { id: 21, name: "Gravy Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 70, available: true },
-  { id: 22, name: "Dry Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 50, available: true },
-  { id: 23, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true }
+  { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 200, hasSizes: true, prices: { half: 100, full: 200 }, available: true, stockCount: 20 },
+  { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mutton.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, hasSizes: true, prices: { half: 150, full: 300 }, available: true, stockCount: 20 },
+  { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true, stockCount: 20 },
+  { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80", fallbackImage: "mutton.jpg", description: "6 pieces per plate", price: 180, available: true, stockCount: 20 },
+  { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true, stockCount: 20 },
+  { id: 8, name: "Mixed Veg Curry", category: "curries", diet: "veg", image: "veg.jpg", description: "Per plate", price: 80, available: true, stockCount: 20 },
+  { id: 9, name: "Aloo Gobi Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true, stockCount: 20 },
+  { id: 10, name: "Bhindi Aloo Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1645177625150-fe803e0cae79?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true, stockCount: 20 },
+  { id: 11, name: "Patta Gobi Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true, stockCount: 20 },
+  { id: 12, name: "Chicken Pakora (Boneless)", category: "snacks", diet: "nonveg", image: "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80", fallbackImage: "biriyani.jpg", description: "500 g", price: 400, available: true, stockCount: 20 },
+  { id: 13, name: "Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 110, available: true, stockCount: 20 },
+  { id: 14, name: "Choley Paneer Masala", category: "curries", diet: "veg", image: "paneer.jpg", description: "Per plate", price: 100, available: true, stockCount: 20 },
+  { id: 15, name: "Dhokla", category: "sweets", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg", fallbackImage: "veg.jpg", description: "5 pcs", price: 50, available: true, stockCount: 20 },
+  { id: 16, name: "Prawn Curry", category: "curries", diet: "nonveg", image: "prawn.png", description: "Per plate", price: 130, available: true, stockCount: 20 },
+  { id: 17, name: "Plain Rice", category: "biryani", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/2/2c/Steamed_rice_in_bowl_01.jpg", fallbackImage: "friedrice.jpg", description: "Per plate", price: 60, available: true, stockCount: 20 },
+  { id: 18, name: "Dal Pakora", category: "snacks", diet: "veg", image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Onion_Pakora_01.jpg", fallbackImage: "veg.jpg", description: "500 g", price: 200, available: true, stockCount: 20 },
+  { id: 19, name: "Normal Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 20, available: true, stockCount: 20 },
+  { id: 20, name: "Laccha Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 30, available: true, stockCount: 20 },
+  { id: 21, name: "Gravy Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 70, available: true, stockCount: 20 },
+  { id: 22, name: "Dry Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 50, available: true, stockCount: 20 },
+  { id: 23, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true, stockCount: 20 }
 ];
 
 export default function App() {
@@ -565,6 +566,29 @@ export default function App() {
                       data-available={item.available ? "true" : "false"}
                     >
                       <div className="card-image-container">
+                        {item.available && item.stockCount !== undefined && item.stockCount > 0 && (
+                          <div style={{
+                            position: 'absolute',
+                            top: '15px',
+                            left: '15px',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            backdropFilter: 'blur(4px)',
+                            color: 'var(--primary)',
+                            padding: '5px 12px',
+                            borderRadius: '50px',
+                            fontSize: '11px',
+                            fontWeight: 800,
+                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.08)',
+                            border: '1px solid rgba(158, 42, 43, 0.18)',
+                            zIndex: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}>
+                            <span>🔥</span>
+                            <span>{item.stockCount} Available</span>
+                          </div>
+                        )}
                         <div className="card-badges">
                           <span className={`badge ${item.diet === 'veg' ? 'badge-veg' : 'badge-nonveg'}`}>
                             {item.diet === 'veg' ? 'Veg' : 'Non-Veg'}
@@ -942,6 +966,18 @@ export default function App() {
                               style={{ width: '220px' }}
                               value={item.description}
                               onChange={(e) => handleEditItemField(item.id, 'description', e.target.value)}
+                            />
+                          </div>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <label className="form-label" style={{ fontSize: '11px', marginBottom: 0 }}>Stock Qty</label>
+                            <input
+                              type="number"
+                              className="form-input"
+                              style={{ width: '80px' }}
+                              placeholder="e.g. 20"
+                              value={item.stockCount !== undefined ? item.stockCount : ''}
+                              onChange={(e) => handleEditItemField(item.id, 'stockCount', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
                             />
                           </div>
                         </div>
