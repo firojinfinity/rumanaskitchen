@@ -3,44 +3,34 @@
     "announcement": "Welcome to Rumana's Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.",
     "items": [
         {
-            "available": false,
+            "available": true,
             "category": "biryani",
             "description": "Traditional Dum Chicken Biriyani of Bengal",
             "diet": "nonveg",
             "id": 1,
             "image": "biriyani.jpg",
-            "name": "Chicken Biriyani (Full)",
-            "price": 200
+            "name": "Chicken Biriyani",
+            "price": 200,
+            "hasSizes": true,
+            "prices": {
+                "half": 150,
+                "full": 200
+            }
         },
         {
-            "available": false,
-            "category": "biryani",
-            "description": "Traditional Dum Chicken Biriyani of Bengal",
-            "diet": "nonveg",
-            "id": 2,
-            "image": "biriyani.jpg",
-            "name": "Chicken Biriyani (Half)",
-            "price": 150
-        },
-        {
-            "available": false,
+            "available": true,
             "category": "biryani",
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "diet": "nonveg",
             "id": 3,
             "image": "mbiriyani.jpg",
-            "name": "Mutton Biriyani (Full)",
-            "price": 300
-        },
-        {
-            "available": false,
-            "category": "biryani",
-            "description": "Authentic Mutton Dum Biriyani of Bengal",
-            "diet": "nonveg",
-            "id": 4,
-            "image": "mbiriyani.jpg",
-            "name": "Mutton Biriyani (Half)",
-            "price": 220
+            "name": "Mutton Biriyani",
+            "price": 300,
+            "hasSizes": true,
+            "prices": {
+                "half": 220,
+                "full": 300
+            }
         },
         {
             "available": false,

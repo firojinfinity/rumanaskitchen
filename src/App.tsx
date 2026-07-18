@@ -11,6 +11,8 @@ interface MenuItem {
   description: string;
   price: number;
   available: boolean;
+  hasSizes?: boolean;
+  prices?: { half: number; full: number };
 }
 
 interface CartItem {
@@ -22,10 +24,8 @@ interface CartItem {
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://YOUR_BACKEND_RENDER_URL_HERE.onrender.com');
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
-  { id: 1, name: "Chicken Biriyani (Full)", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 200, available: true },
-  { id: 2, name: "Chicken Biriyani (Half)", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 150, available: true },
-  { id: 3, name: "Mutton Biriyani (Full)", category: "biryani", diet: "nonveg", image: "mutton.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, available: true },
-  { id: 4, name: "Mutton Biriyani (Half)", category: "biryani", diet: "nonveg", image: "mutton.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 220, available: true },
+  { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 200, hasSizes: true, prices: { half: 150, full: 200 }, available: true },
+  { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mutton.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, hasSizes: true, prices: { half: 220, full: 300 }, available: true },
   { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true },
   { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80", fallbackImage: "mutton.jpg", description: "6 pieces per plate", price: 180, available: true },
   { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true },
@@ -85,6 +85,7 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState<string>('');
   const [announcement, setAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
   const [editedAnnouncement, setEditedAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
+  const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: 'half' | 'full' }>({ 1: 'full', 3: 'full' });
 
   // Fetch Menu from Backend
   const fetchMenu = async () => {
@@ -205,7 +206,10 @@ export default function App() {
 
   // WhatsApp Order Checkouts
   const handleCheckout = () => {
-    if (totalCartCount === 0) return;
+    if (totalCartCount === 0) {
+      triggerToast("Your cart is empty! Please add some dishes to your cart first.");
+      return;
+    }
 
     let messageText = "Hello Rumana's Kitchen! 🍽️\nI would like to place a custom homemade order:\n\n";
     Object.values(cart).forEach(item => {
@@ -425,9 +429,6 @@ export default function App() {
                   <div className="hero-detail-item">
                     <span>🍱</span> Home Cooked with Love
                   </div>
-                  <div className="hero-detail-item">
-                    <span>📅</span> Sunday 19th Online
-                  </div>
                 </div>
                 <a href="#menu" className="btn-primary">Explore Menu</a>
               </div>
@@ -472,8 +473,9 @@ export default function App() {
               {/* Dynamic Scrolling Announcement Banner */}
               {announcement && (
                 <div style={{
-                  background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
-                  color: 'white',
+                  background: '#ffffff',
+                  color: 'var(--text)',
+                  border: '1px solid rgba(158, 42, 43, 0.18)',
                   padding: '10px 0',
                   fontWeight: 600,
                   fontSize: '14px',
@@ -481,7 +483,7 @@ export default function App() {
                   position: 'relative',
                   width: '100%',
                   borderRadius: '30px',
-                  boxShadow: '0 4px 12px rgba(158, 42, 43, 0.12)',
+                  boxShadow: '0 4px 12px rgba(158, 42, 43, 0.05)',
                   marginBottom: '35px'
                 }}>
                   <div className="scrolling-marquee">
@@ -565,12 +567,70 @@ export default function App() {
                       <div className="card-body">
                         <h3 className="card-title">{item.name}</h3>
                         <p className="card-desc">{item.description}</p>
+                        
+                        {item.hasSizes && (
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            marginBottom: '15px'
+                          }}>
+                            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Portion:</span>
+                            <div style={{
+                              display: 'flex',
+                              background: 'rgba(92, 30, 10, 0.05)',
+                              padding: '2px',
+                              borderRadius: '20px',
+                              gap: '2px'
+                            }}>
+                              {(['half', 'full'] as const).map(sz => {
+                                const selectedSize = selectedSizes[item.id] || 'full';
+                                const isActive = selectedSize === sz;
+                                return (
+                                  <button
+                                    key={sz}
+                                    onClick={() => setSelectedSizes(prev => ({ ...prev, [item.id]: sz }))}
+                                    style={{
+                                      border: 'none',
+                                      background: isActive ? 'var(--primary)' : 'transparent',
+                                      color: isActive ? 'white' : 'var(--text)',
+                                      fontSize: '11px',
+                                      fontWeight: 700,
+                                      padding: '4px 10px',
+                                      borderRadius: '15px',
+                                      cursor: 'pointer',
+                                      textTransform: 'capitalize',
+                                      transition: 'all 0.2s'
+                                    }}
+                                  >
+                                    {sz}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
                         <div className="card-footer">
-                          <div className="card-price">{item.price}</div>
+                          <div className="card-price">
+                            {item.hasSizes && item.prices 
+                              ? item.prices[selectedSizes[item.id] || 'full'] 
+                              : item.price
+                            }
+                          </div>
                           {item.available && (
                             <button
                               className="add-to-cart-btn"
-                              onClick={() => addToCart(item.name, item.price)}
+                              onClick={() => {
+                                if (item.hasSizes && item.prices) {
+                                  const size = selectedSizes[item.id] || 'full';
+                                  const sizeLabel = size === 'half' ? 'Half' : 'Full';
+                                  const price = item.prices[size];
+                                  addToCart(`${item.name} (${sizeLabel})`, price);
+                                } else {
+                                  addToCart(item.name, item.price);
+                                }
+                              }}
                             >
                               +
                             </button>
