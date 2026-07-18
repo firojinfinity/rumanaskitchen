@@ -656,11 +656,11 @@ export default function App() {
                   <div className="timeline-container">
                     <div className="timeline-node">
                       <div className="timeline-time">☀️ LUNCH SLOTS</div>
-                      <div className="timeline-title">Reserve Previous Day: 10:00 PM – 11:00 PM</div>
+                      <div className="timeline-title">Reserve Previous Day</div>
                     </div>
                     <div className="timeline-node">
                       <div className="timeline-time">🌙 DINNER SLOTS</div>
-                      <div className="timeline-title">Reserve Same Day: 10:00 AM – 11:00 AM</div>
+                      <div className="timeline-title">Reserve Same Day</div>
                     </div>
                   </div>
                   <p className="about-text" style={{ fontSize: '14px', marginTop: '10px' }}>
