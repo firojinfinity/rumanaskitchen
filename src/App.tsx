@@ -48,7 +48,8 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 20, name: "Laccha Paratha", category: "snacks", diet: "veg", image: "paratha.jpg", description: "Per piece", price: 30, available: true, stockCount: 20 },
   { id: 21, name: "Gravy Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 70, available: true, stockCount: 20 },
   { id: 22, name: "Dry Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 50, available: true, stockCount: 20 },
-  { id: 23, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true, stockCount: 20 }
+  { id: 23, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true, stockCount: 20 },
+  { id: 24, name: "Aloo Paratha", category: "snacks", diet: "veg", image: "alooparatha.jpg", description: "Per piece", price: 45, available: true, stockCount: 20 }
 ];
 
 export default function App() {
