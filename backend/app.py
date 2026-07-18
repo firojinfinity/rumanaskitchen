@@ -56,7 +56,7 @@ DEFAULT_MENU = {
         },
         {
             "id": 5,
-            "name": "Mutton Kasha",
+            "name": "Mutton Curry",
             "category": "curries",
             "diet": "nonveg",
             "image": "mutton.jpg",
@@ -66,11 +66,11 @@ DEFAULT_MENU = {
         },
         {
             "id": 6,
-            "name": "Chicken Kasha",
+            "name": "Chicken Curry",
             "category": "curries",
             "diet": "nonveg",
-            "image": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80",
-            "fallbackImage": "mutton.jpg",
+            "image": "ccurry.jpg",
+            "fallbackImage": "ccurry.jpg",
             "description": "6 pieces per plate",
             "price": 180,
             "available": True
@@ -80,7 +80,7 @@ DEFAULT_MENU = {
             "name": "Fish Curry",
             "category": "curries",
             "diet": "nonveg",
-            "image": "fish.jpg",
+            "image": "fish (1).jpg",
             "description": "2 pieces per plate",
             "price": 170,
             "available": True
@@ -100,8 +100,8 @@ DEFAULT_MENU = {
             "name": "Aloo Gobi Curry",
             "category": "curries",
             "diet": "veg",
-            "image": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
-            "fallbackImage": "veg.jpg",
+            "image": "fgovialoo.jpg",
+            "fallbackImage": "fgovialoo.jpg",
             "description": "Per plate",
             "price": 80,
             "available": True
@@ -111,8 +111,8 @@ DEFAULT_MENU = {
             "name": "Bhindi Aloo Curry",
             "category": "curries",
             "diet": "veg",
-            "image": "https://images.unsplash.com/photo-1645177625150-fe803e0cae79?auto=format&fit=crop&w=600&q=80",
-            "fallbackImage": "veg.jpg",
+            "image": "valoo.jpg",
+            "fallbackImage": "valoo.jpg",
             "description": "Per plate",
             "price": 80,
             "available": True
@@ -122,8 +122,8 @@ DEFAULT_MENU = {
             "name": "Patta Gobi Curry",
             "category": "curries",
             "diet": "veg",
-            "image": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80",
-            "fallbackImage": "veg.jpg",
+            "image": "pgovi.jpg",
+            "fallbackImage": "pgovi.jpg",
             "description": "Per plate",
             "price": 80,
             "available": True
@@ -133,8 +133,8 @@ DEFAULT_MENU = {
             "name": "Chicken Pakora (Boneless)",
             "category": "snacks",
             "diet": "nonveg",
-            "image": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
-            "fallbackImage": "biriyani.jpg",
+            "image": "cpakora.jpg",
+            "fallbackImage": "cpakora.jpg",
             "description": "500 g",
             "price": 400,
             "available": True
@@ -154,7 +154,7 @@ DEFAULT_MENU = {
             "name": "Choley Paneer Masala",
             "category": "curries",
             "diet": "veg",
-            "image": "paneer.jpg",
+            "image": "npaneer.jpg",
             "description": "Per plate",
             "price": 100,
             "available": True
@@ -164,8 +164,8 @@ DEFAULT_MENU = {
             "name": "Dhokla",
             "category": "snacks",
             "diet": "veg",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/9/90/Khaman_dhokla.jpg",
-            "fallbackImage": "veg.jpg",
+            "image": "dhokla.jpg",
+            "fallbackImage": "dhokla.jpg",
             "description": "5 pcs",
             "price": 50,
             "available": True
@@ -185,8 +185,8 @@ DEFAULT_MENU = {
             "name": "Plain Rice",
             "category": "biryani",
             "diet": "veg",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Steamed_rice_in_bowl_01.jpg",
-            "fallbackImage": "friedrice.jpg",
+            "image": "price.jpg",
+            "fallbackImage": "price.jpg",
             "description": "Per plate",
             "price": 60,
             "available": True
@@ -196,8 +196,8 @@ DEFAULT_MENU = {
             "name": "Dal Pakora",
             "category": "snacks",
             "diet": "veg",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Onion_Pakora_01.jpg",
-            "fallbackImage": "veg.jpg",
+            "image": "dalpakora.jpg",
+            "fallbackImage": "dalpakora.jpg",
             "description": "500 g",
             "price": 200,
             "available": True
@@ -207,7 +207,7 @@ DEFAULT_MENU = {
             "name": "Normal Paratha",
             "category": "snacks",
             "diet": "veg",
-            "image": "paratha.jpg",
+            "image": "nparatha.jpg",
             "description": "Per piece",
             "price": 20,
             "available": True
@@ -227,7 +227,7 @@ DEFAULT_MENU = {
             "name": "Gravy Sawaiyan",
             "category": "sweets",
             "diet": "veg",
-            "image": "sawaiyan.jpg",
+            "image": "gsawaiyan.jpg",
             "description": "Per plate",
             "price": 70,
             "available": True
