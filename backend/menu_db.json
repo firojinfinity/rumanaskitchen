@@ -11,10 +11,10 @@
             "id": 1,
             "image": "biriyani.jpg",
             "name": "Chicken Biriyani",
-            "price": 200,
+            "price": 190,
             "prices": {
-                "full": 200,
-                "half": 100
+                "half": 110,
+                "full": 190
             },
             "stockCount": 20
         },
@@ -29,8 +29,8 @@
             "name": "Mutton Biriyani",
             "price": 300,
             "prices": {
-                "full": 300,
-                "half": 150
+                "half": 210,
+                "full": 300
             },
             "stockCount": 20
         },

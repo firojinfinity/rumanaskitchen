@@ -1,6 +1,7 @@
 import os
 import json
 import copy
+import base64
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -23,11 +24,11 @@ DEFAULT_MENU = {
             "diet": "nonveg",
             "image": "biriyani.jpg",
             "description": "Traditional Dum Chicken Biriyani of Bengal",
-            "price": 200,
+            "price": 190,
             "hasSizes": True,
             "prices": {
-                "half": 100,
-                "full": 200
+                "half": 110,
+                "full": 190
             },
             "available": True
         },
@@ -41,7 +42,7 @@ DEFAULT_MENU = {
             "price": 300,
             "hasSizes": True,
             "prices": {
-                "half": 150,
+                "half": 210,
                 "full": 300
             },
             "available": True
@@ -295,9 +296,14 @@ def migrate_and_merge(loaded_data):
 
 def load_db():
     if not os.path.exists(DB_PATH):
+        # Try to restore from MENU_STATE env var before falling back to DEFAULT_MENU
+        persistent = load_persistent_state()
+        seed = persistent if persistent else DEFAULT_MENU
+        migrated = migrate_and_merge(copy.deepcopy(seed))
         with open(DB_PATH, 'w') as f:
-            json.dump(DEFAULT_MENU, f, indent=4)
-        return DEFAULT_MENU
+            json.dump(migrated, f, indent=4)
+        print(f"[DB INIT] Initialized DB from {'env var' if persistent else 'DEFAULT_MENU'}")
+        return migrated
     try:
         with open(DB_PATH, 'r') as f:
             data = json.load(f)
@@ -310,11 +316,29 @@ def load_db():
         return updated_data
     except Exception as e:
         print(f"Error loading/migrating DB: {e}")
-        return DEFAULT_MENU
+        # Try env var as last resort
+        persistent = load_persistent_state()
+        return persistent if persistent else DEFAULT_MENU
 
 def save_db(data):
+    # Save to file (primary)
     with open(DB_PATH, 'w') as f:
         json.dump(data, f, indent=4)
+    # Also encode and print as base64 so admin can copy to env var for persistence across restarts
+    encoded = base64.b64encode(json.dumps(data).encode()).decode()
+    print(f"[MENU_STATE] {encoded}")
+
+def load_persistent_state():
+    """Load menu state from MENU_STATE env var (set on Render for persistence across restarts)."""
+    encoded = os.environ.get('MENU_STATE', '')
+    if encoded:
+        try:
+            data = json.loads(base64.b64decode(encoded.encode()).decode())
+            print("[PERSISTENCE] Loaded menu state from MENU_STATE env var.")
+            return data
+        except Exception as e:
+            print(f"[PERSISTENCE] Failed to decode MENU_STATE: {e}")
+    return None
 
 def check_auth():
     auth_header = request.headers.get('Authorization')
