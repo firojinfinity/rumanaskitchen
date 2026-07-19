@@ -2,6 +2,7 @@ import os
 import json
 import copy
 import base64
+import requests as req_lib
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -11,6 +12,15 @@ CORS(app)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'menu_db.json')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'rumana123')
+
+# JSONBin.io persistent cloud storage (survives Render server restarts)
+JSONBIN_MASTER_KEY = '$2a$10$7pl.Q7DOkk19SU86HWjlceD4TmOaP/UaJhDIhhqZq5bA4rVkmD75.'
+JSONBIN_BIN_ID = '6a5c9b1af5f4af5e29a36006'
+JSONBIN_URL = f'https://api.jsonbin.io/v3/b/{JSONBIN_BIN_ID}'
+JSONBIN_HEADERS = {
+    'X-Master-Key': JSONBIN_MASTER_KEY,
+    'Content-Type': 'application/json'
+}
 
 # Seed data
 DEFAULT_MENU = {
@@ -296,13 +306,13 @@ def migrate_and_merge(loaded_data):
 
 def load_db():
     if not os.path.exists(DB_PATH):
-        # Try to restore from MENU_STATE env var before falling back to DEFAULT_MENU
-        persistent = load_persistent_state()
+        # Server restarted - try to restore from JSONBin cloud storage
+        persistent = load_cloud_state()
         seed = persistent if persistent else DEFAULT_MENU
         migrated = migrate_and_merge(copy.deepcopy(seed))
         with open(DB_PATH, 'w') as f:
             json.dump(migrated, f, indent=4)
-        print(f"[DB INIT] Initialized DB from {'env var' if persistent else 'DEFAULT_MENU'}")
+        print(f"[DB INIT] Initialized DB from {'JSONBin cloud' if persistent else 'DEFAULT_MENU'}")
         return migrated
     try:
         with open(DB_PATH, 'r') as f:
@@ -316,29 +326,40 @@ def load_db():
         return updated_data
     except Exception as e:
         print(f"Error loading/migrating DB: {e}")
-        # Try env var as last resort
-        persistent = load_persistent_state()
+        # Try JSONBin as last resort
+        persistent = load_cloud_state()
         return persistent if persistent else DEFAULT_MENU
 
 def save_db(data):
-    # Save to file (primary)
+    # Save to local file (fast, primary)
     with open(DB_PATH, 'w') as f:
         json.dump(data, f, indent=4)
-    # Also encode and print as base64 so admin can copy to env var for persistence across restarts
-    encoded = base64.b64encode(json.dumps(data).encode()).decode()
-    print(f"[MENU_STATE] {encoded}")
+    # Save to JSONBin cloud (persistent across server restarts)
+    save_cloud_state(data)
 
-def load_persistent_state():
-    """Load menu state from MENU_STATE env var (set on Render for persistence across restarts)."""
-    encoded = os.environ.get('MENU_STATE', '')
-    if encoded:
-        try:
-            data = json.loads(base64.b64decode(encoded.encode()).decode())
-            print("[PERSISTENCE] Loaded menu state from MENU_STATE env var.")
-            return data
-        except Exception as e:
-            print(f"[PERSISTENCE] Failed to decode MENU_STATE: {e}")
+def load_cloud_state():
+    """Load menu state from JSONBin.io (persists across Render server restarts)."""
+    try:
+        resp = req_lib.get(JSONBIN_URL, headers=JSONBIN_HEADERS, timeout=8)
+        if resp.status_code == 200:
+            data = resp.json().get('record', {})
+            if data and 'items' in data:
+                print("[JSONBIN] Loaded menu state from cloud storage.")
+                return data
+    except Exception as e:
+        print(f"[JSONBIN] Failed to load from cloud: {e}")
     return None
+
+def save_cloud_state(data):
+    """Save menu state to JSONBin.io for persistence across restarts."""
+    try:
+        resp = req_lib.put(JSONBIN_URL, headers=JSONBIN_HEADERS, json=data, timeout=8)
+        if resp.status_code == 200:
+            print("[JSONBIN] Menu state saved to cloud storage.")
+        else:
+            print(f"[JSONBIN] Cloud save failed: {resp.status_code} {resp.text[:100]}")
+    except Exception as e:
+        print(f"[JSONBIN] Failed to save to cloud: {e}")
 
 def check_auth():
     auth_header = request.headers.get('Authorization')
