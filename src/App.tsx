@@ -250,7 +250,14 @@ export default function App() {
 
     const encodedText = encodeURIComponent(messageText);
     const whatsappURL = `https://wa.me/918331810574?text=${encodedText}`;
-    window.open(whatsappURL, '_blank');
+    // Use location.href to avoid popup blockers on desktop browsers
+    const link = document.createElement('a');
+    link.href = whatsappURL;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // Copy UPI Address
@@ -682,11 +689,11 @@ export default function App() {
                   <div className="timeline-container">
                     <div className="timeline-node">
                       <div className="timeline-time">☀️ LUNCH SLOTS</div>
-                      <div className="timeline-title">Reserve Previous Day</div>
+                      <div className="timeline-title">Book before 2 hrs</div>
                     </div>
                     <div className="timeline-node">
                       <div className="timeline-time">🌙 DINNER SLOTS</div>
-                      <div className="timeline-title">Reserve Same Day</div>
+                      <div className="timeline-title">Book before 2 hrs</div>
                     </div>
                   </div>
                   <p className="about-text" style={{ fontSize: '14px', marginTop: '10px' }}>
