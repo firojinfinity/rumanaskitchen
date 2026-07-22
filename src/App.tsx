@@ -25,7 +25,7 @@ interface CartItem {
   prices?: { half: number; full: number };
 }
 
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://YOUR_BACKEND_RENDER_URL_HERE.onrender.com');
+const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://rumanaskitchen.onrender.com');
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 190, hasSizes: true, prices: { half: 110, full: 190 }, available: true, stockCount: 20 },
