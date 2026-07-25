@@ -653,25 +653,7 @@ export default function App() {
                 </div>
               )}
 
-              {/* Prep Time Banner */}
-              {prepTime && (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  background: 'linear-gradient(135deg, #fff3e0, #ffe0b2)',
-                  border: '1.5px solid #ff9800',
-                  borderRadius: '14px',
-                  padding: '12px 20px',
-                  marginBottom: '22px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: '#e65100'
-                }}>
-                  <span style={{ fontSize: '20px' }}>⏱️</span>
-                  <span>Estimated Preparation Time: <strong>{prepTime}</strong> from order confirmation</span>
-                </div>
-              )}
+
 
               {/* Filter controls (hide if Dinner Mode forces Biriyani only) */}
               {!dinnerMode && (
@@ -975,29 +957,7 @@ export default function App() {
                   />
                 </div>
 
-                {/* Prep Time Setting */}
-                <div className="dinner-toggle-banner" style={{ marginTop: '20px', flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
-                  <div className="dinner-banner-text" style={{ width: '100%' }}>
-                    <h3>⏱️ Estimated Preparation Time</h3>
-                    <p>Set the time customers should expect to wait from order confirmation to pickup. Shown on the customer menu.</p>
-                  </div>
-                  <input
-                    type="text"
-                    className="form-input"
-                    style={{ width: '100%', padding: '10px', fontSize: '15px', fontWeight: 700 }}
-                    placeholder="e.g. 1h 30m, 45 mins, 2 hours"
-                    value={editedPrepTime}
-                    onChange={(e) => setEditedPrepTime(e.target.value)}
-                  />
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {['30 mins', '45 mins', '1h', '1h 30m', '2 hours'].map(t => (
-                      <button key={t} onClick={() => setEditedPrepTime(t)}
-                        style={{ padding: '6px 14px', borderRadius: '20px', border: '1.5px solid #ff9800', background: editedPrepTime === t ? '#ff9800' : 'white', color: editedPrepTime === t ? 'white' : '#e65100', fontWeight: 700, cursor: 'pointer', fontSize: '13px' }}>
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+
 
                 {/* Items Admin List */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px', borderBottom: '1px solid rgba(158, 42, 43, 0.1)', paddingBottom: '10px' }}>
