@@ -416,10 +416,84 @@ export default function App() {
     else if (activeFilter === 'veg') matchesFilter = item.diet === 'veg' && item.category !== 'sweets';
     else if (activeFilter === 'nonveg') matchesFilter = item.diet === 'nonveg';
     else if (activeFilter === 'sweets') matchesFilter = item.category === 'sweets';
-    else matchesFilter = item.category === activeFilter; // fallback for biryani/curries/snacks
+    else matchesFilter = item.category === activeFilter;
     const fitsDinnerMode = !dinnerMode || item.name.toLowerCase().includes('biriyani');
     return matchesSearch && matchesFilter && fitsDinnerMode;
   });
+
+  // Counts for filter tabs
+  const availableItems = menuItems.filter(i => !dinnerMode || i.name.toLowerCase().includes('biriyani'));
+  const vegCount = availableItems.filter(i => i.diet === 'veg' && i.category !== 'sweets').length;
+  const nonvegCount = availableItems.filter(i => i.diet === 'nonveg').length;
+  const sweetsCount = availableItems.filter(i => i.category === 'sweets').length;
+
+  // Grouped sections for 'All' view
+  const vegItems = filteredItems.filter(i => i.diet === 'veg' && i.category !== 'sweets');
+  const nonvegItems = filteredItems.filter(i => i.diet === 'nonveg');
+  const sweetItems = filteredItems.filter(i => i.category === 'sweets');
+
+  const SectionHeader = ({ emoji, label, count, color }: { emoji: string; label: string; count: number; color: string }) => (
+    <div style={{
+      gridColumn: '1 / -1',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      padding: '10px 0 6px',
+      marginTop: '10px',
+      borderBottom: `2.5px solid ${color}22`
+    }}>
+      <span style={{ fontSize: '22px' }}>{emoji}</span>
+      <span style={{ fontSize: '17px', fontWeight: 800, color, letterSpacing: '0.5px', textTransform: 'uppercase' }}>{label}</span>
+      <span style={{ fontSize: '12px', background: color + '18', color, border: `1px solid ${color}44`, borderRadius: '20px', padding: '2px 10px', fontWeight: 700 }}>{count} dishes</span>
+    </div>
+  );
+
+  const renderCard = (item: MenuItem) => (
+    <div
+      key={item.id}
+      className="card"
+      data-available={item.available ? "true" : "false"}
+      data-diet={item.diet}
+    >
+      <div className="card-image-container">
+        {item.available && item.stockCount !== undefined && item.stockCount > 0 && (
+          <div style={{ position: 'absolute', top: '15px', left: '15px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(4px)', color: 'var(--primary)', padding: '5px 12px', borderRadius: '50px', fontSize: '11px', fontWeight: 800, boxShadow: '0 4px 10px rgba(0,0,0,0.08)', border: '1px solid rgba(158,42,43,0.18)', zIndex: 2, display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>🔥</span><span>{item.stockCount} Available</span>
+          </div>
+        )}
+        {/* Classic Indian Veg/Non-Veg dot indicator */}
+        <div style={{ position: 'absolute', top: '12px', right: '12px', width: '22px', height: '22px', border: `2px solid ${item.diet === 'veg' ? '#2e7d32' : '#b71c1c'}`, borderRadius: '4px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3, boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}>
+          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: item.diet === 'veg' ? '#2e7d32' : '#b71c1c' }} />
+        </div>
+        <div className="card-badges">
+          <span className={`badge ${item.diet === 'veg' ? 'badge-veg' : 'badge-nonveg'}`}>{item.diet === 'veg' ? 'Veg' : 'Non-Veg'}</span>
+          <span className="badge badge-category">{item.category}</span>
+          <span className={`badge ${item.available ? 'badge-available' : 'badge-unavailable'}`}>{item.available ? '✅ Available' : '❌ Not Available'}</span>
+        </div>
+        <img className="card-img" src={item.image}
+          onError={(e) => { const t = e.target as HTMLImageElement; t.src = item.fallbackImage || 'veg.jpg'; }}
+          alt={item.name}
+        />
+      </div>
+      <div className="card-body">
+        <h3 className="card-title">{item.name}</h3>
+        <p className="card-desc">{item.description}</p>
+        {item.prepTime && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#e65100', fontWeight: 600, marginBottom: '6px' }}>
+            <span>⏱️</span><span>Ready in {item.prepTime}</span>
+          </div>
+        )}
+        <div className="card-footer">
+          <div className="card-price">
+            {item.hasSizes && item.prices ? `₹${item.prices.half} - ₹${item.prices.full}` : `₹${item.price}`}
+          </div>
+          {item.available && (
+            <button className="add-to-cart-btn" onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices)}>+</button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div>
@@ -580,17 +654,17 @@ export default function App() {
                   </div>
                   <div className="filter-tabs">
                     {[
-                      { id: 'all', label: '🍽️ All' },
-                      { id: 'veg', label: '🥦 Veg' },
-                      { id: 'nonveg', label: '🍗 Non-Veg' },
-                      { id: 'sweets', label: '🍮 Desserts' }
+                      { id: 'all', label: '🍽️ All', count: null },
+                      { id: 'veg', label: '🥦 Veg', count: vegCount },
+                      { id: 'nonveg', label: '🍗 Non-Veg', count: nonvegCount },
+                      { id: 'sweets', label: '🍮 Desserts', count: sweetsCount }
                     ].map(tab => (
                       <button
                         key={tab.id}
                         className={`filter-btn ${activeFilter === tab.id ? 'active' : ''}`}
                         onClick={() => setActiveFilter(tab.id)}
                       >
-                        {tab.label}
+                        {tab.label}{tab.count !== null ? ` (${tab.count})` : ''}
                       </button>
                     ))}
                   </div>
@@ -602,120 +676,23 @@ export default function App() {
                 <div style={{ textAlign: 'center', padding: '40px', fontSize: '1.2rem', color: 'var(--text-muted)' }}>
                   Loading delicious menu items...
                 </div>
+              ) : activeFilter === 'all' && !searchTerm ? (
+                <div className="menu-grid">
+                  {vegItems.length > 0 && <SectionHeader emoji="🥦" label="Vegetarian" count={vegItems.length} color="#2e7d32" />}
+                  {vegItems.map(item => renderCard(item))}
+                  {nonvegItems.length > 0 && <SectionHeader emoji="🍗" label="Non-Vegetarian" count={nonvegItems.length} color="#b71c1c" />}
+                  {nonvegItems.map(item => renderCard(item))}
+                  {sweetItems.length > 0 && <SectionHeader emoji="🍮" label="Desserts" count={sweetItems.length} color="#e65100" />}
+                  {sweetItems.map(item => renderCard(item))}
+                  {filteredItems.length === 0 && (
+                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>No items available today.</div>
+                  )}
+                </div>
               ) : (
                 <div className="menu-grid">
-                  {filteredItems.map(item => (
-                    <div
-                      key={item.id}
-                      className="card"
-                      data-available={item.available ? "true" : "false"}
-                      data-diet={item.diet}
-                    >
-                      <div className="card-image-container">
-                        {item.available && item.stockCount !== undefined && item.stockCount > 0 && (
-                          <div style={{
-                            position: 'absolute',
-                            top: '15px',
-                            left: '15px',
-                            background: 'rgba(255, 255, 255, 0.95)',
-                            backdropFilter: 'blur(4px)',
-                            color: 'var(--primary)',
-                            padding: '5px 12px',
-                            borderRadius: '50px',
-                            fontSize: '11px',
-                            fontWeight: 800,
-                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.08)',
-                            border: '1px solid rgba(158, 42, 43, 0.18)',
-                            zIndex: 2,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}>
-                            <span>🔥</span>
-                            <span>{item.stockCount} Available</span>
-                          </div>
-                        )}
-                        {/* Classic Indian Veg/Non-Veg dot indicator */}
-                        <div style={{
-                          position: 'absolute',
-                          top: '12px',
-                          right: '12px',
-                          width: '22px',
-                          height: '22px',
-                          border: `2px solid ${item.diet === 'veg' ? '#2e7d32' : '#b71c1c'}`,
-                          borderRadius: '4px',
-                          background: 'white',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: 3,
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-                        }}>
-                          <div style={{
-                            width: '10px',
-                            height: '10px',
-                            borderRadius: '50%',
-                            background: item.diet === 'veg' ? '#2e7d32' : '#b71c1c'
-                          }} />
-                        </div>
-                        <div className="card-badges">
-                          <span className={`badge ${item.diet === 'veg' ? 'badge-veg' : 'badge-nonveg'}`}>
-                            {item.diet === 'veg' ? 'Veg' : 'Non-Veg'}
-                          </span>
-                          <span className="badge badge-category">
-                            {item.category}
-                          </span>
-                          <span className={`badge ${item.available ? 'badge-available' : 'badge-unavailable'}`}>
-                            {item.available ? '✅ Available' : '❌ Not Available'}
-                          </span>
-                        </div>
-                        <img
-                          className="card-img"
-                          src={item.image}
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            if (item.fallbackImage) {
-                              target.src = item.fallbackImage;
-                            } else {
-                              target.src = 'veg.jpg';
-                            }
-                          }}
-                          alt={item.name}
-                        />
-                      </div>
-                      <div className="card-body">
-                        <h3 className="card-title">{item.name}</h3>
-                        <p className="card-desc">{item.description}</p>
-                        {item.prepTime && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#e65100', fontWeight: 600, marginBottom: '6px' }}>
-                            <span>⏱️</span>
-                            <span>Ready in {item.prepTime}</span>
-                          </div>
-                        )}
-                        
-                        <div className="card-footer">
-                          <div className="card-price">
-                            {item.hasSizes && item.prices 
-                              ? `${item.prices.half} - ₹${item.prices.full}` 
-                              : item.price
-                            }
-                          </div>
-                          {item.available && (
-                            <button
-                              className="add-to-cart-btn"
-                              onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices)}
-                            >
-                              +
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  {filteredItems.map(item => renderCard(item))}
                   {filteredItems.length === 0 && (
-                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-                      No items match your search. Try adjusting filters or search term!
-                    </div>
+                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>No items match your search.</div>
                   )}
                 </div>
               )}

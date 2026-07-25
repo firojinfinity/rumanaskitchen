@@ -352,10 +352,12 @@ def migrate_and_merge(loaded_data):
         if default_item['id'] not in loaded_ids:
             items.append(default_item)
             
-    # 4. Ensure all items have a stockCount (default to 20 if missing)
+    # 4. Ensure all items have a stockCount and prepTime (defaults if missing)
     for item in items:
         if 'stockCount' not in item or item['stockCount'] is None:
             item['stockCount'] = 20
+        if 'prepTime' not in item or not item['prepTime']:
+            item['prepTime'] = '1h 30m'
             
     # Sort items by id
     items = sorted(items, key=lambda x: x.get('id', 999))
