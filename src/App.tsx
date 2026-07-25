@@ -427,26 +427,7 @@ export default function App() {
   const nonvegCount = availableItems.filter(i => i.diet === 'nonveg').length;
   const sweetsCount = availableItems.filter(i => i.category === 'sweets').length;
 
-  // Grouped sections for 'All' view
-  const vegItems = filteredItems.filter(i => i.diet === 'veg' && i.category !== 'sweets');
-  const nonvegItems = filteredItems.filter(i => i.diet === 'nonveg');
-  const sweetItems = filteredItems.filter(i => i.category === 'sweets');
 
-  const SectionHeader = ({ emoji, label, count, color }: { emoji: string; label: string; count: number; color: string }) => (
-    <div style={{
-      gridColumn: '1 / -1',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      padding: '10px 0 6px',
-      marginTop: '10px',
-      borderBottom: `2.5px solid ${color}22`
-    }}>
-      <span style={{ fontSize: '22px' }}>{emoji}</span>
-      <span style={{ fontSize: '17px', fontWeight: 800, color, letterSpacing: '0.5px', textTransform: 'uppercase' }}>{label}</span>
-      <span style={{ fontSize: '12px', background: color + '18', color, border: `1px solid ${color}44`, borderRadius: '20px', padding: '2px 10px', fontWeight: 700 }}>{count} dishes</span>
-    </div>
-  );
 
   const renderCard = (item: MenuItem) => (
     <div
@@ -676,23 +657,13 @@ export default function App() {
                 <div style={{ textAlign: 'center', padding: '40px', fontSize: '1.2rem', color: 'var(--text-muted)' }}>
                   Loading delicious menu items...
                 </div>
-              ) : activeFilter === 'all' && !searchTerm ? (
-                <div className="menu-grid">
-                  {vegItems.length > 0 && <SectionHeader emoji="🥦" label="Vegetarian" count={vegItems.length} color="#2e7d32" />}
-                  {vegItems.map(item => renderCard(item))}
-                  {nonvegItems.length > 0 && <SectionHeader emoji="🍗" label="Non-Vegetarian" count={nonvegItems.length} color="#b71c1c" />}
-                  {nonvegItems.map(item => renderCard(item))}
-                  {sweetItems.length > 0 && <SectionHeader emoji="🍮" label="Desserts" count={sweetItems.length} color="#e65100" />}
-                  {sweetItems.map(item => renderCard(item))}
-                  {filteredItems.length === 0 && (
-                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>No items available today.</div>
-                  )}
-                </div>
               ) : (
                 <div className="menu-grid">
                   {filteredItems.map(item => renderCard(item))}
                   {filteredItems.length === 0 && (
-                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>No items match your search.</div>
+                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                      No items match your search. Try adjusting filters or search term!
+                    </div>
                   )}
                 </div>
               )}
