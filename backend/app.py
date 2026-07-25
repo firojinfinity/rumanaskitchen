@@ -364,36 +364,51 @@ def migrate_and_merge(loaded_data):
     loaded_data['items'] = items
     return loaded_data
 
+_cached_db = None
+
 def load_db():
-    if not os.path.exists(DB_PATH):
-        # Server restarted - try to restore from JSONBin cloud storage
-        persistent = load_cloud_state()
-        seed = persistent if persistent else DEFAULT_MENU
-        migrated = migrate_and_merge(copy.deepcopy(seed))
-        with open(DB_PATH, 'w') as f:
-            json.dump(migrated, f, indent=4)
-        print(f"[DB INIT] Initialized DB from {'JSONBin cloud' if persistent else 'DEFAULT_MENU'}")
+    global _cached_db
+    if _cached_db is not None:
+        return _cached_db
+
+    # 1. Always attempt to load from JSONBin cloud storage (Source of Truth across Render sleeps)
+    cloud_data = load_cloud_state()
+    if cloud_data and isinstance(cloud_data, dict) and 'items' in cloud_data and len(cloud_data['items']) > 0:
+        migrated = migrate_and_merge(cloud_data)
+        _cached_db = migrated
+        try:
+            with open(DB_PATH, 'w') as f:
+                json.dump(migrated, f, indent=4)
+        except Exception:
+            pass
+        print(f"[DB INIT] Loaded {len(migrated.get('items', []))} items from JSONBin cloud storage.")
         return migrated
-    try:
-        with open(DB_PATH, 'r') as f:
-            data = json.load(f)
-        # Migrate and auto-heal
-        original_data = copy.deepcopy(data)
-        updated_data = migrate_and_merge(data)
-        # If anything was modified, save it
-        if updated_data != original_data:
-            save_db(updated_data)
-        return updated_data
-    except Exception as e:
-        print(f"Error loading/migrating DB: {e}")
-        # Try JSONBin as last resort
-        persistent = load_cloud_state()
-        return persistent if persistent else DEFAULT_MENU
+
+    # 2. Fallback to local DB file if JSONBin cloud is unreachable
+    if os.path.exists(DB_PATH):
+        try:
+            with open(DB_PATH, 'r') as f:
+                data = json.load(f)
+            migrated = migrate_and_merge(data)
+            _cached_db = migrated
+            return migrated
+        except Exception as e:
+            print(f"Error loading local DB: {e}")
+
+    # 3. Fallback to DEFAULT_MENU seed
+    migrated = migrate_and_merge(copy.deepcopy(DEFAULT_MENU))
+    _cached_db = migrated
+    return migrated
 
 def save_db(data):
-    # Save to local file (fast, primary)
-    with open(DB_PATH, 'w') as f:
-        json.dump(data, f, indent=4)
+    global _cached_db
+    _cached_db = copy.deepcopy(data)
+    # Save to local file
+    try:
+        with open(DB_PATH, 'w') as f:
+            json.dump(data, f, indent=4)
+    except Exception as e:
+        print(f"Local save error: {e}")
     # Save to JSONBin cloud (persistent across server restarts)
     save_cloud_state(data)
 
