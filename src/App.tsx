@@ -49,7 +49,12 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 21, name: "Gravy Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 70, available: true, stockCount: 20 },
   { id: 22, name: "Dry Sawaiyan", category: "sweets", diet: "veg", image: "sawaiyan.jpg", description: "Per plate", price: 50, available: true, stockCount: 20 },
   { id: 23, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true, stockCount: 20 },
-  { id: 24, name: "Aloo Paratha", category: "snacks", diet: "veg", image: "alooparatha.jpg", description: "Per piece", price: 45, available: true, stockCount: 20 }
+  { id: 24, name: "Aloo Paratha", category: "snacks", diet: "veg", image: "alooparatha.jpg", fallbackImage: "alooparatha.jpg", description: "Per piece", price: 45, available: true, stockCount: 20 },
+  { id: 25, name: "Normal Dal", category: "curries", diet: "veg", image: "dal.jpg", description: "Per plate", price: 45, available: true, stockCount: 20 },
+  { id: 26, name: "Muri Ghonto", category: "curries", diet: "nonveg", image: "murighonto.jpg", description: "Assamese style - Per plate", price: 60, available: true, stockCount: 20 },
+  { id: 27, name: "Fulka (Roti)", category: "snacks", diet: "veg", image: "fulka.jpg", description: "Per piece", price: 8, available: true, stockCount: 20 },
+  { id: 28, name: "Egg Curry with Potato", category: "curries", diet: "nonveg", image: "eggcurry.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 },
+  { id: 29, name: "Soya Chunks Curry", category: "curries", diet: "veg", image: "soyachunks.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 }
 ];
 
 export default function App() {
@@ -398,7 +403,12 @@ export default function App() {
   // Filter Logic
   const filteredItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = activeFilter === 'all' || item.category === activeFilter;
+    let matchesFilter = false;
+    if (activeFilter === 'all') matchesFilter = true;
+    else if (activeFilter === 'veg') matchesFilter = item.diet === 'veg' && item.category !== 'sweets';
+    else if (activeFilter === 'nonveg') matchesFilter = item.diet === 'nonveg';
+    else if (activeFilter === 'sweets') matchesFilter = item.category === 'sweets';
+    else matchesFilter = item.category === activeFilter; // fallback for biryani/curries/snacks
     const fitsDinnerMode = !dinnerMode || item.name.toLowerCase().includes('biriyani');
     return matchesSearch && matchesFilter && fitsDinnerMode;
   });
@@ -542,11 +552,10 @@ export default function App() {
                   </div>
                   <div className="filter-tabs">
                     {[
-                      { id: 'all', label: 'All Specialties' },
-                      { id: 'biryani', label: 'Biryani & Rice' },
-                      { id: 'curries', label: 'Rich Curries' },
-                      { id: 'snacks', label: 'Crunchy Snacks' },
-                      { id: 'sweets', label: 'Desserts & Sweets' }
+                      { id: 'all', label: '🍽️ All' },
+                      { id: 'veg', label: '🥦 Veg' },
+                      { id: 'nonveg', label: '🍗 Non-Veg' },
+                      { id: 'sweets', label: '🍮 Desserts' }
                     ].map(tab => (
                       <button
                         key={tab.id}

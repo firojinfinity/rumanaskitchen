@@ -265,6 +265,61 @@ DEFAULT_MENU = {
             "description": "Per piece",
             "price": 45,
             "available": True
+        },
+        {
+            "id": 25,
+            "name": "Normal Dal",
+            "category": "curries",
+            "diet": "veg",
+            "image": "dal.jpg",
+            "fallbackImage": "dal.jpg",
+            "description": "Per plate",
+            "price": 45,
+            "available": True
+        },
+        {
+            "id": 26,
+            "name": "Muri Ghonto",
+            "category": "curries",
+            "diet": "nonveg",
+            "image": "murighonto.jpg",
+            "fallbackImage": "murighonto.jpg",
+            "description": "Assamese style - Per plate",
+            "price": 60,
+            "available": True
+        },
+        {
+            "id": 27,
+            "name": "Fulka (Roti)",
+            "category": "snacks",
+            "diet": "veg",
+            "image": "fulka.jpg",
+            "fallbackImage": "fulka.jpg",
+            "description": "Per piece",
+            "price": 8,
+            "available": True
+        },
+        {
+            "id": 28,
+            "name": "Egg Curry with Potato",
+            "category": "curries",
+            "diet": "nonveg",
+            "image": "eggcurry.jpg",
+            "fallbackImage": "eggcurry.jpg",
+            "description": "Per plate",
+            "price": 90,
+            "available": True
+        },
+        {
+            "id": 29,
+            "name": "Soya Chunks Curry",
+            "category": "curries",
+            "diet": "veg",
+            "image": "soyachunks.jpg",
+            "fallbackImage": "soyachunks.jpg",
+            "description": "Per plate",
+            "price": 90,
+            "available": True
         }
     ]
 }
