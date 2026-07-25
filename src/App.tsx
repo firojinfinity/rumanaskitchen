@@ -247,6 +247,14 @@ export default function App() {
       return;
     }
 
+    const orderTime = new Date().toLocaleString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
     let messageText = "Hello Rumana's Kitchen! 🍽️\nI would like to place a custom homemade order:\n\n";
     Object.values(cart).forEach(item => {
       const itemTotal = item.price * item.qty;
@@ -257,7 +265,9 @@ export default function App() {
     });
 
     messageText += `\n💵 *Total Bill Amount:* ₹${totalCartPrice}\n`;
-    messageText += `⏰ *Pickup Location:* Near Pine Block Veg Shop\n\n_Please confirm availability and pick-up timing._`;
+    messageText += `📅 *Order Time:* ${orderTime}\n`;
+    messageText += `⏱️ *Est. Preparation Time:* ${prepTime || '1h 30m'} from confirmation\n`;
+    messageText += `📍 *Pickup Location:* Near Pine Block Veg Shop\n\n_Please confirm availability and pick-up timing._`;
 
     const encodedText = encodeURIComponent(messageText);
     const whatsappURL = `https://wa.me/918331810574?text=${encodedText}`;
