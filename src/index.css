@@ -452,13 +452,6 @@ section {
   align-items: center;
 }
 
-.card-price::before {
-  content: "₹";
-  font-size: 18px;
-  font-weight: 600;
-  margin-right: 2px;
-}
-
 .add-to-cart-btn {
   background: var(--primary);
   color: white;
