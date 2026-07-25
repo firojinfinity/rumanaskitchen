@@ -608,6 +608,7 @@ export default function App() {
                       key={item.id}
                       className="card"
                       data-available={item.available ? "true" : "false"}
+                      data-diet={item.diet}
                     >
                       <div className="card-image-container">
                         {item.available && item.stockCount !== undefined && item.stockCount > 0 && (

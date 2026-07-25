@@ -323,6 +323,26 @@ section {
   border-color: rgba(224, 159, 62, 0.4);
 }
 
+/* 🥦 Veg — green top border */
+.card[data-diet="veg"] {
+  border-top: 3.5px solid #2e7d32;
+}
+.card[data-diet="veg"]:hover {
+  box-shadow: var(--shadow-lg), 0 -2px 12px rgba(46, 125, 50, 0.18);
+  border-color: rgba(46, 125, 50, 0.35);
+  border-top-color: #2e7d32;
+}
+
+/* 🍗 Non-Veg — rich red top border */
+.card[data-diet="nonveg"] {
+  border-top: 3.5px solid #b71c1c;
+}
+.card[data-diet="nonveg"]:hover {
+  box-shadow: var(--shadow-lg), 0 -2px 12px rgba(183, 28, 28, 0.18);
+  border-color: rgba(183, 28, 28, 0.25);
+  border-top-color: #b71c1c;
+}
+
 .card-image-container {
   position: relative;
   height: 200px;
