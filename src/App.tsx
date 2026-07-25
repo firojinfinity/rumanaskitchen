@@ -14,6 +14,7 @@ interface MenuItem {
   hasSizes?: boolean;
   prices?: { half: number; full: number };
   stockCount?: number;
+  prepTime?: string;
 }
 
 interface CartItem {
@@ -685,6 +686,12 @@ export default function App() {
                       <div className="card-body">
                         <h3 className="card-title">{item.name}</h3>
                         <p className="card-desc">{item.description}</p>
+                        {item.prepTime && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#e65100', fontWeight: 600, marginBottom: '6px' }}>
+                            <span>⏱️</span>
+                            <span>Ready in {item.prepTime}</span>
+                          </div>
+                        )}
                         
                         <div className="card-footer">
                           <div className="card-price">
@@ -1070,6 +1077,18 @@ export default function App() {
                               placeholder="e.g. 20"
                               value={item.stockCount !== undefined ? item.stockCount : ''}
                               onChange={(e) => handleEditItemField(item.id, 'stockCount', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            />
+                          </div>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <label className="form-label" style={{ fontSize: '11px', marginBottom: 0 }}>⏱️ Prep Time</label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              style={{ width: '100px' }}
+                              placeholder="e.g. 30 mins"
+                              value={item.prepTime || ''}
+                              onChange={(e) => handleEditItemField(item.id, 'prepTime', e.target.value)}
                             />
                           </div>
                         </div>
