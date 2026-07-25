@@ -26,6 +26,7 @@ JSONBIN_HEADERS = {
 DEFAULT_MENU = {
     "dinnerMode": False,
     "announcement": "Welcome to Rumana's Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.",
+    "prepTime": "1h 30m",
     "items": [
         {
             "id": 1,
@@ -330,6 +331,8 @@ def migrate_and_merge(loaded_data):
         loaded_data['dinnerMode'] = DEFAULT_MENU['dinnerMode']
     if 'announcement' not in loaded_data:
         loaded_data['announcement'] = DEFAULT_MENU['announcement']
+    if 'prepTime' not in loaded_data:
+        loaded_data['prepTime'] = DEFAULT_MENU.get('prepTime', '1h 30m')
         
     items = loaded_data.get('items', [])
     

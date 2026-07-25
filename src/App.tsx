@@ -96,6 +96,8 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState<string>('');
   const [announcement, setAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
   const [editedAnnouncement, setEditedAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
+  const [prepTime, setPrepTime] = useState<string>('1h 30m');
+  const [editedPrepTime, setEditedPrepTime] = useState<string>('1h 30m');
 
   // Fetch Menu from Backend
   const fetchMenu = async () => {
@@ -110,6 +112,9 @@ export default function App() {
         const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
         setAnnouncement(msg);
         setEditedAnnouncement(msg);
+        const pt = data.prepTime || '1h 30m';
+        setPrepTime(pt);
+        setEditedPrepTime(pt);
       } else {
         throw new Error("HTTP error " + res.status);
       }
@@ -349,12 +354,14 @@ export default function App() {
         body: JSON.stringify({
           dinnerMode,
           announcement: editedAnnouncement,
+          prepTime: editedPrepTime,
           items: editedItems
         })
       });
       if (res.ok) {
         setMenuItems(JSON.parse(JSON.stringify(editedItems)));
         setAnnouncement(editedAnnouncement);
+        setPrepTime(editedPrepTime);
         setSaveStatus('Changes saved and published successfully!');
         triggerToast("Menu updated successfully!");
         setTimeout(() => setSaveStatus(''), 3000);
@@ -537,6 +544,26 @@ export default function App() {
                 </div>
               )}
 
+              {/* Prep Time Banner */}
+              {prepTime && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  background: 'linear-gradient(135deg, #fff3e0, #ffe0b2)',
+                  border: '1.5px solid #ff9800',
+                  borderRadius: '14px',
+                  padding: '12px 20px',
+                  marginBottom: '22px',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#e65100'
+                }}>
+                  <span style={{ fontSize: '20px' }}>⏱️</span>
+                  <span>Estimated Preparation Time: <strong>{prepTime}</strong> from order confirmation</span>
+                </div>
+              )}
+
               {/* Filter controls (hide if Dinner Mode forces Biriyani only) */}
               {!dinnerMode && (
                 <div className="menu-controls">
@@ -606,6 +633,29 @@ export default function App() {
                             <span>{item.stockCount} Available</span>
                           </div>
                         )}
+                        {/* Classic Indian Veg/Non-Veg dot indicator */}
+                        <div style={{
+                          position: 'absolute',
+                          top: '12px',
+                          right: '12px',
+                          width: '22px',
+                          height: '22px',
+                          border: `2px solid ${item.diet === 'veg' ? '#2e7d32' : '#b71c1c'}`,
+                          borderRadius: '4px',
+                          background: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: 3,
+                          boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                        }}>
+                          <div style={{
+                            width: '10px',
+                            height: '10px',
+                            borderRadius: '50%',
+                            background: item.diet === 'veg' ? '#2e7d32' : '#b71c1c'
+                          }} />
+                        </div>
                         <div className="card-badges">
                           <span className={`badge ${item.diet === 'veg' ? 'badge-veg' : 'badge-nonveg'}`}>
                             {item.diet === 'veg' ? 'Veg' : 'Non-Veg'}
@@ -914,6 +964,30 @@ export default function App() {
                     value={editedAnnouncement}
                     onChange={(e) => setEditedAnnouncement(e.target.value)}
                   />
+                </div>
+
+                {/* Prep Time Setting */}
+                <div className="dinner-toggle-banner" style={{ marginTop: '20px', flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
+                  <div className="dinner-banner-text" style={{ width: '100%' }}>
+                    <h3>⏱️ Estimated Preparation Time</h3>
+                    <p>Set the time customers should expect to wait from order confirmation to pickup. Shown on the customer menu.</p>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ width: '100%', padding: '10px', fontSize: '15px', fontWeight: 700 }}
+                    placeholder="e.g. 1h 30m, 45 mins, 2 hours"
+                    value={editedPrepTime}
+                    onChange={(e) => setEditedPrepTime(e.target.value)}
+                  />
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {['30 mins', '45 mins', '1h', '1h 30m', '2 hours'].map(t => (
+                      <button key={t} onClick={() => setEditedPrepTime(t)}
+                        style={{ padding: '6px 14px', borderRadius: '20px', border: '1.5px solid #ff9800', background: editedPrepTime === t ? '#ff9800' : 'white', color: editedPrepTime === t ? 'white' : '#e65100', fontWeight: 700, cursor: 'pointer', fontSize: '13px' }}>
+                        {t}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Items Admin List */}
