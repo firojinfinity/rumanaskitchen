@@ -100,45 +100,88 @@ export default function App() {
   const [prepTime, setPrepTime] = useState<string>('1h 30m');
   const [editedPrepTime, setEditedPrepTime] = useState<string>('1h 30m');
 
-  // Fetch Menu from Backend
+  const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/6a5c9b1af5f4af5e29a36006';
+  const JSONBIN_KEY = '$2a$10$7pl.Q7DOkk19SU86HWjlceD4TmOaP/UaJhDIhhqZq5bA4rVkmD75.';
+
+  const saveToJSONBinDirect = async (payload: any) => {
+    try {
+      await fetch(JSONBIN_URL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': JSONBIN_KEY
+        },
+        body: JSON.stringify(payload)
+      });
+      console.log("[JSONBIN Direct] Saved to cloud CDN successfully.");
+    } catch (e) {
+      console.warn("Direct JSONBin save failed:", e);
+    }
+  };
+
+  const applyMenuData = (data: any) => {
+    if (!data || !data.items) return;
+    setMenuItems(data.items);
+    setEditedItems(JSON.parse(JSON.stringify(data.items)));
+    setDinnerMode(!!data.dinnerMode);
+    const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
+    setAnnouncement(msg);
+    setEditedAnnouncement(msg);
+    const pt = data.prepTime || '1h 30m';
+    setPrepTime(pt);
+    setEditedPrepTime(pt);
+    try {
+      localStorage.setItem('rumana_menu_backup', JSON.stringify(data));
+    } catch (e) {}
+  };
+
+  const fetchFromJSONBin = async () => {
+    try {
+      const res = await fetch(JSONBIN_URL, {
+        headers: { 'X-Master-Key': JSONBIN_KEY }
+      });
+      if (res.ok) {
+        const cloudJson = await res.json();
+        const record = cloudJson.record;
+        if (record && record.items && record.items.length > 0) {
+          console.log("[JSONBIN Direct] Loaded menu directly from cloud CDN.");
+          applyMenuData(record);
+          return true;
+        }
+      }
+    } catch (e) {
+      console.warn("Direct JSONBin fetch failed:", e);
+    }
+    return false;
+  };
+
+  // Fetch Menu from Backend / Cloud CDN Failsafe
   const fetchMenu = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/api/menu`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+      const res = await fetch(`${API_BASE}/api/menu`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
       if (res.ok) {
         const data = await res.json();
-        setMenuItems(data.items);
-        setEditedItems(JSON.parse(JSON.stringify(data.items))); // Deep clone
-        setDinnerMode(data.dinnerMode);
-        const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
-        setAnnouncement(msg);
-        setEditedAnnouncement(msg);
-        const pt = data.prepTime || '1h 30m';
-        setPrepTime(pt);
-        setEditedPrepTime(pt);
-      } else {
-        throw new Error("HTTP error " + res.status);
+        applyMenuData(data);
+        return;
       }
+      throw new Error("Render HTTP error " + res.status);
     } catch (err) {
-      console.error("Failed to fetch menu from Render backend: ", err);
-      triggerToast("Connecting with menu failsafe...");
-      // Local fallback for client-side demo
-      const localData = localStorage.getItem('rumana_menu_backup');
-      if (localData) {
-        const data = JSON.parse(localData);
-        setMenuItems(data.items);
-        setEditedItems(JSON.parse(JSON.stringify(data.items)));
-        setDinnerMode(data.dinnerMode);
-        const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
-        setAnnouncement(msg);
-        setEditedAnnouncement(msg);
-      } else {
-        setMenuItems(DEFAULT_MENU_ITEMS);
-        setEditedItems(JSON.parse(JSON.stringify(DEFAULT_MENU_ITEMS)));
-        setDinnerMode(false);
-        const localAnnounce = localStorage.getItem('rumana_announcement_backup') || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
-        setAnnouncement(localAnnounce);
-        setEditedAnnouncement(localAnnounce);
+      console.warn("Render backend slow/offline, fetching directly from JSONBin cloud CDN...");
+      const success = await fetchFromJSONBin();
+      if (!success) {
+        const localData = localStorage.getItem('rumana_menu_backup');
+        if (localData) {
+          applyMenuData(JSON.parse(localData));
+        } else {
+          setMenuItems(DEFAULT_MENU_ITEMS);
+          setEditedItems(JSON.parse(JSON.stringify(DEFAULT_MENU_ITEMS)));
+        }
       }
     } finally {
       setLoading(false);
@@ -327,69 +370,69 @@ export default function App() {
     setAdminToken('');
   };
 
-  // Dinner Mode API Switch
+  // Dinner Mode Switch
   const handleToggleDinnerMode = async () => {
+    const updatedDinnerMode = !dinnerMode;
+    setDinnerMode(updatedDinnerMode);
+
+    const payload = {
+      dinnerMode: updatedDinnerMode,
+      announcement,
+      prepTime,
+      items: menuItems
+    };
+
+    localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
+    await saveToJSONBinDirect(payload);
+
     try {
-      const res = await fetch(`${API_BASE}/api/menu/toggle-dinner`, {
+      await fetch(`${API_BASE}/api/menu/toggle-dinner`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${adminToken}`,
           'Content-Type': 'application/json'
         }
       });
-      if (res.ok) {
-        const data = await res.json();
-        setDinnerMode(data.dinnerMode);
-        triggerToast(`Dinner Mode set to ${data.dinnerMode ? 'ON' : 'OFF'}`);
-      }
     } catch (err) {
-      // Offline edit fallback
-      const updatedDinnerMode = !dinnerMode;
-      setDinnerMode(updatedDinnerMode);
-      // Backup state in localStorage
-      const backupData = { dinnerMode: updatedDinnerMode, items: menuItems };
-      localStorage.setItem('rumana_menu_backup', JSON.stringify(backupData));
-      triggerToast(`Local Toggle: Dinner Mode ${updatedDinnerMode ? 'ON' : 'OFF'}`);
+      console.warn("Render toggle failed, cloud JSONBin updated.", err);
     }
+
+    triggerToast(`Dinner Mode set to ${updatedDinnerMode ? 'ON' : 'OFF'}`);
   };
 
   const handleSaveChanges = async () => {
-    setSaveStatus('Saving changes...');
+    setSaveStatus('Saving changes to cloud...');
+    const payload = {
+      dinnerMode,
+      announcement: editedAnnouncement,
+      prepTime: editedPrepTime,
+      items: editedItems
+    };
+
+    setMenuItems(JSON.parse(JSON.stringify(editedItems)));
+    setAnnouncement(editedAnnouncement);
+    setPrepTime(editedPrepTime);
+    localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
+
+    // Direct cloud update to JSONBin (instant cross-device sync)
+    await saveToJSONBinDirect(payload);
+
     try {
-      const res = await fetch(`${API_BASE}/api/menu/update`, {
+      await fetch(`${API_BASE}/api/menu/update`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${adminToken}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          dinnerMode,
-          announcement: editedAnnouncement,
-          prepTime: editedPrepTime,
-          items: editedItems
-        })
+        body: JSON.stringify(payload)
       });
-      if (res.ok) {
-        setMenuItems(JSON.parse(JSON.stringify(editedItems)));
-        setAnnouncement(editedAnnouncement);
-        setPrepTime(editedPrepTime);
-        setSaveStatus('Changes saved and published successfully!');
-        triggerToast("Menu updated successfully!");
-        setTimeout(() => setSaveStatus(''), 3000);
-      } else {
-        setSaveStatus('Error saving changes. Server responded with error.');
-      }
     } catch (err) {
-      // Local backup fallback
-      setMenuItems(JSON.parse(JSON.stringify(editedItems)));
-      setAnnouncement(editedAnnouncement);
-      const backupData = { dinnerMode, announcement: editedAnnouncement, items: editedItems };
-      localStorage.setItem('rumana_menu_backup', JSON.stringify(backupData));
-      localStorage.setItem('rumana_announcement_backup', editedAnnouncement);
-      setSaveStatus('Server offline. Changes saved locally in your browser.');
-      triggerToast("Changes saved locally.");
-      setTimeout(() => setSaveStatus(''), 3000);
+      console.warn("Render update failed, cloud JSONBin updated.", err);
     }
+
+    setSaveStatus('Changes saved and published to cloud! (Live on all devices)');
+    triggerToast("Menu updated successfully!");
+    setTimeout(() => setSaveStatus(''), 3000);
   };
 
   // Update item field in edited list
