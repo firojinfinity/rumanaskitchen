@@ -235,19 +235,6 @@ export default function App() {
     }, 2500);
   };
 
-  // Track Potato Preference on dish cards per item id (default true = Yes)
-  const [cardPotatoPref, setCardPotatoPref] = useState<{ [id: number]: boolean }>({
-    1: true,
-    3: true,
-    5: true,
-    6: true,
-    7: true
-  });
-
-  const toggleCardPotatoPreference = (itemId: number, pref: boolean) => {
-    setCardPotatoPref(prev => ({ ...prev, [itemId]: pref }));
-  };
-
   const updateCartItemPotato = (name: string, withPotato: boolean) => {
     setCart(prev => {
       const updated = { ...prev };
@@ -264,15 +251,13 @@ export default function App() {
     price: number, 
     hasSizes?: boolean, 
     prices?: { half: number; full: number },
-    hasPotatoOption?: boolean,
-    itemId?: number
+    hasPotatoOption?: boolean
   ) => {
     setCart(prev => {
       const updated = { ...prev };
       if (updated[name]) {
         updated[name].qty += 1;
       } else {
-        const defaultPotato = (itemId && cardPotatoPref[itemId] !== undefined) ? cardPotatoPref[itemId] : true;
         updated[name] = { 
           name, 
           price, 
@@ -281,7 +266,7 @@ export default function App() {
           size: hasSizes ? 'full' : undefined,
           prices,
           hasPotatoOption,
-          withPotato: hasPotatoOption ? defaultPotato : undefined
+          withPotato: hasPotatoOption ? true : undefined
         };
       }
       return updated;
@@ -559,59 +544,13 @@ export default function App() {
             <span>⏱️</span><span>Ready in {item.prepTime}</span>
           </div>
         )}
-        {item.hasPotatoOption && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: '#fff8e1',
-            border: '1px solid #ffe082',
-            borderRadius: '10px',
-            padding: '5px 10px',
-            marginBottom: '10px',
-            fontSize: '12px'
-          }}>
-            <span style={{ fontWeight: 600, color: '#5d4037' }}>🥔 Prefer Potato?</span>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              <button
-                onClick={(e) => { e.stopPropagation(); toggleCardPotatoPreference(item.id, true); }}
-                style={{
-                  border: cardPotatoPref[item.id] !== false ? '1px solid #2e7d32' : '1px solid #ccc',
-                  background: cardPotatoPref[item.id] !== false ? '#2e7d32' : 'white',
-                  color: cardPotatoPref[item.id] !== false ? 'white' : '#333',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  padding: '2px 8px',
-                  borderRadius: '8px',
-                  cursor: 'pointer'
-                }}
-              >
-                Yes
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); toggleCardPotatoPreference(item.id, false); }}
-                style={{
-                  border: cardPotatoPref[item.id] === false ? '1px solid #c62828' : '1px solid #ccc',
-                  background: cardPotatoPref[item.id] === false ? '#c62828' : 'white',
-                  color: cardPotatoPref[item.id] === false ? 'white' : '#333',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  padding: '2px 8px',
-                  borderRadius: '8px',
-                  cursor: 'pointer'
-                }}
-              >
-                No
-              </button>
-            </div>
-          </div>
-        )}
+
         <div className="card-footer">
           <div className="card-price">
             {item.hasSizes && item.prices ? `₹${item.prices.half} - ₹${item.prices.full}` : `₹${item.price}`}
           </div>
           {item.available && (
-            <button className="add-to-cart-btn" onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id)}>+</button>
+            <button className="add-to-cart-btn" onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption)}>+</button>
           )}
         </div>
       </div>
