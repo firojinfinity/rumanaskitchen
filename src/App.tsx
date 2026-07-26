@@ -266,7 +266,7 @@ export default function App() {
           size: hasSizes ? 'full' : undefined,
           prices,
           hasPotatoOption,
-          withPotato: hasPotatoOption ? true : undefined
+          withPotato: hasPotatoOption ? false : undefined
         };
       }
       return updated;
