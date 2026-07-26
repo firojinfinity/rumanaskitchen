@@ -31,7 +31,8 @@
             "price": 300,
             "stockCount": 20,
             "prepTime": "1h 30m",
-            "hasPotatoOption": true
+            "hasPotatoOption": true,
+            "hasSizes": false
         },
         {
             "available": true,
