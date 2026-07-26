@@ -235,6 +235,13 @@ export default function App() {
     }, 2500);
   };
 
+  const isPotatoEligibleItem = (name: string, id?: number, flag?: boolean) => {
+    if (flag) return true;
+    if (id && [1, 3, 5, 6, 7].includes(id)) return true;
+    const n = (name || '').toLowerCase();
+    return n.includes('biriyani') || n.includes('kasha') || n.includes('fish curry');
+  };
+
   const updateCartItemPotato = (name: string, withPotato: boolean) => {
     setCart(prev => {
       const updated = { ...prev };
@@ -251,10 +258,12 @@ export default function App() {
     price: number, 
     hasSizes?: boolean, 
     prices?: { half: number; full: number },
-    hasPotatoOption?: boolean
+    hasPotatoOption?: boolean,
+    itemId?: number
   ) => {
     setCart(prev => {
       const updated = { ...prev };
+      const isEligible = isPotatoEligibleItem(name, itemId, hasPotatoOption);
       if (updated[name]) {
         updated[name].qty += 1;
       } else {
@@ -265,8 +274,8 @@ export default function App() {
           hasSizes,
           size: hasSizes ? 'full' : undefined,
           prices,
-          hasPotatoOption,
-          withPotato: hasPotatoOption ? false : undefined
+          hasPotatoOption: isEligible,
+          withPotato: isEligible ? false : undefined
         };
       }
       return updated;
@@ -326,7 +335,7 @@ export default function App() {
       if (item.hasSizes && item.size) {
         details.push(item.size === 'half' ? 'Half' : 'Full');
       }
-      if (item.hasPotatoOption) {
+      if (item.hasPotatoOption || isPotatoEligibleItem(item.name)) {
         details.push(item.withPotato ? 'With Potato 🥔' : 'No Potato');
       }
       const detailsStr = details.length > 0 ? ` (${details.join(', ')})` : '';
@@ -852,7 +861,7 @@ export default function App() {
                         </div>
                       )}
 
-                      {item.hasPotatoOption && (
+                      {(item.hasPotatoOption || isPotatoEligibleItem(item.name)) && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
                           <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)' }}>🥔 Potato:</span>
                           <div style={{ display: 'flex', gap: '4px' }}>
