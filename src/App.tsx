@@ -15,6 +15,7 @@ interface MenuItem {
   prices?: { half: number; full: number };
   stockCount?: number;
   prepTime?: string;
+  hasPotatoOption?: boolean;
 }
 
 interface CartItem {
@@ -24,16 +25,18 @@ interface CartItem {
   size?: 'half' | 'full';
   hasSizes?: boolean;
   prices?: { half: number; full: number };
+  hasPotatoOption?: boolean;
+  withPotato?: boolean;
 }
 
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://rumanaskitchen.onrender.com');
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
-  { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 190, hasSizes: true, prices: { half: 110, full: 190 }, available: true, stockCount: 20, prepTime: "1h 30m" },
-  { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mbiriyani.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, hasSizes: true, prices: { half: 210, full: 300 }, available: true, stockCount: 20, prepTime: "1h 30m" },
-  { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true, stockCount: 20 },
-  { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80", fallbackImage: "mutton.jpg", description: "6 pieces per plate", price: 180, available: true, stockCount: 20 },
-  { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true, stockCount: 20 },
+  { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 190, hasSizes: true, prices: { half: 110, full: 190 }, available: true, stockCount: 20, prepTime: "1h 30m", hasPotatoOption: true },
+  { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mbiriyani.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, hasSizes: true, prices: { half: 210, full: 300 }, available: true, stockCount: 20, prepTime: "1h 30m", hasPotatoOption: true },
+  { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true, stockCount: 20, hasPotatoOption: true },
+  { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80", fallbackImage: "mutton.jpg", description: "6 pieces per plate", price: 180, available: true, stockCount: 20, hasPotatoOption: true },
+  { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true, stockCount: 20, hasPotatoOption: true },
   { id: 8, name: "Mixed Veg Curry", category: "curries", diet: "veg", image: "veg.jpg", description: "Per plate", price: 80, available: true, stockCount: 20 },
   { id: 9, name: "Aloo Gobi Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true, stockCount: 20 },
   { id: 10, name: "Bhindi Aloo Curry", category: "curries", diet: "veg", image: "https://images.unsplash.com/photo-1645177625150-fe803e0cae79?auto=format&fit=crop&w=600&q=80", fallbackImage: "veg.jpg", description: "Per plate", price: 80, available: true, stockCount: 20 },
@@ -232,20 +235,53 @@ export default function App() {
     }, 2500);
   };
 
+  // Track Potato Preference on dish cards per item id (default true = Yes)
+  const [cardPotatoPref, setCardPotatoPref] = useState<{ [id: number]: boolean }>({
+    1: true,
+    3: true,
+    5: true,
+    6: true,
+    7: true
+  });
+
+  const toggleCardPotatoPreference = (itemId: number, pref: boolean) => {
+    setCardPotatoPref(prev => ({ ...prev, [itemId]: pref }));
+  };
+
+  const updateCartItemPotato = (name: string, withPotato: boolean) => {
+    setCart(prev => {
+      const updated = { ...prev };
+      if (updated[name]) {
+        updated[name].withPotato = withPotato;
+      }
+      return updated;
+    });
+  };
+
   // Add to Cart
-  const addToCart = (name: string, price: number, hasSizes?: boolean, prices?: { half: number; full: number }) => {
+  const addToCart = (
+    name: string, 
+    price: number, 
+    hasSizes?: boolean, 
+    prices?: { half: number; full: number },
+    hasPotatoOption?: boolean,
+    itemId?: number
+  ) => {
     setCart(prev => {
       const updated = { ...prev };
       if (updated[name]) {
         updated[name].qty += 1;
       } else {
+        const defaultPotato = (itemId && cardPotatoPref[itemId] !== undefined) ? cardPotatoPref[itemId] : true;
         updated[name] = { 
           name, 
           price, 
           qty: 1,
           hasSizes,
           size: hasSizes ? 'full' : undefined,
-          prices
+          prices,
+          hasPotatoOption,
+          withPotato: hasPotatoOption ? defaultPotato : undefined
         };
       }
       return updated;
@@ -301,9 +337,15 @@ export default function App() {
     let messageText = "Hello Rumana's Kitchen! 🍽️\nI would like to place a custom homemade order:\n\n";
     Object.values(cart).forEach(item => {
       const itemTotal = item.price * item.qty;
-      const displayName = item.hasSizes && item.size
-        ? `${item.name} (${item.size === 'half' ? 'Half' : 'Full'})`
-        : item.name;
+      let details: string[] = [];
+      if (item.hasSizes && item.size) {
+        details.push(item.size === 'half' ? 'Half' : 'Full');
+      }
+      if (item.hasPotatoOption) {
+        details.push(item.withPotato ? 'With Potato 🥔' : 'No Potato');
+      }
+      const detailsStr = details.length > 0 ? ` (${details.join(', ')})` : '';
+      const displayName = `${item.name}${detailsStr}`;
       messageText += `• ${displayName} x ${item.qty} (₹${item.price} each) - ₹${itemTotal}\n`;
     });
 
@@ -517,12 +559,59 @@ export default function App() {
             <span>⏱️</span><span>Ready in {item.prepTime}</span>
           </div>
         )}
+        {item.hasPotatoOption && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: '#fff8e1',
+            border: '1px solid #ffe082',
+            borderRadius: '10px',
+            padding: '5px 10px',
+            marginBottom: '10px',
+            fontSize: '12px'
+          }}>
+            <span style={{ fontWeight: 600, color: '#5d4037' }}>🥔 Prefer Potato?</span>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleCardPotatoPreference(item.id, true); }}
+                style={{
+                  border: cardPotatoPref[item.id] !== false ? '1px solid #2e7d32' : '1px solid #ccc',
+                  background: cardPotatoPref[item.id] !== false ? '#2e7d32' : 'white',
+                  color: cardPotatoPref[item.id] !== false ? 'white' : '#333',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Yes
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleCardPotatoPreference(item.id, false); }}
+                style={{
+                  border: cardPotatoPref[item.id] === false ? '1px solid #c62828' : '1px solid #ccc',
+                  background: cardPotatoPref[item.id] === false ? '#c62828' : 'white',
+                  color: cardPotatoPref[item.id] === false ? 'white' : '#333',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        )}
         <div className="card-footer">
           <div className="card-price">
             {item.hasSizes && item.prices ? `₹${item.prices.half} - ₹${item.prices.full}` : `₹${item.price}`}
           </div>
           {item.available && (
-            <button className="add-to-cart-btn" onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices)}>+</button>
+            <button className="add-to-cart-btn" onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id)}>+</button>
           )}
         </div>
       </div>
@@ -821,6 +910,44 @@ export default function App() {
                               </button>
                             );
                           })}
+                        </div>
+                      )}
+
+                      {item.hasPotatoOption && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)' }}>🥔 Potato:</span>
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            <button
+                              onClick={() => updateCartItemPotato(item.name, true)}
+                              style={{
+                                border: item.withPotato ? '1px solid #2e7d32' : '1px solid rgba(158, 42, 43, 0.18)',
+                                background: item.withPotato ? '#2e7d32' : 'transparent',
+                                color: item.withPotato ? 'white' : 'var(--text)',
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                padding: '2px 8px',
+                                borderRadius: '12px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Yes
+                            </button>
+                            <button
+                              onClick={() => updateCartItemPotato(item.name, false)}
+                              style={{
+                                border: !item.withPotato ? '1px solid #c62828' : '1px solid rgba(158, 42, 43, 0.18)',
+                                background: !item.withPotato ? '#c62828' : 'transparent',
+                                color: !item.withPotato ? 'white' : 'var(--text)',
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                padding: '2px 8px',
+                                borderRadius: '12px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              No
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>

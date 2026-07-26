@@ -17,7 +17,8 @@
                 "full": 190
             },
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": true
         },
         {
             "available": true,
@@ -34,7 +35,8 @@
                 "full": 300
             },
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": true
         },
         {
             "available": true,
@@ -46,7 +48,8 @@
             "name": "Mutton Kasha",
             "price": 280,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": true
         },
         {
             "available": true,
@@ -59,7 +62,8 @@
             "name": "Chicken Kasha",
             "price": 180,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": true
         },
         {
             "available": true,
@@ -71,7 +75,8 @@
             "name": "Fish Curry",
             "price": 170,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": true
         },
         {
             "available": true,
@@ -83,7 +88,8 @@
             "name": "Mixed Veg Curry",
             "price": 80,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -96,7 +102,8 @@
             "name": "Aloo Gobi Curry",
             "price": 80,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -109,7 +116,8 @@
             "name": "Bhindi Aloo Curry",
             "price": 80,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -122,7 +130,8 @@
             "name": "Patta Gobi Curry",
             "price": 80,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -135,7 +144,8 @@
             "name": "Chicken Pakora (Boneless)",
             "price": 400,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -147,7 +157,8 @@
             "name": "Paneer Masala",
             "price": 110,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -159,7 +170,8 @@
             "name": "Choley Paneer Masala",
             "price": 100,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -172,7 +184,8 @@
             "name": "Dhokla",
             "price": 50,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -184,7 +197,8 @@
             "name": "Prawn Curry",
             "price": 130,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -197,7 +211,8 @@
             "name": "Plain Rice",
             "price": 60,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -210,7 +225,8 @@
             "name": "Dal Pakora",
             "price": 200,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -222,7 +238,8 @@
             "name": "Normal Paratha",
             "price": 20,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -234,7 +251,8 @@
             "name": "Laccha Paratha",
             "price": 30,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -246,7 +264,8 @@
             "name": "Gravy Sawaiyan",
             "price": 70,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "available": true,
@@ -258,7 +277,8 @@
             "name": "Dry Sawaiyan",
             "price": 50,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "id": 23,
@@ -270,7 +290,8 @@
             "price": 120,
             "available": true,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "id": 24,
@@ -283,7 +304,8 @@
             "price": 45,
             "available": true,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "id": 25,
@@ -296,7 +318,8 @@
             "price": 45,
             "available": true,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "id": 26,
@@ -309,7 +332,8 @@
             "price": 60,
             "available": true,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "id": 27,
@@ -322,7 +346,8 @@
             "price": 8,
             "available": true,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "id": 28,
@@ -335,7 +360,8 @@
             "price": 90,
             "available": true,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         },
         {
             "id": 29,
@@ -348,7 +374,8 @@
             "price": 90,
             "available": true,
             "stockCount": 20,
-            "prepTime": "1h 30m"
+            "prepTime": "1h 30m",
+            "hasPotatoOption": false
         }
     ],
     "prepTime": "1h 30m"

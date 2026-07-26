@@ -41,7 +41,8 @@ DEFAULT_MENU = {
                 "half": 110,
                 "full": 190
             },
-            "available": True
+            "available": True,
+            "hasPotatoOption": True
         },
         {
             "id": 3,
@@ -56,7 +57,8 @@ DEFAULT_MENU = {
                 "half": 210,
                 "full": 300
             },
-            "available": True
+            "available": True,
+            "hasPotatoOption": True
         },
         {
             "id": 5,
@@ -66,7 +68,8 @@ DEFAULT_MENU = {
             "image": "mutton.jpg",
             "description": "5 pieces per plate",
             "price": 280,
-            "available": True
+            "available": True,
+            "hasPotatoOption": True
         },
         {
             "id": 6,
@@ -77,7 +80,8 @@ DEFAULT_MENU = {
             "fallbackImage": "ccurry.jpg",
             "description": "6 pieces per plate",
             "price": 180,
-            "available": True
+            "available": True,
+            "hasPotatoOption": True
         },
         {
             "id": 7,
@@ -87,7 +91,8 @@ DEFAULT_MENU = {
             "image": "fish (1).jpg",
             "description": "2 pieces per plate",
             "price": 170,
-            "available": True
+            "available": True,
+            "hasPotatoOption": True
         },
         {
             "id": 8,
