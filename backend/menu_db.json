@@ -25,15 +25,10 @@
             "category": "biryani",
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "diet": "nonveg",
-            "hasSizes": true,
             "id": 3,
             "image": "mbiriyani.jpg",
             "name": "Mutton Biriyani",
             "price": 300,
-            "prices": {
-                "half": 210,
-                "full": 300
-            },
             "stockCount": 20,
             "prepTime": "1h 30m",
             "hasPotatoOption": true

@@ -52,11 +52,6 @@ DEFAULT_MENU = {
             "image": "mbiriyani.jpg",
             "description": "Authentic Mutton Dum Biriyani of Bengal",
             "price": 300,
-            "hasSizes": True,
-            "prices": {
-                "half": 210,
-                "full": 300
-            },
             "available": True,
             "hasPotatoOption": True
         },
@@ -344,12 +339,10 @@ def migrate_and_merge(loaded_data):
     # 1. Remove ID 2 and ID 4 if they exist (old Half Biriyanis)
     items = [item for item in items if item.get('id') not in (2, 4)]
     
-    # 2. Check if ID 1 and ID 3 have hasSizes. If not, update them to combined versions from DEFAULT_MENU
-    default_biriyanis = {item['id']: item for item in DEFAULT_MENU['items'] if item['id'] in (1, 3)}
+    # 2. Check if ID 1 (Chicken Biriyani) has hasSizes. If not, update to combined version from DEFAULT_MENU
     for i, item in enumerate(items):
-        item_id = item.get('id')
-        if item_id in (1, 3) and not item.get('hasSizes'):
-            items[i] = default_biriyanis[item_id]
+        if item.get('id') == 1 and not item.get('hasSizes'):
+            items[i] = DEFAULT_MENU['items'][0]
             
     # 3. Add any other missing items from DEFAULT_MENU
     loaded_ids = {item.get('id') for item in items}
