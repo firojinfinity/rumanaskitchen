@@ -321,6 +321,66 @@ DEFAULT_MENU = {
             "description": "Per plate",
             "price": 90,
             "available": True
+        },
+        {
+            "id": 30,
+            "name": "Tandoori Roti",
+            "category": "snacks",
+            "diet": "veg",
+            "image": "tandooriroti.jpg",
+            "description": "Per piece",
+            "price": 40,
+            "available": True,
+            "stockCount": 20,
+            "prepTime": "1h 30m"
+        },
+        {
+            "id": 31,
+            "name": "Chicken Chaap",
+            "category": "curries",
+            "diet": "nonveg",
+            "image": "chickenchaap.jpg",
+            "description": "1 piece per plate",
+            "price": 110,
+            "available": True,
+            "stockCount": 20,
+            "prepTime": "1h 30m"
+        },
+        {
+            "id": 32,
+            "name": "Kashmiri Aloo Dum",
+            "category": "curries",
+            "diet": "veg",
+            "image": "kashmirialoodum.jpg",
+            "description": "5 pcs per plate",
+            "price": 100,
+            "available": True,
+            "stockCount": 20,
+            "prepTime": "1h 30m"
+        },
+        {
+            "id": 33,
+            "name": "Fulko Luchi",
+            "category": "snacks",
+            "diet": "veg",
+            "image": "fulkoluchi.jpg",
+            "description": "4 pcs per plate",
+            "price": 50,
+            "available": True,
+            "stockCount": 20,
+            "prepTime": "1h 30m"
+        },
+        {
+            "id": 34,
+            "name": "Chicken Bharta",
+            "category": "curries",
+            "diet": "nonveg",
+            "image": "chickenbharta.jpg",
+            "description": "Per plate",
+            "price": 120,
+            "available": True,
+            "stockCount": 20,
+            "prepTime": "1h 30m"
         }
     ]
 }
