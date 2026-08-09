@@ -372,10 +372,10 @@ DEFAULT_MENU = {
         },
         {
             "id": 34,
-            "name": "Chicken Bharta",
+            "name": "Chicken Varta",
             "category": "curries",
             "diet": "nonveg",
-            "image": "chickenbharta.jpg",
+            "image": "chickenvarta.jpg",
             "description": "Per plate",
             "price": 120,
             "available": True,

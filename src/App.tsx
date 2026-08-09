@@ -63,7 +63,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 31, name: "Chicken Chaap", category: "curries", diet: "nonveg", image: "chickenchaap.jpg", description: "1 piece per plate", price: 110, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 32, name: "Kashmiri Aloo Dum", category: "curries", diet: "veg", image: "kashmirialoodum.jpg", description: "5 pcs per plate", price: 100, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 33, name: "Fulko Luchi", category: "snacks", diet: "veg", image: "fulkoluchi.jpg", description: "4 pcs per plate", price: 50, available: true, stockCount: 20, prepTime: "1h 30m" },
-  { id: 34, name: "Chicken Bharta", category: "curries", diet: "nonveg", image: "chickenbharta.jpg", description: "Per plate", price: 120, available: true, stockCount: 20, prepTime: "1h 30m" }
+  { id: 34, name: "Chicken Varta", category: "curries", diet: "nonveg", image: "chickenvarta.jpg", description: "Per plate", price: 120, available: true, stockCount: 20, prepTime: "1h 30m" }
 ];
 
 export default function App() {
