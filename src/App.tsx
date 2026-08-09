@@ -108,6 +108,60 @@ export default function App() {
   const [prepTime, setPrepTime] = useState<string>('1h 30m');
   const [editedPrepTime, setEditedPrepTime] = useState<string>('1h 30m');
 
+  // Add New Item States
+  const [showAddItemModal, setShowAddItemModal] = useState<boolean>(false);
+  const [newItemName, setNewItemName] = useState<string>('');
+  const [newItemCategory, setNewItemCategory] = useState<'biryani' | 'curries' | 'snacks' | 'sweets'>('curries');
+  const [newItemDiet, setNewItemDiet] = useState<'veg' | 'nonveg'>('veg');
+  const [newItemPrice, setNewItemPrice] = useState<string>('');
+  const [newItemDescription, setNewItemDescription] = useState<string>('Per plate');
+  const [newItemPrepTime, setNewItemPrepTime] = useState<string>('1h 30m');
+  const [newItemStock, setNewItemStock] = useState<string>('20');
+  const [newItemImage, setNewItemImage] = useState<string>('');
+  const [newItemHasPotato, setNewItemHasPotato] = useState<boolean>(false);
+
+  const handleAddNewItemSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newItemName.trim() || !newItemPrice) {
+      alert("Please enter item name and price.");
+      return;
+    }
+
+    const nextId = editedItems.length > 0 ? Math.max(...editedItems.map(i => i.id)) + 1 : 35;
+    const itemPriceNum = parseInt(newItemPrice) || 0;
+    const newItem: MenuItem = {
+      id: nextId,
+      name: newItemName.trim(),
+      category: newItemCategory,
+      diet: newItemDiet,
+      image: newItemImage.trim() || (newItemDiet === 'veg' ? 'veg.jpg' : 'ccurry.jpg'),
+      description: newItemDescription.trim() || 'Per plate',
+      price: itemPriceNum,
+      available: true,
+      stockCount: parseInt(newItemStock) || 20,
+      prepTime: newItemPrepTime.trim() || '1h 30m',
+      hasPotatoOption: newItemHasPotato
+    };
+
+    setEditedItems(prev => [newItem, ...prev]);
+    setShowAddItemModal(false);
+
+    setNewItemName('');
+    setNewItemPrice('');
+    setNewItemDescription('Per plate');
+    setNewItemImage('');
+    setNewItemHasPotato(false);
+
+    triggerToast(`Added "${newItem.name}". Click "Publish Changes" to save live.`);
+  };
+
+  const handleDeleteItem = (id: number, name: string) => {
+    if (window.confirm(`Are you sure you want to remove "${name}" from the menu?`)) {
+      setEditedItems(prev => prev.filter(item => item.id !== id));
+      triggerToast(`Removed "${name}". Click "Publish Changes" to save.`);
+    }
+  };
+
   const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/6a5c9b1af5f4af5e29a36006';
   const JSONBIN_KEY = '$2a$10$7pl.Q7DOkk19SU86HWjlceD4TmOaP/UaJhDIhhqZq5bA4rVkmD75.';
 
@@ -1064,7 +1118,10 @@ export default function App() {
                 {/* Items Admin List */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px', borderBottom: '1px solid rgba(158, 42, 43, 0.1)', paddingBottom: '10px' }}>
                   <h3 style={{ color: 'var(--primary)', margin: 0 }}>Food Catalog ({editedItems.length} items)</h3>
-                  <div style={{ display: 'flex', gap: '10px' }}>
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <button className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => setShowAddItemModal(true)}>
+                      ➕ Add New Dish
+                    </button>
                     <button className="btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }} onClick={() => setAllAvailability(true)}>
                       ✅ Mark All Available
                     </button>
@@ -1073,6 +1130,183 @@ export default function App() {
                     </button>
                   </div>
                 </div>
+
+                {/* Add New Item Modal Overlay */}
+                {showAddItemModal && (
+                  <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.65)',
+                    backdropFilter: 'blur(5px)',
+                    zIndex: 9999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px'
+                  }}>
+                    <div style={{
+                      background: 'white',
+                      borderRadius: '16px',
+                      maxWidth: '550px',
+                      width: '100%',
+                      maxHeight: '90vh',
+                      overflowY: 'auto',
+                      padding: '25px',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                      border: '1px solid rgba(158,42,43,0.2)'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <h3 style={{ color: 'var(--primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          🍲 Add New Dish to Menu
+                        </h3>
+                        <button
+                          onClick={() => setShowAddItemModal(false)}
+                          style={{ background: 'none', border: 'none', fontSize: '22px', cursor: 'pointer', color: '#666' }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+
+                      <form onSubmit={handleAddNewItemSubmit}>
+                        <div className="form-group" style={{ marginBottom: '15px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Dish Name *</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="e.g. Mutton Keema, Samosa, Kheer"
+                            value={newItemName}
+                            onChange={(e) => setNewItemName(e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                          <div className="form-group" style={{ marginBottom: 0 }}>
+                            <label className="form-label" style={{ fontWeight: 700 }}>Category</label>
+                            <select
+                              className="form-input"
+                              value={newItemCategory}
+                              onChange={(e) => setNewItemCategory(e.target.value as any)}
+                            >
+                              <option value="biryani">Biryani & Rice</option>
+                              <option value="curries">Curries</option>
+                              <option value="snacks">Snacks & Breads</option>
+                              <option value="sweets">Sweets & Desserts</option>
+                            </select>
+                          </div>
+
+                          <div className="form-group" style={{ marginBottom: 0 }}>
+                            <label className="form-label" style={{ fontWeight: 700 }}>Diet Type</label>
+                            <select
+                              className="form-input"
+                              value={newItemDiet}
+                              onChange={(e) => setNewItemDiet(e.target.value as any)}
+                            >
+                              <option value="veg">🥦 Veg</option>
+                              <option value="nonveg">🔴 Non-Veg</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                          <div className="form-group" style={{ marginBottom: 0 }}>
+                            <label className="form-label" style={{ fontWeight: 700 }}>Price (₹) *</label>
+                            <input
+                              type="number"
+                              className="form-input"
+                              placeholder="e.g. 120"
+                              value={newItemPrice}
+                              onChange={(e) => setNewItemPrice(e.target.value)}
+                              required
+                            />
+                          </div>
+
+                          <div className="form-group" style={{ marginBottom: 0 }}>
+                            <label className="form-label" style={{ fontWeight: 700 }}>Portion / Description</label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="e.g. Per plate, 4 pcs"
+                              value={newItemDescription}
+                              onChange={(e) => setNewItemDescription(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                          <div className="form-group" style={{ marginBottom: 0 }}>
+                            <label className="form-label" style={{ fontWeight: 700 }}>⏱️ Prep Time</label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="e.g. 1h 30m, 45 mins"
+                              value={newItemPrepTime}
+                              onChange={(e) => setNewItemPrepTime(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="form-group" style={{ marginBottom: 0 }}>
+                            <label className="form-label" style={{ fontWeight: 700 }}>Initial Stock</label>
+                            <input
+                              type="number"
+                              className="form-input"
+                              placeholder="e.g. 20"
+                              value={newItemStock}
+                              onChange={(e) => setNewItemStock(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: '15px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Image Path / URL (Optional)</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="e.g. mcurry.jpg or https://..."
+                            value={newItemImage}
+                            onChange={(e) => setNewItemImage(e.target.value)}
+                          />
+                          <span style={{ fontSize: '11px', color: '#666', marginTop: '4px', display: 'block' }}>
+                            Leave blank to auto-use default image for {newItemDiet === 'veg' ? 'Veg' : 'Non-Veg'}.
+                          </span>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', background: '#f9f9f9', padding: '10px 14px', borderRadius: '8px' }}>
+                          <input
+                            type="checkbox"
+                            id="newItemHasPotato"
+                            checked={newItemHasPotato}
+                            onChange={(e) => setNewItemHasPotato(e.target.checked)}
+                            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                          />
+                          <label htmlFor="newItemHasPotato" style={{ fontSize: '13px', fontWeight: 600, cursor: 'pointer', margin: 0 }}>
+                            🥔 Include "With Potato / No Potato" option in Cart
+                          </label>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                          <button
+                            type="button"
+                            className="btn-secondary"
+                            onClick={() => setShowAddItemModal(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn-primary"
+                          >
+                            ➕ Save & Add Dish
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
+
                 <div className="admin-grid">
                   {editedItems.map(item => (
                     <div key={item.id} className="admin-card">
@@ -1106,7 +1340,8 @@ export default function App() {
                             <label className="form-label" style={{ fontSize: '11px', marginBottom: 0 }}>Item Name</label>
                             <input
                               type="text"
-                              className="form-input input-name"
+                              className="form-input"
+                              style={{ width: '160px' }}
                               value={item.name}
                               onChange={(e) => handleEditItemField(item.id, 'name', e.target.value)}
                             />
@@ -1116,7 +1351,8 @@ export default function App() {
                             <label className="form-label" style={{ fontSize: '11px', marginBottom: 0 }}>Price (₹)</label>
                             <input
                               type="number"
-                              className="form-input input-price"
+                              className="form-input"
+                              style={{ width: '90px' }}
                               value={item.price}
                               onChange={(e) => handleEditItemField(item.id, 'price', parseInt(e.target.value) || 0)}
                             />
@@ -1158,8 +1394,8 @@ export default function App() {
                           </div>
                         </div>
 
-                        {/* Availability Toggle */}
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                        {/* Actions: Stock & Delete */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                           <span className="toggle-label" style={{ fontSize: '10px' }}>In Stock</span>
                           <label className="switch">
                             <input
@@ -1169,6 +1405,23 @@ export default function App() {
                             />
                             <span className="slider"></span>
                           </label>
+                          <button
+                            onClick={() => handleDeleteItem(item.id, item.name)}
+                            style={{
+                              background: '#ffebee',
+                              color: '#c62828',
+                              border: '1px solid #ffcdd2',
+                              padding: '4px 10px',
+                              borderRadius: '6px',
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              marginTop: '2px'
+                            }}
+                            title="Remove dish from menu"
+                          >
+                            🗑️ Delete
+                          </button>
                         </div>
                       </div>
                     </div>
