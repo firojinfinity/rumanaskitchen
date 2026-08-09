@@ -523,6 +523,19 @@ export default function App() {
 
 
 
+  const getItemImageSrc = (item: MenuItem) => {
+    if (!item) return '/veg.jpg';
+    const nameLower = (item.name || '').toLowerCase();
+    if (item.id === 30 || nameLower.includes('tandoori roti')) return '/tandooriroti.jpg';
+    if (item.id === 31 || nameLower.includes('chicken chaap')) return '/chickenchaap.jpg';
+    if (item.id === 32 || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) return '/kashmirialoodum.jpg';
+    if (item.id === 33 || nameLower.includes('fulko luchi')) return '/fulkoluchi.jpg';
+    if (item.id === 34 || nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) return '/chickenvarta.jpg';
+    if (item.image && (item.image.startsWith('http') || item.image.startsWith('data:'))) return item.image;
+    if (item.image) return item.image.startsWith('/') ? item.image : `/${item.image}`;
+    return '/veg.jpg';
+  };
+
   const renderCard = (item: MenuItem) => (
     <div
       key={item.id}
@@ -545,8 +558,17 @@ export default function App() {
           <span className="badge badge-category">{item.category}</span>
           <span className={`badge ${item.available ? 'badge-available' : 'badge-unavailable'}`}>{item.available ? '✅ Available' : '❌ Not Available'}</span>
         </div>
-        <img className="card-img" src={item.image}
-          onError={(e) => { const t = e.target as HTMLImageElement; t.src = item.fallbackImage || 'veg.jpg'; }}
+        <img className="card-img" src={getItemImageSrc(item)}
+          onError={(e) => {
+            const t = e.target as HTMLImageElement;
+            const nameLower = (item.name || '').toLowerCase();
+            if (item.id === 30 || nameLower.includes('tandoori roti')) t.src = '/tandooriroti.png';
+            else if (item.id === 31 || nameLower.includes('chicken chaap')) t.src = '/chickenchaap.png';
+            else if (item.id === 32 || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) t.src = '/kashmirialoodum.png';
+            else if (item.id === 33 || nameLower.includes('fulko luchi')) t.src = '/fulkoluchi.png';
+            else if (item.id === 34 || nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) t.src = '/chickenvarta.png';
+            else t.src = item.fallbackImage || '/veg.jpg';
+          }}
           alt={item.name}
         />
       </div>
@@ -1057,14 +1079,16 @@ export default function App() {
                       <div className="admin-card-info">
                         <img
                           className="admin-card-img"
-                          src={item.image}
+                          src={getItemImageSrc(item)}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            if (item.fallbackImage) {
-                              target.src = item.fallbackImage;
-                            } else {
-                              target.src = 'veg.jpg';
-                            }
+                            const nameLower = (item.name || '').toLowerCase();
+                            if (item.id === 30 || nameLower.includes('tandoori roti')) target.src = '/tandooriroti.png';
+                            else if (item.id === 31 || nameLower.includes('chicken chaap')) target.src = '/chickenchaap.png';
+                            else if (item.id === 32 || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) target.src = '/kashmirialoodum.png';
+                            else if (item.id === 33 || nameLower.includes('fulko luchi')) target.src = '/fulkoluchi.png';
+                            else if (item.id === 34 || nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) target.src = '/chickenvarta.png';
+                            else target.src = item.fallbackImage || '/veg.jpg';
                           }}
                           alt={item.name}
                         />
