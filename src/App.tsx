@@ -1261,17 +1261,66 @@ export default function App() {
                         </div>
 
                         <div className="form-group" style={{ marginBottom: '15px' }}>
-                          <label className="form-label" style={{ fontWeight: 700 }}>Image Path / URL (Optional)</label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            placeholder="e.g. mcurry.jpg or https://..."
-                            value={newItemImage}
-                            onChange={(e) => setNewItemImage(e.target.value)}
-                          />
-                          <span style={{ fontSize: '11px', color: '#666', marginTop: '4px', display: 'block' }}>
-                            Leave blank to auto-use default image for {newItemDiet === 'veg' ? 'Veg' : 'Non-Veg'}.
-                          </span>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Dish Photo *</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <label style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              background: 'var(--primary)',
+                              color: 'white',
+                              padding: '10px 16px',
+                              borderRadius: '8px',
+                              fontWeight: 700,
+                              fontSize: '13px',
+                              cursor: 'pointer',
+                              width: 'fit-content',
+                              boxShadow: '0 4px 10px rgba(158,42,43,0.2)'
+                            }}>
+                              📸 Take Photo / Upload from Phone
+                              <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      if (typeof reader.result === 'string') {
+                                        setNewItemImage(reader.result);
+                                      }
+                                    };
+                                    reader.readAsDataURL(file);
+                                  }
+                                }}
+                              />
+                            </label>
+
+                            {newItemImage && (
+                              <div style={{ position: 'relative', width: '130px', height: '95px', borderRadius: '8px', overflow: 'hidden', border: '2px solid var(--primary)', marginTop: '4px' }}>
+                                <img src={newItemImage} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <button
+                                  type="button"
+                                  onClick={() => setNewItemImage('')}
+                                  style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.7)', color: 'white', border: 'none', borderRadius: '50%', width: '22px', height: '22px', fontSize: '11px', cursor: 'pointer' }}
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            )}
+
+                            <div style={{ fontSize: '11px', color: '#666' }}>
+                              Or enter image filename/URL manually:
+                            </div>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="e.g. mcurry.jpg or https://..."
+                              value={newItemImage.startsWith('data:') ? 'Photo attached from phone 📸' : newItemImage}
+                              onChange={(e) => setNewItemImage(e.target.value)}
+                            />
+                          </div>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', background: '#f9f9f9', padding: '10px 14px', borderRadius: '8px' }}>
@@ -1331,6 +1380,41 @@ export default function App() {
                           <div className="admin-card-meta">
                             Category: <strong style={{ textTransform: 'capitalize' }}>{item.category}</strong> | Price: <strong>₹{item.price}</strong> | Status: <strong style={{ color: item.available ? '#2e7d32' : '#c62828' }}>{item.available ? 'Available' : 'Sold Out'}</strong>
                           </div>
+                          <label style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            background: '#f0f4f8',
+                            color: 'var(--primary)',
+                            border: '1px solid rgba(158, 42, 43, 0.2)',
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            marginTop: '6px',
+                            width: 'fit-content'
+                          }}>
+                            📸 Change Photo
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    if (typeof reader.result === 'string') {
+                                      handleEditItemField(item.id, 'image', reader.result);
+                                      triggerToast(`Photo uploaded for "${item.name}". Click "Publish Changes" to save.`);
+                                    }
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
                         </div>
                       </div>
 
