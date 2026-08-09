@@ -341,7 +341,7 @@ DEFAULT_MENU = {
             "diet": "nonveg",
             "image": "chickenchaap.jpg",
             "description": "1 piece per plate",
-            "price": 110,
+            "price": 120,
             "available": True,
             "stockCount": 20,
             "prepTime": "1h 30m"

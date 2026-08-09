@@ -60,7 +60,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 28, name: "Egg Curry with Potato", category: "curries", diet: "nonveg", image: "eggcurry.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 },
   { id: 29, name: "Soya Chunks Curry", category: "curries", diet: "veg", image: "soyachunks.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 },
   { id: 30, name: "Tandoori Roti", category: "snacks", diet: "veg", image: "tandooriroti.jpg", description: "Per piece", price: 40, available: true, stockCount: 20, prepTime: "1h 30m" },
-  { id: 31, name: "Chicken Chaap", category: "curries", diet: "nonveg", image: "chickenchaap.jpg", description: "1 piece per plate", price: 110, available: true, stockCount: 20, prepTime: "1h 30m" },
+  { id: 31, name: "Chicken Chaap", category: "curries", diet: "nonveg", image: "chickenchaap.jpg", description: "1 piece per plate", price: 120, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 32, name: "Kashmiri Aloo Dum", category: "curries", diet: "veg", image: "kashmirialoodum.jpg", description: "5 pcs per plate", price: 100, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 33, name: "Fulko Luchi", category: "snacks", diet: "veg", image: "fulkoluchi.jpg", description: "4 pcs per plate", price: 50, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 34, name: "Chicken Varta", category: "curries", diet: "nonveg", image: "chickenvarta.jpg", description: "Per plate", price: 120, available: true, stockCount: 20, prepTime: "1h 30m" }
