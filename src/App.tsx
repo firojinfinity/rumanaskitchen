@@ -577,15 +577,65 @@ export default function App() {
 
 
 
+  const compressAndResizeImage = (file: File, maxWidth = 600, maxHeight = 600, quality = 0.75): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(dataUrl);
+          } else {
+            resolve(e.target?.result as string);
+          }
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const getItemImageSrc = (item: MenuItem) => {
     if (!item) return '/veg.jpg';
+    // If item has a custom base64 uploaded image or full HTTP URL, ALWAYS use that first!
+    if (item.image && (item.image.startsWith('data:') || item.image.startsWith('http://') || item.image.startsWith('https://'))) {
+      return item.image;
+    }
+    // If item image is a custom relative path (not default preset), use item.image
+    if (item.image && !['veg.jpg', 'ccurry.jpg', 'mutton.jpg', 'biriyani.jpg'].includes(item.image)) {
+      return item.image.startsWith('/') ? item.image : `/${item.image}`;
+    }
+
     const nameLower = (item.name || '').toLowerCase();
     if (item.id === 30 || nameLower.includes('tandoori roti')) return '/tandooriroti.jpg';
     if (item.id === 31 || nameLower.includes('chicken chaap')) return '/chickenchaap.jpg';
     if (item.id === 32 || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) return '/kashmirialoodum.jpg';
     if (item.id === 33 || nameLower.includes('fulko luchi')) return '/fulkoluchi.jpg';
     if (item.id === 34 || nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) return '/chickenvarta.jpg';
-    if (item.image && (item.image.startsWith('http') || item.image.startsWith('data:'))) return item.image;
+
     if (item.image) return item.image.startsWith('/') ? item.image : `/${item.image}`;
     return '/veg.jpg';
   };
@@ -1285,13 +1335,18 @@ export default function App() {
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                      if (typeof reader.result === 'string') {
-                                        setNewItemImage(reader.result);
-                                      }
-                                    };
-                                    reader.readAsDataURL(file);
+                                    compressAndResizeImage(file).then(compressedDataUrl => {
+                                      setNewItemImage(compressedDataUrl);
+                                      triggerToast("Photo compressed & attached! Click Save to finish.");
+                                    }).catch(() => {
+                                      const reader = new FileReader();
+                                      reader.onloadend = () => {
+                                        if (typeof reader.result === 'string') {
+                                          setNewItemImage(reader.result);
+                                        }
+                                      };
+                                      reader.readAsDataURL(file);
+                                    });
                                   }
                                 }}
                               />
@@ -1403,14 +1458,19 @@ export default function App() {
                               onChange={(e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
-                                  const reader = new FileReader();
-                                  reader.onloadend = () => {
-                                    if (typeof reader.result === 'string') {
-                                      handleEditItemField(item.id, 'image', reader.result);
-                                      triggerToast(`Photo uploaded for "${item.name}". Click "Publish Changes" to save.`);
-                                    }
-                                  };
-                                  reader.readAsDataURL(file);
+                                  compressAndResizeImage(file).then(compressedDataUrl => {
+                                    handleEditItemField(item.id, 'image', compressedDataUrl);
+                                    triggerToast(`Photo compressed & updated for "${item.name}". Click "Publish Changes" to save.`);
+                                  }).catch(() => {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      if (typeof reader.result === 'string') {
+                                        handleEditItemField(item.id, 'image', reader.result);
+                                        triggerToast(`Photo updated for "${item.name}". Click "Publish Changes" to save.`);
+                                      }
+                                    };
+                                    reader.readAsDataURL(file);
+                                  });
                                 }
                               }}
                             />
