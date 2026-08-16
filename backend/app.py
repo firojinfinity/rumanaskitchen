@@ -404,11 +404,9 @@ def migrate_and_merge(loaded_data):
         if item.get('id') == 1 and not item.get('hasSizes'):
             items[i] = DEFAULT_MENU['items'][0]
             
-    # 3. Add any other missing items from DEFAULT_MENU
-    loaded_ids = {item.get('id') for item in items}
-    for default_item in DEFAULT_MENU['items']:
-        if default_item['id'] not in loaded_ids:
-            items.append(default_item)
+    # 3. If items list is completely empty, seed from DEFAULT_MENU
+    if not items:
+        items = copy.deepcopy(DEFAULT_MENU['items'])
             
     # 4. Ensure all items have a stockCount and prepTime (defaults if missing)
     for item in items:

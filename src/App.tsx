@@ -120,7 +120,7 @@ export default function App() {
   const [newItemImage, setNewItemImage] = useState<string>('');
   const [newItemHasPotato, setNewItemHasPotato] = useState<boolean>(false);
 
-  const handleAddNewItemSubmit = (e: React.FormEvent) => {
+  const handleAddNewItemSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newItemName.trim() || !newItemPrice) {
       alert("Please enter item name and price.");
@@ -143,7 +143,8 @@ export default function App() {
       hasPotatoOption: newItemHasPotato
     };
 
-    setEditedItems(prev => [newItem, ...prev]);
+    const updated = [newItem, ...editedItems];
+    setEditedItems(updated);
     setShowAddItemModal(false);
 
     setNewItemName('');
@@ -152,13 +153,16 @@ export default function App() {
     setNewItemImage('');
     setNewItemHasPotato(false);
 
-    triggerToast(`Added "${newItem.name}". Click "Publish Changes" to save live.`);
+    triggerToast(`Added & Published "${newItem.name}" live!`);
+    await publishMenuState(updated);
   };
 
-  const handleDeleteItem = (id: number, name: string) => {
+  const handleDeleteItem = async (id: number, name: string) => {
     if (window.confirm(`Are you sure you want to remove "${name}" from the menu?`)) {
-      setEditedItems(prev => prev.filter(item => item.id !== id));
-      triggerToast(`Removed "${name}". Click "Publish Changes" to save.`);
+      const updated = editedItems.filter(item => item.id !== id);
+      setEditedItems(updated);
+      triggerToast(`Removed "${name}" & updated cloud.`);
+      await publishMenuState(updated);
     }
   };
 
@@ -178,6 +182,41 @@ export default function App() {
       console.log("[JSONBIN Direct] Saved to cloud CDN successfully.");
     } catch (e) {
       console.warn("Direct JSONBin save failed:", e);
+    }
+  };
+
+  const publishMenuState = async (
+    updatedItems: MenuItem[],
+    currDinnerMode = dinnerMode,
+    currAnnounce = announcement,
+    currPrep = prepTime
+  ) => {
+    const payload = {
+      dinnerMode: currDinnerMode,
+      announcement: currAnnounce,
+      prepTime: currPrep,
+      items: updatedItems
+    };
+
+    setMenuItems(JSON.parse(JSON.stringify(updatedItems)));
+    setEditedItems(JSON.parse(JSON.stringify(updatedItems)));
+    try {
+      localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
+    } catch (e) {}
+
+    await saveToJSONBinDirect(payload);
+
+    try {
+      await fetch(`${API_BASE}/api/menu/update`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${adminToken || 'rumana2026'}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn("Render update failed, cloud JSONBin updated.", err);
     }
   };
 
