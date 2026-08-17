@@ -396,9 +396,6 @@ def migrate_and_merge(loaded_data):
         
     items = loaded_data.get('items', [])
     
-    # 1. Remove ID 2 and ID 4 if they exist (old Half Biriyanis)
-    items = [item for item in items if item.get('id') not in (2, 4)]
-    
     # 2. Check if ID 1 (Chicken Biriyani) has hasSizes. If not, update to combined version from DEFAULT_MENU
     for i, item in enumerate(items):
         if item.get('id') == 1 and not item.get('hasSizes'):

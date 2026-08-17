@@ -127,7 +127,7 @@ export default function App() {
       return;
     }
 
-    const nextId = editedItems.length > 0 ? Math.max(...editedItems.map(i => i.id)) + 1 : 35;
+    const nextId = Date.now() + Math.floor(Math.random() * 1000);
     const itemPriceNum = parseInt(newItemPrice) || 0;
     const newItem: MenuItem = {
       id: nextId,
