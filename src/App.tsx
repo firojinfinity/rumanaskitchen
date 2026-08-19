@@ -655,24 +655,50 @@ export default function App() {
 
   const getItemImageSrc = (item: MenuItem) => {
     if (!item) return '/veg.jpg';
-    // If item has a custom base64 uploaded image or full HTTP URL, ALWAYS use that first!
-    if (item.image && (item.image.startsWith('data:') || item.image.startsWith('http://') || item.image.startsWith('https://'))) {
+    
+    // 1. Custom base64 image (uploaded via phone camera/gallery)
+    if (item.image && item.image.startsWith('data:')) {
       return item.image;
     }
-    // If item image is a custom relative path (not default preset), use item.image
-    if (item.image && !['veg.jpg', 'ccurry.jpg', 'mutton.jpg', 'biriyani.jpg'].includes(item.image)) {
-      return item.image.startsWith('/') ? item.image : `/${item.image}`;
+
+    // 2. Custom HTTP/HTTPS URL
+    if (item.image && (item.image.startsWith('http://') || item.image.startsWith('https://'))) {
+      return item.image;
     }
 
     const nameLower = (item.name || '').toLowerCase();
-    if (item.id === 30 || nameLower.includes('tandoori roti')) return '/tandooriroti.jpg';
-    if (item.id === 31 || nameLower.includes('chicken chaap')) return '/chickenchaap.jpg';
-    if (item.id === 32 || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) return '/kashmirialoodum.jpg';
-    if (item.id === 33 || nameLower.includes('fulko luchi')) return '/fulkoluchi.jpg';
-    if (item.id === 34 || nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) return '/chickenvarta.jpg';
 
-    if (item.image) return item.image.startsWith('/') ? item.image : `/${item.image}`;
-    return '/veg.jpg';
+    // 3. Name-based exact image mapping (Guarantees authentic distinct photo for every item!)
+    if (nameLower.includes('paneer biriyani') || nameLower.includes('paneer biryani')) return '/paneerbiriyani.jpg';
+    if (nameLower.includes('chicken biriyani') || nameLower.includes('chicken biryani')) return '/biriyani.jpg';
+    if (nameLower.includes('mutton biriyani') || nameLower.includes('mutton biryani')) return '/mbiriyani.jpg';
+    if (nameLower.includes('mutton kasha') || nameLower.includes('mutton curry')) return '/mutton.jpg';
+    if (nameLower.includes('chicken chaap')) return '/chickenchaap.jpg';
+    if (nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) return '/kashmirialoodum.jpg';
+    if (nameLower.includes('fulko luchi') || nameLower.includes('luchi')) return '/fulkoluchi.jpg';
+    if (nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) return '/chickenvarta.jpg';
+    if (nameLower.includes('tandoori roti')) return '/tandooriroti.jpg';
+    if (nameLower.includes('fish')) return '/fish.jpg';
+    if (nameLower.includes('prawn')) return '/prawn.png';
+    if (nameLower.includes('paneer')) return '/paneer.jpg';
+    if (nameLower.includes('fried rice')) return '/friedrice.jpg';
+    if (nameLower.includes('plain rice')) return '/frice.jpg';
+    if (nameLower.includes('aloo paratha')) return '/alooparatha.jpg';
+    if (nameLower.includes('paratha')) return '/paratha.jpg';
+    if (nameLower.includes('fulka') || nameLower.includes('roti')) return '/fulka.jpg';
+    if (nameLower.includes('egg')) return '/eggcurry.jpg';
+    if (nameLower.includes('soya')) return '/soyachunks.jpg';
+    if (nameLower.includes('sawaiyan')) return '/sawaiyan.jpg';
+    if (nameLower.includes('muri ghonto')) return '/murighonto.jpg';
+    if (nameLower.includes('dal pakora')) return '/dalpakora.jpg';
+    if (nameLower.includes('dal')) return '/dal.jpg';
+    if (nameLower.includes('chicken pakora') || nameLower.includes('pakora')) return '/cpakora.jpg';
+
+    if (item.image && !['veg.jpg', 'ccurry.jpg'].includes(item.image)) {
+      return item.image.startsWith('/') ? item.image : `/${item.image}`;
+    }
+
+    return item.diet === 'veg' ? '/veg.jpg' : '/ccurry.jpg';
   };
 
   const renderCard = (item: MenuItem) => (
