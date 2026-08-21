@@ -29,6 +29,21 @@ interface CartItem {
   withPotato?: boolean;
 }
 
+interface CarouselItem {
+  id: string;
+  image: string;
+  title?: string;
+  subtitle?: string;
+  tag?: string;
+}
+
+const DEFAULT_CAROUSEL_ITEMS: CarouselItem[] = [
+  { id: 'c1', image: '/kitchen1.jpg', title: "Aromatic Biryani Dum Preparation", subtitle: "Slow cooked with native Bengal spices & pure ghee", tag: "🍳 Kitchen Story" },
+  { id: 'c2', image: '/kitchen2.jpg', title: "Authentic Bengali Thali Feast", subtitle: "Prepared fresh every morning with pure love", tag: "⭐ Signature Delicacies" },
+  { id: 'c3', image: '/paneerbiriyani.jpg', title: "Special Paneer Biriyani", subtitle: "Fresh cottage cheese cubes in saffron basmati rice (₹170)", tag: "🥦 Veg Special" },
+  { id: 'c4', image: '/chickenchaap.jpg', title: "Kolkata Style Chicken Chaap", subtitle: "Slow simmered rich aromatic poppy seeds gravy (₹120)", tag: "🔥 Customer Favorite" }
+];
+
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://rumanaskitchen.onrender.com');
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
@@ -122,31 +137,80 @@ export default function App() {
   const [newItemImage, setNewItemImage] = useState<string>('');
   const [newItemHasPotato, setNewItemHasPotato] = useState<boolean>(false);
 
+  // Carousel Highlights State
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>(DEFAULT_CAROUSEL_ITEMS);
+  const [editedCarouselItems, setEditedCarouselItems] = useState<CarouselItem[]>(DEFAULT_CAROUSEL_ITEMS);
+  const [showAddCarouselModal, setShowAddCarouselModal] = useState<boolean>(false);
+  const [newCarouselImage, setNewCarouselImage] = useState<string>('');
+  const [newCarouselTitle, setNewCarouselTitle] = useState<string>('');
+  const [newCarouselSubtitle, setNewCarouselSubtitle] = useState<string>('');
+  const [newCarouselTag, setNewCarouselTag] = useState<string>('🍳 Kitchen Story');
+
+  const handleAddCarouselSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCarouselImage) {
+      alert("Please upload or take a photo first.");
+      return;
+    }
+    const newItem: CarouselItem = {
+      id: 'c_' + Date.now(),
+      image: newCarouselImage,
+      title: newCarouselTitle.trim() || 'Featured Highlight',
+      subtitle: newCarouselSubtitle.trim() || '',
+      tag: newCarouselTag
+    };
+    const updated = [newItem, ...editedCarouselItems];
+    setEditedCarouselItems(updated);
+    setCarouselItems(updated);
+    setShowAddCarouselModal(false);
+
+    setNewCarouselImage('');
+    setNewCarouselTitle('');
+    setNewCarouselSubtitle('');
+
+    triggerToast("Photo added to Carousel!");
+    await publishMenuState(editedItems, dinnerMode, announcement, prepTime, updated);
+  };
+
+  const handleDeleteCarouselItem = async (id: string) => {
+    if (window.confirm("Are you sure you want to remove this photo from the Carousel?")) {
+      const updated = editedCarouselItems.filter(item => item.id !== id);
+      setEditedCarouselItems(updated);
+      setCarouselItems(updated);
+      triggerToast("Photo removed from Carousel!");
+      await publishMenuState(editedItems, dinnerMode, announcement, prepTime, updated);
+    }
+  };
+
   const handleAddNewItemSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newItemName.trim() || !newItemPrice) {
-      alert("Please enter item name and price.");
+    if (!newItemName || !newItemPrice) {
+      alert("Please fill in item name and price.");
+      return;
+    }
+    const priceNum = parseFloat(newItemPrice);
+    if (isNaN(priceNum) || priceNum < 0) {
+      alert("Please enter a valid price.");
       return;
     }
 
-    const nextId = Date.now() + Math.floor(Math.random() * 1000);
-    const itemPriceNum = parseInt(newItemPrice) || 0;
-    const newItem: MenuItem = {
-      id: nextId,
+    const newItemObj: MenuItem = {
+      id: Date.now() + Math.floor(Math.random() * 1000),
       name: newItemName.trim(),
       category: newItemCategory,
       diet: newItemDiet,
       image: newItemImage.trim() || (newItemDiet === 'veg' ? 'veg.jpg' : 'ccurry.jpg'),
       description: newItemDescription.trim() || 'Per plate',
-      price: itemPriceNum,
+      price: priceNum,
       available: true,
       stockCount: parseInt(newItemStock) || 20,
       prepTime: newItemPrepTime.trim() || '1h 30m',
       hasPotatoOption: newItemHasPotato
     };
 
-    const updated = [newItem, ...editedItems];
+    const updated = [...editedItems, newItemObj];
     setEditedItems(updated);
+    setMenuItems(updated);
     setShowAddItemModal(false);
 
     setNewItemName('');
@@ -155,7 +219,7 @@ export default function App() {
     setNewItemImage('');
     setNewItemHasPotato(false);
 
-    triggerToast(`Added & Published "${newItem.name}" live!`);
+    triggerToast("New dish added successfully!");
     await publishMenuState(updated);
   };
 
@@ -188,20 +252,25 @@ export default function App() {
   };
 
   const publishMenuState = async (
-    updatedItems: MenuItem[],
+    updatedItems = editedItems,
     currDinnerMode = dinnerMode,
     currAnnounce = announcement,
-    currPrep = prepTime
+    currPrep = prepTime,
+    updatedCarousel = editedCarouselItems
   ) => {
     const payload = {
       dinnerMode: currDinnerMode,
       announcement: currAnnounce,
       prepTime: currPrep,
-      items: updatedItems
+      items: updatedItems,
+      carousel: updatedCarousel
     };
 
     setMenuItems(JSON.parse(JSON.stringify(updatedItems)));
     setEditedItems(JSON.parse(JSON.stringify(updatedItems)));
+    setCarouselItems(JSON.parse(JSON.stringify(updatedCarousel)));
+    setEditedCarouselItems(JSON.parse(JSON.stringify(updatedCarousel)));
+
     try {
       localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
     } catch (e) {}
@@ -226,6 +295,10 @@ export default function App() {
     if (!data || !data.items) return;
     setMenuItems(data.items);
     setEditedItems(JSON.parse(JSON.stringify(data.items)));
+    if (data.carousel && Array.isArray(data.carousel) && data.carousel.length > 0) {
+      setCarouselItems(data.carousel);
+      setEditedCarouselItems(JSON.parse(JSON.stringify(data.carousel)));
+    }
     setDinnerMode(!!data.dinnerMode);
     const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
     setAnnouncement(msg);
@@ -670,7 +743,7 @@ export default function App() {
 
     const nameLower = (item.name || '').toLowerCase();
 
-    // 3. Name-based exact image mapping (Guarantees authentic distinct photo for every item!)
+    // 3. Name-based exact image mapping (Specific dish names BEFORE generic keywords!)
     if (nameLower.includes('paneer biriyani') || nameLower.includes('paneer biryani')) return '/paneerbiriyani.jpg';
     if (nameLower.includes('chicken biriyani') || nameLower.includes('chicken biryani')) return '/biriyani.jpg';
     if (nameLower.includes('mutton biriyani') || nameLower.includes('mutton biryani')) return '/mbiriyani.jpg';
@@ -682,15 +755,29 @@ export default function App() {
     if (nameLower.includes('tandoori roti')) return '/tandooriroti.jpg';
     if (nameLower.includes('fish')) return '/fish.jpg';
     if (nameLower.includes('prawn')) return '/prawn.png';
+
+    // Specific Sawaiyan variants:
+    if (nameLower.includes('gravy sawaiyan') || nameLower.includes('sheer khurma')) return '/gsawaiyan.jpg';
+    if (nameLower.includes('dry sawaiyan')) return '/dsawaiyan.jpg';
+
+    // Specific Paneer variants:
+    if (nameLower.includes('choley paneer')) return '/choleypaneer.jpg';
+    if (nameLower.includes('paneer masala')) return '/paneermasala.jpg';
+
+    // Specific Paratha variants:
+    if (nameLower.includes('laccha paratha')) return '/lacchaparatha.jpg';
+    if (nameLower.includes('aloo paratha')) return '/alooparatha.jpg';
+    if (nameLower.includes('normal paratha')) return '/nparatha.jpg';
+
+    // Generic keywords (fallbacks):
     if (nameLower.includes('paneer')) return '/paneer.jpg';
     if (nameLower.includes('fried rice')) return '/friedrice.jpg';
     if (nameLower.includes('plain rice')) return '/frice.jpg';
-    if (nameLower.includes('aloo paratha')) return '/alooparatha.jpg';
     if (nameLower.includes('paratha')) return '/paratha.jpg';
     if (nameLower.includes('fulka') || nameLower.includes('roti')) return '/fulka.jpg';
     if (nameLower.includes('egg')) return '/eggcurry.jpg';
     if (nameLower.includes('soya')) return '/soyachunks.jpg';
-    if (nameLower.includes('sawaiyan')) return '/sawaiyan.jpg';
+    if (nameLower.includes('sawaiyan')) return '/gsawaiyan.jpg';
     if (nameLower.includes('muri ghonto')) return '/murighonto.jpg';
     if (nameLower.includes('dal pakora')) return '/dalpakora.jpg';
     if (nameLower.includes('dal')) return '/dal.jpg';
@@ -825,6 +912,141 @@ export default function App() {
                 <a href="#menu" className="btn-primary">Explore Menu</a>
               </div>
             </header>
+
+            {/* Horizontal Scrollable Carousel Banner Section */}
+            {carouselItems && carouselItems.length > 0 && (
+              <section style={{ padding: '30px 20px 10px 20px', maxWidth: '1200px', margin: '0 auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                  <div>
+                    <span className="section-subtitle" style={{ fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--primary)' }}>✨ Kitchen Stories & Gallery</span>
+                    <h3 style={{ color: 'var(--text-dark)', margin: 0, fontSize: '22px', fontWeight: 800 }}>📸 Featured Highlights</h3>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={() => {
+                        const el = document.getElementById('carouselContainer');
+                        if (el) el.scrollBy({ left: -300, behavior: 'smooth' });
+                      }}
+                      style={{
+                        background: 'white',
+                        border: '1px solid rgba(158,42,43,0.25)',
+                        borderRadius: '50%',
+                        width: '36px',
+                        height: '36px',
+                        fontSize: '16px',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--primary)'
+                      }}
+                    >
+                      ❮
+                    </button>
+                    <button
+                      onClick={() => {
+                        const el = document.getElementById('carouselContainer');
+                        if (el) el.scrollBy({ left: 300, behavior: 'smooth' });
+                      }}
+                      style={{
+                        background: 'white',
+                        border: '1px solid rgba(158,42,43,0.25)',
+                        borderRadius: '50%',
+                        width: '36px',
+                        height: '36px',
+                        fontSize: '16px',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--primary)'
+                      }}
+                    >
+                      ❯
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  id="carouselContainer"
+                  style={{
+                    display: 'flex',
+                    gap: '16px',
+                    overflowX: 'auto',
+                    scrollSnapType: 'x mandatory',
+                    scrollBehavior: 'smooth',
+                    paddingBottom: '12px',
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'thin'
+                  }}
+                >
+                  {carouselItems.map((cItem, idx) => (
+                    <div
+                      key={cItem.id || idx}
+                      style={{
+                        minWidth: '280px',
+                        maxWidth: '320px',
+                        height: '220px',
+                        borderRadius: '16px',
+                        overflow: 'hidden',
+                        position: 'relative',
+                        boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+                        scrollSnapAlign: 'start',
+                        flexShrink: 0,
+                        border: '1px solid rgba(158,42,43,0.15)',
+                        background: '#222'
+                      }}
+                    >
+                      <img
+                        src={cItem.image}
+                        alt={cItem.title || 'Highlight'}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
+                        padding: '16px',
+                        color: 'white',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end'
+                      }}>
+                        {cItem.tag && (
+                          <span style={{
+                            background: 'var(--primary)',
+                            color: 'white',
+                            fontSize: '10px',
+                            fontWeight: 800,
+                            padding: '3px 8px',
+                            borderRadius: '50px',
+                            width: 'fit-content',
+                            marginBottom: '6px',
+                            textTransform: 'uppercase'
+                          }}>
+                            {cItem.tag}
+                          </span>
+                        )}
+                        {cItem.title && (
+                          <h4 style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: 700, lineHeight: 1.2 }}>
+                            {cItem.title}
+                          </h4>
+                        )}
+                        {cItem.subtitle && (
+                          <p style={{ margin: 0, fontSize: '12px', opacity: 0.9, fontWeight: 400 }}>
+                            {cItem.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Menu Section */}
             <section id="menu">
@@ -1228,6 +1450,48 @@ export default function App() {
 
 
 
+                {/* Carousel Banner Admin Control Section */}
+                <div style={{ background: 'white', borderRadius: '16px', padding: '25px', marginBottom: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid rgba(158,42,43,0.15)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+                    <div>
+                      <h3 style={{ color: 'var(--primary)', margin: 0, fontSize: '20px', fontWeight: 800 }}>
+                        📸 Carousel Banner & Photo Gallery Control
+                      </h3>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#666' }}>
+                        Add, remove, and manage photos displayed in the customer left-to-right carousel slider.
+                      </p>
+                    </div>
+                    <button
+                      className="btn-primary"
+                      onClick={() => setShowAddCarouselModal(true)}
+                      style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', padding: '10px 18px' }}
+                    >
+                      ➕ Add Carousel Photo
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '15px' }}>
+                    {editedCarouselItems.map((cItem) => (
+                      <div key={cItem.id} style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid #eee', background: '#f9f9f9', position: 'relative' }}>
+                        <div style={{ height: '140px', position: 'relative' }}>
+                          <img src={cItem.image} alt={cItem.title || 'Slide'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <button
+                            onClick={() => handleDeleteCarouselItem(cItem.id)}
+                            style={{ position: 'absolute', top: '8px', right: '8px', background: '#c62828', color: 'white', border: 'none', borderRadius: '50%', width: '26px', height: '26px', cursor: 'pointer', fontSize: '13px', fontWeight: 700 }}
+                            title="Delete slide"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                        <div style={{ padding: '10px' }}>
+                          <div style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 800, textTransform: 'uppercase' }}>{cItem.tag || 'Highlight'}</div>
+                          <div style={{ fontSize: '13px', fontWeight: 700, color: '#333', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cItem.title || 'Untitled Photo'}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Items Admin List */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px', borderBottom: '1px solid rgba(158, 42, 43, 0.1)', paddingBottom: '10px' }}>
                   <h3 style={{ color: 'var(--primary)', margin: 0 }}>Food Catalog ({editedItems.length} items)</h3>
@@ -1243,6 +1507,118 @@ export default function App() {
                     </button>
                   </div>
                 </div>
+
+                {/* Add Carousel Photo Modal Overlay */}
+                {showAddCarouselModal && (
+                  <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.65)',
+                    backdropFilter: 'blur(5px)',
+                    zIndex: 9999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px'
+                  }}>
+                    <div style={{
+                      background: 'white',
+                      borderRadius: '16px',
+                      maxWidth: '500px',
+                      width: '100%',
+                      padding: '25px',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                      border: '1px solid rgba(158,42,43,0.2)'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <h3 style={{ color: 'var(--primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          📸 Add Photo to Carousel
+                        </h3>
+                        <button
+                          onClick={() => setShowAddCarouselModal(false)}
+                          style={{ background: 'none', border: 'none', fontSize: '22px', cursor: 'pointer', color: '#666' }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+
+                      <form onSubmit={handleAddCarouselSubmit}>
+                        <div className="form-group" style={{ marginBottom: '15px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Select Photo *</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--primary)', color: 'white', padding: '10px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer', width: 'fit-content' }}>
+                              📸 Take Photo / Upload from Phone
+                              <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    compressAndResizeImage(file).then(compressedDataUrl => {
+                                      setNewCarouselImage(compressedDataUrl);
+                                      triggerToast("Photo attached & compressed!");
+                                    });
+                                  }
+                                }}
+                              />
+                            </label>
+
+                            {newCarouselImage && (
+                              <div style={{ position: 'relative', width: '130px', height: '95px', borderRadius: '8px', overflow: 'hidden', border: '2px solid var(--primary)' }}>
+                                <img src={newCarouselImage} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: '15px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Title / Caption</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="e.g. Mutton Biriyani Preparation, Customer Review"
+                            value={newCarouselTitle}
+                            onChange={(e) => setNewCarouselTitle(e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: '15px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Subtitle / Description</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="e.g. Prepared fresh with authentic spices"
+                            value={newCarouselSubtitle}
+                            onChange={(e) => setNewCarouselSubtitle(e.target.value)}
+                          />
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: '20px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Category Tag</label>
+                          <select
+                            className="form-input"
+                            value={newCarouselTag}
+                            onChange={(e) => setNewCarouselTag(e.target.value)}
+                          >
+                            <option value="🍳 Kitchen Story">🍳 Kitchen Story</option>
+                            <option value="⭐ Customer Review">⭐ Customer Review</option>
+                            <option value="🔥 Special Highlight">🔥 Special Highlight</option>
+                            <option value="🥦 Veg Special">🥦 Veg Special</option>
+                          </select>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                          <button type="button" className="btn-secondary" onClick={() => setShowAddCarouselModal(false)}>Cancel</button>
+                          <button type="submit" className="btn-primary">Save & Add to Carousel</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
 
                 {/* Add New Item Modal Overlay */}
                 {showAddItemModal && (
