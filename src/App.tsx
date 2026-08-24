@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 
 // Interfaces
 interface MenuItem {
@@ -340,37 +340,35 @@ export default function App() {
     return false;
   };
 
-  // Fetch Menu from Backend / Cloud CDN Failsafe
+  // Fetch Menu from Firebase Firestore (Primary) & Cloud CDN (Fallback)
   const fetchMenu = async () => {
     try {
       setLoading(true);
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-      const res = await fetch(`${API_BASE}/api/menu`, { signal: controller.signal });
-      clearTimeout(timeoutId);
-
-      if (res.ok) {
-        const data = await res.json();
-        applyMenuData(data);
-        return;
-      }
-      throw new Error("Render HTTP error " + res.status);
-    } catch (err) {
-      console.warn("Render backend slow/offline, fetching directly from JSONBin cloud CDN...");
-      const success = await fetchFromJSONBin();
-      if (!success) {
-        const localData = localStorage.getItem('rumana_menu_backup');
-        if (localData) {
-          applyMenuData(JSON.parse(localData));
-        } else {
-          setMenuItems(DEFAULT_MENU_ITEMS);
-          setEditedItems(JSON.parse(JSON.stringify(DEFAULT_MENU_ITEMS)));
+      const firestoreSnap = await getDoc(doc(db, "menu", "live"));
+      if (firestoreSnap.exists()) {
+        const firestoreData = firestoreSnap.data();
+        if (firestoreData && firestoreData.items && firestoreData.items.length >= 10) {
+          console.log("[Firebase Firestore] Loaded live menu instantly from Firoj Sir's project!");
+          applyMenuData(firestoreData);
+          setLoading(false);
+          return;
         }
       }
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      console.warn("Direct Firestore fetch notice, checking fallback...", e);
     }
+
+    const success = await fetchFromJSONBin();
+    if (!success) {
+      const localData = localStorage.getItem('rumana_menu_backup');
+      if (localData) {
+        applyMenuData(JSON.parse(localData));
+      } else {
+        setMenuItems(DEFAULT_MENU_ITEMS);
+        setEditedItems(JSON.parse(JSON.stringify(DEFAULT_MENU_ITEMS)));
+      }
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
