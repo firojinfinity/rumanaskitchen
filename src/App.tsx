@@ -65,7 +65,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 14, name: "Choley Paneer Masala", category: "curries", diet: "veg", image: "choleypaneer.jpg", description: "Per plate", price: 100, available: true, stockCount: 20 },
   { id: 15, name: "Dhokla", category: "sweets", diet: "veg", image: "dhokla.jpg", description: "5 pcs", price: 50, available: true, stockCount: 20 },
   { id: 16, name: "Prawn Curry", category: "curries", diet: "nonveg", image: "prawn.png", description: "Per plate", price: 130, available: true, stockCount: 20 },
-  { id: 17, name: "Plain Rice", category: "biryani", diet: "veg", image: "frice.jpg", description: "Per plate", price: 35, available: true, stockCount: 20 },
+  { id: 17, name: "Plain Rice", category: "biryani", diet: "veg", image: "plainrice.jpg", description: "Per plate", price: 35, available: true, stockCount: 20 },
   { id: 18, name: "Dal Pakora", category: "snacks", diet: "veg", image: "dalpakora.jpg", description: "500 g", price: 200, available: true, stockCount: 20 },
   { id: 19, name: "Normal Paratha", category: "snacks", diet: "veg", image: "nparatha.jpg", description: "Per piece", price: 20, available: true, stockCount: 20 },
   { id: 20, name: "Laccha Paratha", category: "snacks", diet: "veg", image: "lacchaparatha.jpg", description: "Per piece", price: 30, available: true, stockCount: 20 },
@@ -796,10 +796,9 @@ export default function App() {
     if (nameLower.includes('aloo paratha')) return '/alooparatha.jpg';
     if (nameLower.includes('normal paratha')) return '/nparatha.jpg';
 
-    // Generic keywords (fallbacks):
-    if (nameLower.includes('paneer')) return '/paneer.jpg';
+    // Specific Rice variants:
     if (nameLower.includes('fried rice')) return '/friedrice.jpg';
-    if (nameLower.includes('plain rice')) return '/frice.jpg';
+    if (nameLower.includes('plain rice')) return '/plainrice.jpg';
     if (nameLower.includes('paratha')) return '/paratha.jpg';
     if (nameLower.includes('fulka') || nameLower.includes('roti')) return '/fulka.jpg';
     if (nameLower.includes('egg')) return '/eggcurry.jpg';
