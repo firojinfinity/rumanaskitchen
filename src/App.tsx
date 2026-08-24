@@ -46,6 +46,48 @@ const DEFAULT_CAROUSEL_ITEMS: CarouselItem[] = [
   { id: 'c4', image: '/chickenchaap.jpg', title: "Kolkata Style Chicken Chaap", subtitle: "Slow simmered rich aromatic poppy seeds gravy (₹120)", tag: "🔥 Customer Favorite" }
 ];
 
+const EXACT_DISH_IMAGE_MAP: Record<string, string> = {
+  'chicken biriyani': '/biriyani.jpg',
+  'chicken biryani': '/biriyani.jpg',
+  'mutton biriyani': '/mbiriyani.jpg',
+  'mutton biryani': '/mbiriyani.jpg',
+  'paneer biriyani': '/paneerbiriyani.jpg',
+  'paneer biryani': '/paneerbiriyani.jpg',
+  'aloo biriyani': '/biriyani.jpg',
+  'plain rice': '/plainrice.jpg',
+  'fried rice': '/friedrice.jpg',
+  'mutton kasha': '/mutton.jpg',
+  'chicken kasha': '/ccurry.jpg',
+  'fish curry': '/fish.jpg',
+  'mixed veg curry': '/veg.jpg',
+  'aloo gobi curry': '/fgovialoo.jpg',
+  'bhindi aloo curry': '/valoo.jpg',
+  'patta gobi curry': '/pgovi.jpg',
+  'paneer masala': '/paneermasala.jpg',
+  'choley paneer masala': '/choleypaneer.jpg',
+  'choley paneer': '/choleypaneer.jpg',
+  'prawn curry': '/prawn.png',
+  'normal dal': '/dal.jpg',
+  'muri ghonto': '/murighonto.jpg',
+  'egg curry with potato': '/eggcurry.jpg',
+  'soya chunks curry': '/soyachunks.jpg',
+  'chicken chaap': '/chickenchaap.jpg',
+  'kashmiri aloo dum': '/kashmirialoodum.jpg',
+  'chicken varta': '/chickenvarta.jpg',
+  'chicken pakora (boneless)': '/cpakora.jpg',
+  'chicken pakora': '/cpakora.jpg',
+  'dal pakora': '/dalpakora.jpg',
+  'normal paratha': '/nparatha.jpg',
+  'laccha paratha': '/lacchaparatha.jpg',
+  'aloo paratha': '/alooparatha.jpg',
+  'fulka (roti)': '/fulka.jpg',
+  'tandoori roti': '/tandooriroti.jpg',
+  'fulko luchi': '/fulkoluchi.jpg',
+  'dhokla': '/dhokla.jpg',
+  'gravy sawaiyan': '/gsawaiyan.jpg',
+  'dry sawaiyan': '/dsawaiyan.jpg'
+};
+
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://rumanaskitchen.onrender.com');
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
@@ -768,46 +810,17 @@ export default function App() {
       return item.image;
     }
 
-    const nameLower = (item.name || '').toLowerCase();
+    // 3. Locked 1-to-1 exact dish name mapping (Guarantees zero image swaps!)
+    const nameLower = (item.name || '').trim().toLowerCase();
+    if (EXACT_DISH_IMAGE_MAP[nameLower]) {
+      return EXACT_DISH_IMAGE_MAP[nameLower];
+    }
 
-    // 3. Name-based exact image mapping (Specific dish names BEFORE generic keywords!)
-    if (nameLower.includes('paneer biriyani') || nameLower.includes('paneer biryani')) return '/paneerbiriyani.jpg';
-    if (nameLower.includes('chicken biriyani') || nameLower.includes('chicken biryani')) return '/biriyani.jpg';
-    if (nameLower.includes('mutton biriyani') || nameLower.includes('mutton biryani')) return '/mbiriyani.jpg';
-    if (nameLower.includes('mutton kasha') || nameLower.includes('mutton curry')) return '/mutton.jpg';
-    if (nameLower.includes('chicken chaap')) return '/chickenchaap.jpg';
-    if (nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) return '/kashmirialoodum.jpg';
-    if (nameLower.includes('fulko luchi') || nameLower.includes('luchi')) return '/fulkoluchi.jpg';
-    if (nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) return '/chickenvarta.jpg';
-    if (nameLower.includes('tandoori roti')) return '/tandooriroti.jpg';
-    if (nameLower.includes('fish')) return '/fish.jpg';
-    if (nameLower.includes('prawn')) return '/prawn.png';
-
-    // Specific Sawaiyan variants:
-    if (nameLower.includes('gravy sawaiyan') || nameLower.includes('sheer khurma')) return '/gsawaiyan.jpg';
-    if (nameLower.includes('dry sawaiyan')) return '/dsawaiyan.jpg';
-
-    // Specific Paneer variants:
-    if (nameLower.includes('choley paneer')) return '/choleypaneer.jpg';
-    if (nameLower.includes('paneer masala')) return '/paneermasala.jpg';
-
-    // Specific Paratha variants:
-    if (nameLower.includes('laccha paratha')) return '/lacchaparatha.jpg';
-    if (nameLower.includes('aloo paratha')) return '/alooparatha.jpg';
-    if (nameLower.includes('normal paratha')) return '/nparatha.jpg';
-
-    // Specific Rice variants:
-    if (nameLower.includes('fried rice')) return '/friedrice.jpg';
-    if (nameLower.includes('plain rice')) return '/plainrice.jpg';
-    if (nameLower.includes('paratha')) return '/paratha.jpg';
-    if (nameLower.includes('fulka') || nameLower.includes('roti')) return '/fulka.jpg';
-    if (nameLower.includes('egg')) return '/eggcurry.jpg';
-    if (nameLower.includes('soya')) return '/soyachunks.jpg';
-    if (nameLower.includes('sawaiyan')) return '/gsawaiyan.jpg';
-    if (nameLower.includes('muri ghonto')) return '/murighonto.jpg';
-    if (nameLower.includes('dal pakora')) return '/dalpakora.jpg';
-    if (nameLower.includes('dal')) return '/dal.jpg';
-    if (nameLower.includes('chicken pakora') || nameLower.includes('pakora')) return '/cpakora.jpg';
+    for (const [key, src] of Object.entries(EXACT_DISH_IMAGE_MAP)) {
+      if (nameLower.includes(key)) {
+        return src;
+      }
+    }
 
     if (item.image && !['veg.jpg', 'ccurry.jpg'].includes(item.image)) {
       return item.image.startsWith('/') ? item.image : `/${item.image}`;
