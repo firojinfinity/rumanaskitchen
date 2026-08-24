@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { db } from './firebase';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 
 // Interfaces
 interface MenuItem {
@@ -278,6 +280,13 @@ export default function App() {
     await saveToJSONBinDirect(payload);
 
     try {
+      await setDoc(doc(db, "menu", "live"), payload);
+      console.log("[Firebase Firestore] Saved menu payload live to Firoj Sir's project!");
+    } catch (err) {
+      console.warn("Firestore save notice:", err);
+    }
+
+    try {
       await fetch(`${API_BASE}/api/menu/update`, {
         method: 'POST',
         headers: {
@@ -366,6 +375,25 @@ export default function App() {
 
   useEffect(() => {
     fetchMenu();
+
+    // 1. Real-time Firebase Firestore Menu Listener
+    let unsubFirestore: (() => void) | null = null;
+    try {
+      unsubFirestore = onSnapshot(doc(db, "menu", "live"), (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          if (data && data.items && data.items.length >= 10) {
+            console.log("[Firebase Firestore] Real-time menu update received from Firoj Sir's project!");
+            applyMenuData(data);
+          }
+        }
+      }, (err) => {
+        console.warn("Firestore snapshot notice:", err);
+      });
+    } catch (e) {
+      console.warn("Firestore listener error:", e);
+    }
+
     // Auto-restore admin session if present
     const savedToken = localStorage.getItem('admin_token');
     if (savedToken) {
@@ -387,6 +415,7 @@ export default function App() {
     window.addEventListener('hashchange', handleRoutingChange);
     window.addEventListener('popstate', handleRoutingChange);
     return () => {
+      if (unsubFirestore) unsubFirestore();
       window.removeEventListener('hashchange', handleRoutingChange);
       window.removeEventListener('popstate', handleRoutingChange);
     };
