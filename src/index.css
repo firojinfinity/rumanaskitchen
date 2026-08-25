@@ -667,32 +667,41 @@ section {
 }
 
 .btn-whatsapp {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
+  max-width: 260px;
   background: #25D366;
-  color: white;
+  color: white !important;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   text-decoration: none;
-  padding: 16px 28px;
-  border-radius: 30px;
-  margin-top: 30px;
-  box-shadow: 0 8px 16px rgba(37, 211, 102, 0.2);
+  padding: 10px 20px;
+  border-radius: 24px;
+  margin: 15px auto 0;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
   transition: var(--transition-smooth);
   cursor: pointer;
   border: none;
   text-align: center;
-  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: rgba(37, 211, 102, 0.3);
   touch-action: manipulation;
 }
 
-.btn-whatsapp:hover {
+.btn-whatsapp * {
+  pointer-events: none;
+}
+
+.btn-whatsapp:hover, .btn-whatsapp:active {
   background: #20ba59;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(37, 211, 102, 0.35);
+  transform: scale(0.98);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
 }
 
 /* Floating Cart Drawer */
@@ -834,25 +843,35 @@ section {
 
 .cart-checkout-btn {
   flex-grow: 1;
+  width: 100%;
   background: #25D366;
-  color: white;
+  color: white !important;
   border: none;
-  padding: 14px 20px;
-  border-radius: 30px;
+  padding: 10px 18px;
+  border-radius: 24px;
   font-weight: 700;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 15px;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
   transition: var(--transition-smooth);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: rgba(37, 211, 102, 0.3);
+  touch-action: manipulation;
 }
 
-.cart-checkout-btn:hover {
+.cart-checkout-btn * {
+  pointer-events: none;
+}
+
+.cart-checkout-btn:hover, .cart-checkout-btn:active {
   background: #20ba59;
-  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+  transform: scale(0.98);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
 }
 
 /* Floating Cart Badge */
