@@ -320,8 +320,7 @@ export default function App() {
       localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
     } catch (e) {}
 
-    await saveToJSONBinDirect(payload);
-
+    // 1. Direct Firestore Push (Primary, instant)
     try {
       await setDoc(doc(db, "menu", "live"), payload);
       console.log("[Firebase Firestore] Saved menu payload live to Firoj Sir's project!");
@@ -329,18 +328,8 @@ export default function App() {
       console.warn("Firestore save notice:", err);
     }
 
-    try {
-      await fetch(`${API_BASE}/api/menu/update`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${adminToken || 'rumana2026'}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-    } catch (err) {
-      console.warn("Render update failed, cloud JSONBin updated.", err);
-    }
+    // 2. Secondary JSONBin Cloud CDN (Asynchronous, non-blocking)
+    saveToJSONBinDirect(payload).catch(() => {});
   };
 
   const applyMenuData = (data: any) => {
