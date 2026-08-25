@@ -838,20 +838,29 @@ export default function App() {
       data-diet={item.diet}
     >
       <div className="card-image-container">
-        {item.available && item.stockCount !== undefined && item.stockCount > 0 && (
-          <div style={{ position: 'absolute', top: '15px', left: '15px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(4px)', color: 'var(--primary)', padding: '5px 12px', borderRadius: '50px', fontSize: '11px', fontWeight: 800, boxShadow: '0 4px 10px rgba(0,0,0,0.08)', border: '1px solid rgba(158,42,43,0.18)', zIndex: 2, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span>🔥</span><span>{item.stockCount} Available</span>
+        {/* Top-Left Status Pill */}
+        <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 3, display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {item.available ? (
+            <div style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(6px)', color: '#2e7d32', padding: '4px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 800, boxShadow: '0 2px 8px rgba(0,0,0,0.12)', border: '1px solid rgba(46,125,50,0.2)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>🔥</span><span>{item.stockCount && item.stockCount > 0 ? `${item.stockCount} Available` : 'Available'}</span>
+            </div>
+          ) : (
+            <div style={{ background: 'rgba(198,40,40,0.95)', backdropFilter: 'blur(6px)', color: '#ffffff', padding: '4px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 800, boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>❌</span><span>Sold Out</span>
+            </div>
+          )}
+        </div>
+
+        {/* Top-Right Badges: Diet Pill + Indian Veg/Non-Veg Dot Symbol */}
+        <div style={{ position: 'absolute', top: '12px', right: '12px', zIndex: 3, display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ background: item.diet === 'veg' ? '#1b5e20' : '#b71c1c', color: '#ffffff', padding: '3px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}>
+            {item.diet === 'veg' ? 'VEG' : 'NON-VEG'}
+          </span>
+          <div style={{ width: '20px', height: '20px', border: `2px solid ${item.diet === 'veg' ? '#2e7d32' : '#b71c1c'}`, borderRadius: '4px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: item.diet === 'veg' ? '#2e7d32' : '#b71c1c' }} />
           </div>
-        )}
-        {/* Classic Indian Veg/Non-Veg dot indicator */}
-        <div style={{ position: 'absolute', top: '12px', right: '12px', width: '22px', height: '22px', border: `2px solid ${item.diet === 'veg' ? '#2e7d32' : '#b71c1c'}`, borderRadius: '4px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3, boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}>
-          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: item.diet === 'veg' ? '#2e7d32' : '#b71c1c' }} />
         </div>
-        <div className="card-badges">
-          <span className={`badge ${item.diet === 'veg' ? 'badge-veg' : 'badge-nonveg'}`}>{item.diet === 'veg' ? 'Veg' : 'Non-Veg'}</span>
-          <span className="badge badge-category">{item.category}</span>
-          <span className={`badge ${item.available ? 'badge-available' : 'badge-unavailable'}`}>{item.available ? '✅ Available' : '❌ Not Available'}</span>
-        </div>
+
         <img className="card-img" src={getItemImageSrc(item)}
           onError={(e) => {
             const t = e.target as HTMLImageElement;
