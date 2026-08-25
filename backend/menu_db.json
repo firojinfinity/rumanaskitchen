@@ -51,7 +51,7 @@
             "name": "Aloo Biriyani",
             "category": "biryani",
             "diet": "veg",
-            "image": "biriyani.jpg",
+            "image": "aloobiriyani.jpg",
             "description": "Authentic Fragrant Rice cooked with soft spiced potatoes",
             "price": 100,
             "available": true,
