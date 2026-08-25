@@ -801,17 +801,7 @@ export default function App() {
   const getItemImageSrc = (item: MenuItem) => {
     if (!item) return '/veg.jpg';
     
-    // 1. Custom base64 image (uploaded via phone camera/gallery)
-    if (item.image && item.image.startsWith('data:')) {
-      return item.image;
-    }
-
-    // 2. Custom HTTP/HTTPS URL
-    if (item.image && (item.image.startsWith('http://') || item.image.startsWith('https://'))) {
-      return item.image;
-    }
-
-    // 3. Locked 1-to-1 exact dish name mapping (Guarantees zero image swaps!)
+    // 1. Locked 1-to-1 exact dish name mapping (Priority #1 - Guarantees zero image swaps!)
     const nameLower = (item.name || '').trim().toLowerCase();
     if (EXACT_DISH_IMAGE_MAP[nameLower]) {
       return EXACT_DISH_IMAGE_MAP[nameLower];
@@ -821,6 +811,16 @@ export default function App() {
       if (nameLower.includes(key)) {
         return src;
       }
+    }
+
+    // 2. Custom base64 image (uploaded via phone camera/gallery in Admin Console)
+    if (item.image && item.image.startsWith('data:')) {
+      return item.image;
+    }
+
+    // 3. Custom HTTP/HTTPS URL
+    if (item.image && (item.image.startsWith('http://') || item.image.startsWith('https://'))) {
+      return item.image;
     }
 
     if (item.image && !['veg.jpg', 'ccurry.jpg'].includes(item.image)) {
