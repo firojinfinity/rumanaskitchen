@@ -638,30 +638,8 @@ export default function App() {
   const handleToggleDinnerMode = async () => {
     const updatedDinnerMode = !dinnerMode;
     setDinnerMode(updatedDinnerMode);
-
-    const payload = {
-      dinnerMode: updatedDinnerMode,
-      announcement,
-      prepTime,
-      items: menuItems
-    };
-
-    localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
-    await saveToJSONBinDirect(payload);
-
-    try {
-      await fetch(`${API_BASE}/api/menu/toggle-dinner`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${adminToken}`,
-          'Content-Type': 'application/json'
-        }
-      });
-    } catch (err) {
-      console.warn("Render toggle failed, cloud JSONBin updated.", err);
-    }
-
-    triggerToast(`Dinner Mode set to ${updatedDinnerMode ? 'ON' : 'OFF'}`);
+    triggerToast(`Dinner Mode set to ${updatedDinnerMode ? 'ON' : 'OFF'} & Published Live!`);
+    await publishMenuState(editedItems, updatedDinnerMode);
   };
 
   const handleSaveChanges = async () => {
