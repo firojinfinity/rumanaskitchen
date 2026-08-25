@@ -720,9 +720,12 @@ export default function App() {
     }));
   };
 
-  const setAllAvailability = (status: boolean) => {
-    setEditedItems(prev => prev.map(item => ({ ...item, available: status })));
-    triggerToast(status ? "All items set to Available" : "All items set to Sold Out");
+  const setAllAvailability = async (status: boolean) => {
+    const updated = editedItems.map(item => ({ ...item, available: status }));
+    setEditedItems(updated);
+    setMenuItems(updated);
+    triggerToast(status ? "All items set to Available & Published Live!" : "All items set to Sold Out & Published Live!");
+    await publishMenuState(updated);
   };
 
   const navigateToHome = () => {
@@ -2033,7 +2036,14 @@ export default function App() {
                             <input
                               type="checkbox"
                               checked={item.available}
-                              onChange={(e) => handleEditItemField(item.id, 'available', e.target.checked)}
+                              onChange={async (e) => {
+                                const val = e.target.checked;
+                                const updated = editedItems.map(i => i.id === item.id ? { ...i, available: val } : i);
+                                setEditedItems(updated);
+                                setMenuItems(updated);
+                                await publishMenuState(updated);
+                                triggerToast(`"${item.name}" set to ${val ? 'Available' : 'Sold Out'}`);
+                              }}
                             />
                             <span className="slider"></span>
                           </label>
