@@ -469,8 +469,9 @@ export default function App() {
 
   const isPotatoEligibleItem = (name: string, id?: number, flag?: boolean) => {
     if (flag) return true;
+    const n = (name || '').toLowerCase().trim();
+    if (n.includes('aloo biriyani') || n.includes('aloo biryani') || n.includes('kashmiri aloo dum') || n.includes('bhindi aloo')) return false;
     if (id && [1, 3, 5, 6, 7].includes(id)) return true;
-    const n = (name || '').toLowerCase();
     return n.includes('biriyani') || n.includes('kasha') || n.includes('fish curry');
   };
 
@@ -708,7 +709,7 @@ export default function App() {
 
   // Filter Logic
   const filteredItems = menuItems.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase().trim());
     let matchesFilter = false;
     if (activeFilter === 'all') matchesFilter = true;
     else if (activeFilter === 'veg') matchesFilter = item.diet === 'veg' && item.category !== 'sweets';
