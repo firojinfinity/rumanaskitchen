@@ -39,6 +39,130 @@ interface CarouselItem {
   tag?: string;
 }
 
+interface DishDetails {
+  origin: string;
+  history: string;
+  ingredients: string[];
+  cookingTime: string;
+  spiceLevel: string;
+  bestPairedWith: string;
+}
+
+const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
+  'chicken biriyani': {
+    origin: 'Kolkata, West Bengal (Royal Mughlai Lineage)',
+    history: 'Adapted from Awadhi Biryani by Nawab Wajid Ali Shah in Metiabruz, Kolkata in 1856. Famous for its aromatic saffron basmati rice, tender chicken, and signature golden spiced potato.',
+    ingredients: ['Aromatic Basmati Rice', 'Tender Chicken Leg', 'Golden Spiced Potato', 'Pure Cow Ghee', 'Kewra & Rose Water', 'Shahi Garam Masala'],
+    cookingTime: 'Slow Dum Cooked (2.5 Hours)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Chicken Chaap'
+  },
+  'mutton biriyani': {
+    origin: 'Kolkata, West Bengal (Heritage Royal Recipe)',
+    history: 'The crown jewel of Kolkata Mughlai gastronomy. Slow dum cooked in heavy handi with tender mutton shank bone, aromatic spices, and melt-in-mouth potato.',
+    ingredients: ['Premium Basmati Rice', 'Fresh Mutton Shank', 'Kolkata Spiced Potato', 'Pure Desi Ghee', 'Saffron Milk', 'Jaiphal & Javitri'],
+    cookingTime: 'Slow Dum Cooked (3 Hours)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Mutton Kasha'
+  },
+  'aloo biriyani': {
+    origin: 'Kolkata, India',
+    history: 'A revered vegetarian specialty born in Bengal. Whole potatoes are marinated in yogurt, saffron, and biryani spices, then dum cooked with aromatic long-grain rice.',
+    ingredients: ['Basmati Rice', 'Marinated Whole Potatoes', 'Pure Ghee', 'Saffron & Spices', 'Fried Onions (Beresta)'],
+    cookingTime: 'Dum Cooked (2 Hours)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Mixed Veg Curry'
+  },
+  'paneer biriyani': {
+    origin: 'North & East India Fusion',
+    history: 'Rich cottage cheese cubes marinated in aromatic spices and layered with fragrant saffron rice, cooked under sealed steam.',
+    ingredients: ['Fresh Malai Paneer', 'Basmati Rice', 'Whole Spices', 'Pure Ghee', 'Mint & Cilantro'],
+    cookingTime: 'Dum Cooked (1.5 Hours)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Paneer Masala'
+  },
+  'chicken kasha': {
+    origin: 'West Bengal, India (Traditional Homestyle)',
+    history: 'A rich, dark, semi-dry Bengali chicken curry. Chicken pieces are slow-roasted in mustard oil with caramelized onions, ginger, garlic, and fresh ground spices.',
+    ingredients: ['Fresh Chicken', 'Mustard Oil', 'Caramelized Onions', 'Ginger-Garlic Paste', 'Green Chilies', 'Bengali Garam Masala'],
+    cookingTime: 'Slow Kasha Roasted (1 Hour)',
+    spiceLevel: '🌶️🌶️🌶️ Spicy',
+    bestPairedWith: 'Laccha Paratha'
+  },
+  'mutton kasha': {
+    origin: 'Bengal Heritage Recipe',
+    history: 'The iconic Bengali Sunday feast centerpiece. Mutton pieces slow-cooked until the gravy turns rich, dark, and deeply aromatic.',
+    ingredients: ['Tender Goat Mutton', 'Mustard Oil', 'Whole Potatoes', 'Red Chili Paste', 'Garlic & Onion Kasha Gravy'],
+    cookingTime: 'Slow Braised (2 Hours)',
+    spiceLevel: '🌶️🌶️🌶️ Spicy',
+    bestPairedWith: 'Laccha Paratha'
+  },
+  'chicken chaap': {
+    origin: 'Kolkata Royal Mughlai Kitchens',
+    history: 'Whole chicken leg quarters slow-cooked on a large flat tawa in a rich, nutty gravy made of poppy seeds (posto), melon seeds, yogurt, and rose water.',
+    ingredients: ['Chicken Leg Quarter', 'Poppy Seeds (Posto)', 'Cashew & Melon Paste', 'Yogurt', 'Ghee & Nutmeg'],
+    cookingTime: 'Tawa Slow Simmered (1.5 Hours)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Chicken Biriyani'
+  },
+  'fish curry': {
+    origin: 'Bengal Riverine Heritage',
+    history: 'Traditional Bengali Machher Jhol/Curry. Fresh fish steak shallow fried in mustard oil and simmered in a light, spiced tomato curry.',
+    ingredients: ['Fresh Fish Steak', 'Mustard Oil', 'Kalo Jeere (Nigella Seeds)', 'Green Chilies', 'Turmeric & Tomatoes'],
+    cookingTime: 'Freshly Prepared (30 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Plain Rice'
+  },
+  'laccha paratha': {
+    origin: 'North India & Bengal',
+    history: 'Multi-layered crispy flatbread prepared by folding and rolling whole wheat dough layered with ghee, pan-fried to golden perfection.',
+    ingredients: ['Whole Wheat Flour', 'Pure Ghee', 'Pinch of Salt'],
+    cookingTime: 'Fresh Tawa Toasted (10 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Chicken Kasha'
+  },
+  'fulka (roti)': {
+    origin: 'Traditional Indian Kitchens',
+    history: 'Light, oil-free whole wheat bread puffed directly on open flame until soft and airy.',
+    ingredients: ['100% Whole Wheat Flour', 'Water'],
+    cookingTime: 'Fresh Flame Puffed (5 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Normal Dal'
+  },
+  'choley paneer masala': {
+    origin: 'North Indian Classics',
+    history: 'A rich combination of soft paneer cubes and tender chickpeas simmered in a spiced onion-tomato gravy.',
+    ingredients: ['Fresh Paneer Cubes', 'Kabuli Chana (Chickpeas)', 'Onion-Tomato Gravy', 'Chole Masala Spices'],
+    cookingTime: 'Simmered (40 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Laccha Paratha'
+  },
+  'dal pakora': {
+    origin: 'East Indian Teatime Snack',
+    history: 'Crispy deep-fried fritters made from soaked and ground lentils, seasoned with chilies, coriander, and spices.',
+    ingredients: ['Yellow Lentils (Moong/Chana Dal)', 'Green Chilies', 'Cilantro', 'Mustard Oil Frying'],
+    cookingTime: 'Fresh Deep Fried (15 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Tea & Evening Snacks'
+  },
+  'dry sawaiyan': {
+    origin: 'Traditional Festive Dessert',
+    history: 'Golden roasted fine vermicelli cooked dry in sugar syrup with cardamom, topped with crunchy toasted cashews and raisins.',
+    ingredients: ['Fine Vermicelli (Sevai)', 'Pure Ghee', 'Cardamom Syrup', 'Toasted Cashews & Raisins'],
+    cookingTime: 'Slow Roasted (20 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Any Feast Meal'
+  },
+  'gravy sawaiyan': {
+    origin: 'Shahi Mughlai Dessert',
+    history: 'Rich Sheer Khurma style sweet vermicelli simmered in thick cardamom-infused milk and topped with dry fruits.',
+    ingredients: ['Fine Roasted Vermicelli', 'Full Cream Milk', 'Sugar & Saffron', 'Sliced Almonds & Pistachios'],
+    cookingTime: 'Slow Milk Simmered (30 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Post-Biriyani Treat'
+  }
+};
+
 const DEFAULT_CAROUSEL_ITEMS: CarouselItem[] = [
   { id: 'c1', image: '/kitchen1.jpg', title: "Aromatic Biryani Dum Preparation", subtitle: "Slow cooked with native Bengal spices & pure ghee", tag: "🍳 Kitchen Story" },
   { id: 'c2', image: '/kitchen2.jpg', title: "Authentic Bengali Thali Feast", subtitle: "Prepared fresh every morning with pure love", tag: "⭐ Signature Delicacies" },
@@ -169,6 +293,10 @@ export default function App() {
   const [editedAnnouncement, setEditedAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
   const [prepTime, setPrepTime] = useState<string>('1h 30m');
   const [editedPrepTime, setEditedPrepTime] = useState<string>('1h 30m');
+
+  // Smart Feature States
+  const [dishInfoModalItem, setDishInfoModalItem] = useState<MenuItem | null>(null);
+  const [showSmartReceipt, setShowSmartReceipt] = useState<boolean>(false);
 
   // Add New Item States
   const [showAddItemModal, setShowAddItemModal] = useState<boolean>(false);
@@ -542,6 +670,28 @@ export default function App() {
     });
   };
 
+  // Smart AI Pairing Recommender
+  const getSmartPairingSuggestion = () => {
+    const cartItemNames = Object.keys(cart).map(k => k.toLowerCase());
+    if (cartItemNames.length === 0) return null;
+
+    for (const cartName of cartItemNames) {
+      const details = DISH_KNOWLEDGE_MAP[cartName];
+      if (details && details.bestPairedWith) {
+        const pairedNameLower = details.bestPairedWith.toLowerCase();
+        if (!cartItemNames.some(cn => cn.includes(pairedNameLower) || pairedNameLower.includes(cn))) {
+          const suggestedMenuItem = menuItems.find(m => m.name.toLowerCase().includes(pairedNameLower) || pairedNameLower.includes(m.name.toLowerCase()));
+          if (suggestedMenuItem && suggestedMenuItem.available) {
+            return suggestedMenuItem;
+          }
+        }
+      }
+    }
+    return null;
+  };
+
+  const smartPairingSuggestion = getSmartPairingSuggestion();
+
   // Cart helper quantities
   const totalCartCount = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
   const totalCartPrice = Object.values(cart).reduce((sum, item) => sum + (item.price * item.qty), 0);
@@ -781,7 +931,12 @@ export default function App() {
       data-available={item.available ? "true" : "false"}
       data-diet={item.diet}
     >
-      <div className="card-image-container">
+      <div 
+        className="card-image-container" 
+        onClick={() => setDishInfoModalItem(item)}
+        style={{ cursor: 'pointer' }}
+        title="Click to view story & ingredients"
+      >
         {/* Top-Left Status Pill */}
         <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 3, display: 'flex', alignItems: 'center', gap: '4px' }}>
           {item.available ? (
@@ -820,10 +975,15 @@ export default function App() {
         />
       </div>
       <div className="card-body">
-        <h3 className="card-title">{item.name}</h3>
+        <h3 className="card-title" onClick={() => setDishInfoModalItem(item)} style={{ cursor: 'pointer' }}>{item.name}</h3>
         <p className="card-desc">{item.description}</p>
+        
+        <button className="know-more-btn" onClick={() => setDishInfoModalItem(item)}>
+          📖 Story & Ingredients ℹ️
+        </button>
+
         {item.prepTime && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#e65100', fontWeight: 600, marginBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#e65100', fontWeight: 600, margin: '6px 0' }}>
             <span>⏱️</span><span>Ready in {item.prepTime}</span>
           </div>
         )}
@@ -1315,6 +1475,75 @@ export default function App() {
                     </div>
                   </div>
                 ))}
+                {/* Smart AI Pairing Recommendation Box */}
+                {smartPairingSuggestion && (
+                  <div className="smart-pairing-box">
+                    <div className="smart-pairing-header">
+                      <span>💡 SMART AI PAIRING RECOMMENDATION</span>
+                    </div>
+                    <div className="smart-pairing-body">
+                      <div className="smart-pairing-text">
+                        <strong>Pair with {smartPairingSuggestion.name}!</strong>
+                        <p>89% of foodies order this combo together.</p>
+                      </div>
+                      <button 
+                        className="smart-pairing-add-btn" 
+                        onClick={() => addToCart(smartPairingSuggestion.name, smartPairingSuggestion.price, smartPairingSuggestion.hasSizes, smartPairingSuggestion.prices, smartPairingSuggestion.hasPotatoOption)}
+                      >
+                        + Add ₹{smartPairingSuggestion.price}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Smart Digital Invoice Preview Toggle */}
+                {totalCartCount > 0 && (
+                  <div style={{ padding: '0 20px', marginTop: '10px' }}>
+                    <button 
+                      onClick={() => setShowSmartReceipt(!showSmartReceipt)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--primary)',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        margin: '0 auto 8px auto'
+                      }}
+                    >
+                      <span>{showSmartReceipt ? '🙈 Hide Digital Invoice' : '🧾 Preview Smart Digital Invoice'}</span>
+                    </button>
+
+                    {showSmartReceipt && (
+                      <div className="smart-receipt-container">
+                        <div className="smart-receipt-header">
+                          <span>RUMANA'S KITCHEN INVOICE</span>
+                          <span className="smart-receipt-id">#RK-{Math.floor(Date.now() / 1000).toString().slice(-5)}</span>
+                        </div>
+                        <div className="smart-receipt-items">
+                          {Object.values(cart).map(item => (
+                            <div key={item.name} className="smart-receipt-row">
+                              <span>{item.name} x {item.qty}</span>
+                              <span>₹{item.price * item.qty}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="smart-receipt-divider" />
+                        <div className="smart-receipt-total">
+                          <span>TOTAL BILL</span>
+                          <span>₹{totalCartPrice}</span>
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#666', marginTop: '8px', textAlign: 'center' }}>
+                          ⏱️ Prep: {prepTime || '1h 30m'} | 📍 Pickup: Near Pine Block
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {totalCartCount === 0 && (
                   <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
                     Your cart is empty. Add some delicacies!
@@ -1337,6 +1566,73 @@ export default function App() {
               <div className="cart-badge" id="cartBadge" onClick={() => setIsCartOpen(true)}>
                 <span>🛒</span>
                 <div className="cart-badge-count" id="cartCount">{totalCartCount}</div>
+              </div>
+            )}
+
+            {/* Know More Dish Info & Story Modal */}
+            {dishInfoModalItem && (
+              <div className="modal-overlay" onClick={() => setDishInfoModalItem(null)}>
+                <div className="dish-info-modal" onClick={e => e.stopPropagation()}>
+                  <button className="modal-close-btn" onClick={() => setDishInfoModalItem(null)}>✕</button>
+
+                  <div className="dish-info-hero">
+                    <img src={getItemImageSrc(dishInfoModalItem)} alt={dishInfoModalItem.name} />
+                    <div className="dish-info-hero-overlay">
+                      <span className="diet-badge-pill">{dishInfoModalItem.diet.toUpperCase()}</span>
+                      <h2>{dishInfoModalItem.name}</h2>
+                      <span className="dish-info-price">₹{dishInfoModalItem.price}</span>
+                    </div>
+                  </div>
+
+                  <div className="dish-info-body">
+                    {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()] ? (
+                      <>
+                        <div className="dish-info-section">
+                          <h4>🏛️ Culinary Heritage & History</h4>
+                          <p className="origin-tag">📍 {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].origin}</p>
+                          <p className="history-text">{DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].history}</p>
+                        </div>
+
+                        <div className="dish-info-section">
+                          <h4>🥗 Key Ingredients</h4>
+                          <div className="ingredient-tags">
+                            {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].ingredients.map((ing, i) => (
+                              <span key={i} className="ingredient-chip">✨ {ing}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="dish-info-grid">
+                          <div className="info-stat-card">
+                            <span>⏱️ Cooking Style</span>
+                            <strong>{DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].cookingTime}</strong>
+                          </div>
+                          <div className="info-stat-card">
+                            <span>🌶️ Spice & Flavor</span>
+                            <strong>{DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].spiceLevel}</strong>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="dish-info-section">
+                        <h4>🍽️ Dish Details</h4>
+                        <p className="history-text">{dishInfoModalItem.description || 'Authentic Bengali home-prepared delicacy made fresh to order at Rumana\'s Kitchen.'}</p>
+                      </div>
+                    )}
+
+                    <div style={{ marginTop: '10px' }}>
+                      <button 
+                        className="btn-primary-large" 
+                        onClick={() => {
+                          addToCart(dishInfoModalItem.name, dishInfoModalItem.price, dishInfoModalItem.hasSizes, dishInfoModalItem.prices, dishInfoModalItem.hasPotatoOption);
+                          setDishInfoModalItem(null);
+                        }}
+                      >
+                        🛒 Add {dishInfoModalItem.name} to Cart • ₹{dishInfoModalItem.price}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
