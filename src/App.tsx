@@ -975,12 +975,20 @@ export default function App() {
         />
       </div>
       <div className="card-body">
-        <h3 className="card-title" onClick={() => setDishInfoModalItem(item)} style={{ cursor: 'pointer' }}>{item.name}</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '4px' }}>
+          <h3 className="card-title" onClick={() => setDishInfoModalItem(item)} style={{ cursor: 'pointer', margin: 0, flexGrow: 1 }}>
+            {item.name}
+          </h3>
+          <button 
+            className="know-more-btn" 
+            onClick={() => setDishInfoModalItem(item)}
+            style={{ marginTop: 0, flexShrink: 0 }}
+            title="Origin, History, Ingredients & Details"
+          >
+            ℹ️ Know More
+          </button>
+        </div>
         <p className="card-desc">{item.description}</p>
-        
-        <button className="know-more-btn" onClick={() => setDishInfoModalItem(item)}>
-          📖 Story & Ingredients ℹ️
-        </button>
 
         {item.prepTime && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#e65100', fontWeight: 600, margin: '6px 0' }}>
