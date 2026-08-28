@@ -57,7 +57,7 @@ const EXACT_DISH_IMAGE_MAP: Record<string, string> = {
   'aloo biryani': '/aloobiriyani.jpg',
   'plain rice': '/plainrice.jpg',
   'fried rice': '/friedrice.jpg',
-  'mutton kasha': '/mutton.jpg',
+  'mutton kasha': '/mcurry.jpg',
   'chicken kasha': '/ccurry.jpg',
   'fish curry': '/fish.jpg',
   'mixed veg curry': '/veg.jpg',
