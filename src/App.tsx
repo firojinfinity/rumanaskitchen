@@ -160,7 +160,7 @@ export default function App() {
 
   // Admin Dashboard States
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
-  const [adminToken, setAdminToken] = useState<string>('');
+  const [_adminToken, setAdminToken] = useState<string>('');
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [authError, setAuthError] = useState<string>('');
   const [editedItems, setEditedItems] = useState<MenuItem[]>([]);
@@ -644,37 +644,15 @@ export default function App() {
   };
 
   const handleSaveChanges = async () => {
-    setSaveStatus('Saving changes to cloud...');
-    const payload = {
-      dinnerMode,
-      announcement: editedAnnouncement,
-      prepTime: editedPrepTime,
-      items: editedItems
-    };
-
+    setSaveStatus('Saving changes to Firebase Firestore cloud...');
     setMenuItems(JSON.parse(JSON.stringify(editedItems)));
     setAnnouncement(editedAnnouncement);
     setPrepTime(editedPrepTime);
-    localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
 
-    // Direct cloud update to JSONBin (instant cross-device sync)
-    await saveToJSONBinDirect(payload);
+    await publishMenuState(editedItems);
 
-    try {
-      await fetch(`${API_BASE}/api/menu/update`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${adminToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-    } catch (err) {
-      console.warn("Render update failed, cloud JSONBin updated.", err);
-    }
-
-    setSaveStatus('Changes saved and published to cloud! (Live on all devices)');
-    triggerToast("Menu updated successfully!");
+    setSaveStatus('Changes saved and published live to all devices!');
+    triggerToast("Menu & Photos updated live across all devices!");
     setTimeout(() => setSaveStatus(''), 3000);
   };
 
