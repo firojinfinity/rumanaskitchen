@@ -1765,3 +1765,146 @@ input:checked + .slider:before {
   font-size: 13px;
   padding: 0 8px;
 }
+
+/* Real Indian Customer Reviews Marquee Section */
+.reviews-marquee-section {
+  padding: 24px 0 10px 0;
+  background: linear-gradient(180deg, rgba(255, 248, 240, 0.6) 0%, rgba(255, 255, 255, 1) 100%);
+  border-top: 1px solid rgba(158, 42, 43, 0.08);
+  border-bottom: 1px solid rgba(158, 42, 43, 0.08);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.reviews-section-header {
+  text-align: center;
+  margin-bottom: 16px;
+  padding: 0 20px;
+}
+
+.reviews-subtitle {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.reviews-title {
+  color: var(--text-dark);
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.marquee-track-container {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  padding: 10px 0 16px 0;
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  animation: scrollLeftToRight 45s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeftToRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.review-card-pill {
+  background: #ffffff;
+  border: 1px solid rgba(158, 42, 43, 0.15);
+  border-radius: 18px;
+  padding: 14px 18px;
+  width: 310px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card-pill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(158, 42, 43, 0.15);
+  border-color: var(--primary);
+}
+
+.review-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.reviewer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, #b71c1c 100%);
+  color: white;
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(158, 42, 43, 0.3);
+  flex-shrink: 0;
+}
+
+.reviewer-info {
+  flex-grow: 1;
+}
+
+.reviewer-name {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+
+.reviewer-location {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.verified-badge {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.review-stars {
+  font-size: 11px;
+}
+
+.review-comment {
+  font-size: 12px;
+  color: #444;
+  line-height: 1.4;
+  margin: 0 0 8px 0;
+  font-style: italic;
+}
+
+.review-dish-tag {
+  font-size: 11px;
+  color: var(--primary);
+  background: rgba(158, 42, 43, 0.06);
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}

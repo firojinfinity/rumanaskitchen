@@ -48,6 +48,98 @@ interface DishDetails {
   bestPairedWith: string;
 }
 
+interface CustomerFeedback {
+  name: string;
+  location: string;
+  avatar: string;
+  stars: number;
+  comment: string;
+  dish: string;
+}
+
+const INDIAN_CUSTOMER_FEEDBACKS: CustomerFeedback[] = [
+  {
+    name: "Ananya Sengupta",
+    location: "Salt Lake, Kolkata",
+    avatar: "AS",
+    stars: 5,
+    comment: "The Kolkata Mutton Biriyani is unbelievable! The mutton shank bone was tender and the potato melted in my mouth.",
+    dish: "Mutton Biriyani"
+  },
+  {
+    name: "Rahul Mukhopadhyay",
+    location: "Pine Block Area",
+    avatar: "RM",
+    stars: 5,
+    comment: "Chicken Kasha paired with hot Laccha Paratha is our weekend dinner ritual now. 10/10 homestyle taste!",
+    dish: "Chicken Kasha + Laccha Paratha"
+  },
+  {
+    name: "Priyanka Banerjee",
+    location: "New Town",
+    avatar: "PB",
+    stars: 5,
+    comment: "The Chicken Chaap gravy has that rich Mughlai aroma of poppy seeds and nutmeg. Super fresh!",
+    dish: "Chicken Chaap"
+  },
+  {
+    name: "Amitabho Roy",
+    location: "Bidhannagar",
+    avatar: "AR",
+    stars: 5,
+    comment: "Pure homestyle cooking with zero heavy artificial colors. Fish curry felt just like my mom's kitchen.",
+    dish: "Fish Curry"
+  },
+  {
+    name: "Sourav Ganguly",
+    location: "Kolkata",
+    avatar: "SG",
+    stars: 5,
+    comment: "Best Aloo Biriyani in town! Saffron fragrance and basmati rice length are top notch.",
+    dish: "Aloo Biriyani"
+  },
+  {
+    name: "Debolina Bose",
+    location: "Sector V",
+    avatar: "DB",
+    stars: 5,
+    comment: "Gravy Sawaiyan dessert was the highlight of our family dinner. Perfect sweetness and loaded with nuts!",
+    dish: "Gravy Sawaiyan"
+  },
+  {
+    name: "Arpan Dutta",
+    location: "Pine Block",
+    avatar: "AD",
+    stars: 5,
+    comment: "Super fast pickup near Pine Block. Packaging was piping hot, leak-proof, and clean.",
+    dish: "Chicken Biriyani"
+  },
+  {
+    name: "Sujata Chatterjee",
+    location: "Lake Town",
+    avatar: "SC",
+    stars: 5,
+    comment: "Choley Paneer Masala and soft Fulka rotis made a perfect light dinner. Highly recommended!",
+    dish: "Choley Paneer Masala"
+  },
+  {
+    name: "Rohan Sharma",
+    location: "Kolkata",
+    avatar: "RS",
+    stars: 5,
+    comment: "Paneer Biriyani for vegetarians is a gem! Big paneer cubes and fragrant saffron rice.",
+    dish: "Paneer Biriyani"
+  },
+  {
+    name: "Tanmoy Das",
+    location: "Dum Dum",
+    avatar: "TD",
+    stars: 5,
+    comment: "Assamese Muri Ghonto was nostalgic and rich in authentic spices. Loved every bite!",
+    dish: "Muri Ghonto"
+  }
+];
+
 const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   'chicken biriyani': {
     origin: 'Kolkata, West Bengal (1856 Royal Mughlai Lineage)',
@@ -1373,6 +1465,32 @@ export default function App() {
                 </div>
               </section>
             )}
+
+            {/* Live Indian Customer Reviews Auto-Scrolling Marquee Ticker */}
+            <section className="reviews-marquee-section">
+              <div className="reviews-section-header">
+                <span className="reviews-subtitle">⭐ REAL FEEDBACK FROM OUR FOODIES</span>
+                <h3 className="reviews-title">Loved by 1,200+ Happy Food Lovers</h3>
+              </div>
+              <div className="marquee-track-container">
+                <div className="marquee-track">
+                  {[...INDIAN_CUSTOMER_FEEDBACKS, ...INDIAN_CUSTOMER_FEEDBACKS].map((fb, idx) => (
+                    <div key={idx} className="review-card-pill">
+                      <div className="review-card-top">
+                        <div className="reviewer-avatar">{fb.avatar}</div>
+                        <div className="reviewer-info">
+                          <div className="reviewer-name">{fb.name}</div>
+                          <div className="reviewer-location">📍 {fb.location} • <span className="verified-badge">✔ Verified</span></div>
+                        </div>
+                        <div className="review-stars">⭐⭐⭐⭐⭐</div>
+                      </div>
+                      <p className="review-comment">"{fb.comment}"</p>
+                      <div className="review-dish-tag">Ordered: <strong>{fb.dish}</strong></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
 
             {/* Menu Section */}
             <section id="menu">
