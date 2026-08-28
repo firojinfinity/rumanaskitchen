@@ -1701,3 +1701,67 @@ input:checked + .slider:before {
   font-size: 14px;
   color: var(--primary);
 }
+
+/* Modern Sleek Add Button & Card Stepper */
+.add-to-cart-btn-sleek {
+  background: #ffffff;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(158, 42, 43, 0.12);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  letter-spacing: 0.5px;
+}
+
+.add-to-cart-btn-sleek:hover {
+  background: var(--primary);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(158, 42, 43, 0.3);
+}
+
+.card-qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  background: var(--primary);
+  color: white;
+  border-radius: 20px;
+  padding: 3px 6px;
+  box-shadow: 0 4px 12px rgba(158, 42, 43, 0.3);
+}
+
+.qty-stepper-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.qty-stepper-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.qty-stepper-num {
+  font-weight: 800;
+  font-size: 13px;
+  padding: 0 8px;
+}

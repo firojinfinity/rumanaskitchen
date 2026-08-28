@@ -50,8 +50,8 @@ interface DishDetails {
 
 const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   'chicken biriyani': {
-    origin: 'Kolkata, West Bengal (Royal Mughlai Lineage)',
-    history: 'Adapted from Awadhi Biryani by Nawab Wajid Ali Shah in Metiabruz, Kolkata in 1856. Famous for its aromatic saffron basmati rice, tender chicken, and signature golden spiced potato.',
+    origin: 'Kolkata, West Bengal (1856 Royal Mughlai Lineage)',
+    history: 'Adapted from Awadhi Biryani by Nawab Wajid Ali Shah in Metiabruz, Kolkata in 1856. Famous for its aromatic saffron basmati rice, tender chicken leg, and signature golden spiced potato.',
     ingredients: ['Aromatic Basmati Rice', 'Tender Chicken Leg', 'Golden Spiced Potato', 'Pure Cow Ghee', 'Kewra & Rose Water', 'Shahi Garam Masala'],
     cookingTime: 'Slow Dum Cooked (2.5 Hours)',
     spiceLevel: '🌶️🌶️ Medium',
@@ -113,53 +113,205 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     spiceLevel: '🌶️🌶️ Medium',
     bestPairedWith: 'Plain Rice'
   },
-  'laccha paratha': {
-    origin: 'North India & Bengal',
-    history: 'Multi-layered crispy flatbread prepared by folding and rolling whole wheat dough layered with ghee, pan-fried to golden perfection.',
-    ingredients: ['Whole Wheat Flour', 'Pure Ghee', 'Pinch of Salt'],
-    cookingTime: 'Fresh Tawa Toasted (10 Mins)',
+  'mixed veg curry': {
+    origin: 'Bengal Homestyle Classic',
+    history: 'A wholesome medley of seasonal vegetables tossed in aromatic panch phoron spices and light turmeric gravy.',
+    ingredients: ['Seasonal Vegetables', 'Panch Phoron (5 Spices)', 'Mustard Oil', 'Turmeric & Cumin'],
+    cookingTime: 'Simmered (30 Mins)',
     spiceLevel: '🌶️ Mild',
-    bestPairedWith: 'Chicken Kasha'
+    bestPairedWith: 'Fulka (Roti)'
   },
-  'fulka (roti)': {
-    origin: 'Traditional Indian Kitchens',
-    history: 'Light, oil-free whole wheat bread puffed directly on open flame until soft and airy.',
-    ingredients: ['100% Whole Wheat Flour', 'Water'],
-    cookingTime: 'Fresh Flame Puffed (5 Mins)',
+  'aloo gobi curry': {
+    origin: 'North & East Indian Staple',
+    history: 'Classic combination of tender potatoes and fresh cauliflower florets sautéed with ginger, cumin, and cilantro.',
+    ingredients: ['Cauliflower Florets', 'Diced Potatoes', 'Ginger-Garlic Paste', 'Coriander & Cumin Powder'],
+    cookingTime: 'Sautéed (25 Mins)',
     spiceLevel: '🌶️ Mild',
-    bestPairedWith: 'Normal Dal'
+    bestPairedWith: 'Normal Paratha'
+  },
+  'bhindi aloo curry': {
+    origin: 'Indian Homestyle Special',
+    history: 'Crispy pan-fried okra (lady finger) cooked with golden potato cubes and tangy dry mango (amchur) seasoning.',
+    ingredients: ['Fresh Okra (Bhindi)', 'Diced Potatoes', 'Amchur Powder', 'Mustard Seeds', 'Green Chilies'],
+    cookingTime: 'Pan Fried (20 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Fulka (Roti)'
+  },
+  'patta gobi curry': {
+    origin: 'Bengal Bandhakopi Tarkari',
+    history: 'Shredded cabbage slow-cooked with green peas, potatoes, cumin, and mild garam masala.',
+    ingredients: ['Shredded Cabbage', 'Green Peas', 'Potatoes', 'Cumin & Whole Spices'],
+    cookingTime: 'Slow Cooked (25 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Fulka (Roti)'
+  },
+  'chicken pakora (boneless)': {
+    origin: 'Kolkata Evening Street Food',
+    history: 'Crispy boneless chicken bites marinated in ginger, garlic, and green chili batter, deep-fried to crunchy golden perfection.',
+    ingredients: ['Boneless Chicken', 'Gram Flour (Besan)', 'Ginger-Garlic Paste', 'Green Chilies', 'Chaat Masala'],
+    cookingTime: 'Fresh Deep Fried (15 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Evening Tea'
+  },
+  'paneer masala': {
+    origin: 'North Indian Cuisine',
+    history: 'Soft malai paneer cubes cooked in a rich, buttery tomato-onion gravy infused with kasuri methi.',
+    ingredients: ['Fresh Paneer Cubes', 'Tomato Puree', 'Onion Paste', 'Kasuri Methi', 'Butter & Cream'],
+    cookingTime: 'Simmered (30 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Laccha Paratha'
   },
   'choley paneer masala': {
     origin: 'North Indian Classics',
-    history: 'A rich combination of soft paneer cubes and tender chickpeas simmered in a spiced onion-tomato gravy.',
+    history: 'A hearty combination of soft paneer cubes and tender chickpeas simmered in a spiced onion-tomato gravy.',
     ingredients: ['Fresh Paneer Cubes', 'Kabuli Chana (Chickpeas)', 'Onion-Tomato Gravy', 'Chole Masala Spices'],
     cookingTime: 'Simmered (40 Mins)',
     spiceLevel: '🌶️🌶️ Medium',
     bestPairedWith: 'Laccha Paratha'
   },
+  'dhokla': {
+    origin: 'Gujarat & Western India',
+    history: 'Steamed spongy savory cake made from fermented gram flour batter, tempered with mustard seeds and green chilies.',
+    ingredients: ['Gram Flour (Besan)', 'Mustard Seeds', 'Curry Leaves', 'Green Chilies', 'Lemon Juice'],
+    cookingTime: 'Steamed (20 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Sweet Chutney'
+  },
+  'prawn curry': {
+    origin: 'Bengal Riverine Heritage',
+    history: 'Juicy prawns cooked in a coconut-infused mustard gravy with subtle spices, a coastal Bengal delicacy.',
+    ingredients: ['Fresh River Prawns', 'Mustard Seeds Paste', 'Green Chilies', 'Turmeric', 'Coconut Extract'],
+    cookingTime: 'Simmered (25 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Plain Rice'
+  },
+  'plain rice': {
+    origin: 'Bengal Grain Staple',
+    history: 'Steamed long-grain rice, fluffy and warm, cooked fresh for every order.',
+    ingredients: ['Aromatic White Rice', 'Pure Water'],
+    cookingTime: 'Steamed (20 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Fish Curry'
+  },
   'dal pakora': {
     origin: 'East Indian Teatime Snack',
-    history: 'Crispy deep-fried fritters made from soaked and ground lentils, seasoned with chilies, coriander, and spices.',
-    ingredients: ['Yellow Lentils (Moong/Chana Dal)', 'Green Chilies', 'Cilantro', 'Mustard Oil Frying'],
+    history: 'Crispy deep-fried fritters made from soaked ground yellow lentils, seasoned with chilies, coriander, and onion.',
+    ingredients: ['Moong/Chana Dal', 'Green Chilies', 'Cilantro', 'Onions', 'Mustard Oil Frying'],
     cookingTime: 'Fresh Deep Fried (15 Mins)',
     spiceLevel: '🌶️🌶️ Medium',
-    bestPairedWith: 'Tea & Evening Snacks'
+    bestPairedWith: 'Hot Tea'
   },
-  'dry sawaiyan': {
-    origin: 'Traditional Festive Dessert',
-    history: 'Golden roasted fine vermicelli cooked dry in sugar syrup with cardamom, topped with crunchy toasted cashews and raisins.',
-    ingredients: ['Fine Vermicelli (Sevai)', 'Pure Ghee', 'Cardamom Syrup', 'Toasted Cashews & Raisins'],
-    cookingTime: 'Slow Roasted (20 Mins)',
+  'normal paratha': {
+    origin: 'Indian Flatbread Staple',
+    history: 'Golden pan-fried flatbread layered with ghee, crisp on the outside and soft inside.',
+    ingredients: ['Wheat Flour', 'Pure Ghee', 'Salt'],
+    cookingTime: 'Tawa Fried (10 Mins)',
     spiceLevel: '🌶️ Mild',
-    bestPairedWith: 'Any Feast Meal'
+    bestPairedWith: 'Aloo Gobi Curry'
+  },
+  'laccha paratha': {
+    origin: 'North India & Bengal',
+    history: 'Multi-layered spiral crispy flatbread folded with ghee and pan-fried on a hot tawa.',
+    ingredients: ['Whole Wheat Flour', 'Pure Ghee', 'Salt'],
+    cookingTime: 'Fresh Tawa Toasted (10 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Chicken Kasha'
   },
   'gravy sawaiyan': {
     origin: 'Shahi Mughlai Dessert',
-    history: 'Rich Sheer Khurma style sweet vermicelli simmered in thick cardamom-infused milk and topped with dry fruits.',
-    ingredients: ['Fine Roasted Vermicelli', 'Full Cream Milk', 'Sugar & Saffron', 'Sliced Almonds & Pistachios'],
+    history: 'Rich Sheer Khurma style sweet vermicelli simmered in thick cardamom milk topped with pistachios and almonds.',
+    ingredients: ['Roasted Vermicelli', 'Full Cream Milk', 'Sugar & Saffron', 'Sliced Almonds & Pistachios'],
     cookingTime: 'Slow Milk Simmered (30 Mins)',
     spiceLevel: '🌶️ Mild',
     bestPairedWith: 'Post-Biriyani Treat'
+  },
+  'dry sawaiyan': {
+    origin: 'Traditional Festive Dessert',
+    history: 'Golden roasted fine vermicelli cooked dry in sugar syrup with cardamom and crunchy toasted cashews.',
+    ingredients: ['Fine Vermicelli', 'Pure Ghee', 'Cardamom Syrup', 'Toasted Cashews & Raisins'],
+    cookingTime: 'Slow Roasted (20 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Any Meal'
+  },
+  'fried rice': {
+    origin: 'Indo-Chinese Fusion',
+    history: 'Wok-tossed long grain rice with finely diced vegetables, garlic, black pepper, and soy sauce.',
+    ingredients: ['Basmati Rice', 'Carrots & Beans', 'Spring Onion', 'Soy Sauce & Black Pepper'],
+    cookingTime: 'Wok Tossed (15 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Chicken Kasha'
+  },
+  'aloo paratha': {
+    origin: 'Punjab & North India',
+    history: 'Whole wheat flatbread stuffed with a spiced mashed potato filling, pan-fried with butter or ghee.',
+    ingredients: ['Wheat Flour', 'Spiced Mashed Potatoes', 'Coriander', 'Pure Ghee'],
+    cookingTime: 'Tawa Toast (12 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Curd & Pickle'
+  },
+  'normal dal': {
+    origin: 'Indian Daily Comfort Food',
+    history: 'Yellow lentil stew cooked until creamy and tempered with cumin seeds, garlic, and ghee.',
+    ingredients: ['Yellow Dal (Arhar/Moong)', 'Cumin Seeds', 'Garlic & Ghee', 'Turmeric'],
+    cookingTime: 'Pressure Cooked & Tempered (25 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Plain Rice'
+  },
+  'muri ghonto': {
+    origin: 'Bengal & Assam Heritage Recipe',
+    history: 'Traditional dish prepared with fried carp/rohu fish head cooked with aromatic Gobindobhog rice or yellow dal and spices.',
+    ingredients: ['Fried Fish Head', 'Gobindobhog Rice / Yellow Dal', 'Ginger-Garlic Paste', 'Whole Garam Masala'],
+    cookingTime: 'Slow Simmered (45 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Plain Rice'
+  },
+  'tandoori roti': {
+    origin: 'Mughlai & Punjabi Tandoor',
+    history: 'Whole wheat flatbread baked inside a high-heat clay tandoor oven for a smoky char texture.',
+    ingredients: ['Whole Wheat Flour', 'Yogurt', 'Pinch of Baking Powder'],
+    cookingTime: 'Tandoor Baked (5 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Chicken Kasha'
+  },
+  'kashmiri aloo dum': {
+    origin: 'Kashmir & Bengal Adaptation',
+    history: 'Baby potatoes fried and slow-cooked in a rich, fragrant curd and fennel-infused red gravy without onion or garlic.',
+    ingredients: ['Baby Potatoes', 'Hing (Asafoetida)', 'Fennel Powder (Saunf)', 'Yogurt Gravy', 'Kashmiri Red Chili'],
+    cookingTime: 'Slow Dum Cooked (40 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Laccha Paratha'
+  },
+  'fulko luchi': {
+    origin: 'Bengal Traditional Breakfast / Festival',
+    history: 'Deep-fried puffed flatbread made from refined flour, crisp on the outside and hollow inside.',
+    ingredients: ['Refined Flour (Maida)', 'Pure Ghee / Oil Frying'],
+    cookingTime: 'Fresh Deep Fried (10 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Kashmiri Aloo Dum'
+  },
+  'chicken varta': {
+    origin: 'Kolkata Dhaba Classic',
+    history: 'Shredded chicken cooked in a rich, creamy, buttery gravy with boiled egg slices and ground spices.',
+    ingredients: ['Shredded Chicken', 'Boiled Egg Slices', 'Cashew Paste', 'Butter & Cream', 'Kasuri Methi'],
+    cookingTime: 'Slow Simmered (40 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Laccha Paratha'
+  },
+  'egg curry with potato': {
+    origin: 'Bengali Dim-er Jhol',
+    history: 'Hard-boiled eggs and golden fried potato halves simmered in a comforting onion-tomato ginger gravy.',
+    ingredients: ['Hard-Boiled Eggs', 'Fried Potato Halves', 'Onion-Tomato Paste', 'Bengali Spices'],
+    cookingTime: 'Simmered (30 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Plain Rice'
+  },
+  'soya chunks curry': {
+    origin: 'Indian Plant Protein Special',
+    history: 'Tender high-protein soy chunks cooked in a rich, spiced gravy with diced potatoes and cumin.',
+    ingredients: ['Soya Chunks', 'Diced Potatoes', 'Onion-Tomato Paste', 'Garam Masala'],
+    cookingTime: 'Simmered (30 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Fulka (Roti)'
   }
 };
 
@@ -1001,7 +1153,20 @@ export default function App() {
             {item.hasSizes && item.prices ? `₹${item.prices.half} - ₹${item.prices.full}` : `₹${item.price}`}
           </div>
           {item.available && (
-            <button className="add-to-cart-btn" onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption)}>+</button>
+            cart[item.name] ? (
+              <div className="card-qty-stepper">
+                <button onClick={() => changeQty(item.name, -1)} className="qty-stepper-btn">-</button>
+                <span className="qty-stepper-num">{cart[item.name].qty}</span>
+                <button onClick={() => changeQty(item.name, 1)} className="qty-stepper-btn">+</button>
+              </div>
+            ) : (
+              <button 
+                className="add-to-cart-btn-sleek" 
+                onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption)}
+              >
+                <span>ADD</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
+              </button>
+            )
           )}
         </div>
       </div>
