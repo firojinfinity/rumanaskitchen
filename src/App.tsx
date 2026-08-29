@@ -1470,7 +1470,7 @@ export default function App() {
             <section className="reviews-marquee-section">
               <div className="reviews-section-header">
                 <span className="reviews-subtitle">⭐ REAL FEEDBACK FROM OUR FOODIES</span>
-                <h3 className="reviews-title">Loved by 1,200+ Happy Food Lovers</h3>
+                <h3 className="reviews-title">Loved by 100+ Raintree Residents</h3>
               </div>
               <div className="marquee-track-container">
                 <div className="marquee-track">

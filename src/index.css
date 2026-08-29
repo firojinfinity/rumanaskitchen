@@ -1865,6 +1865,9 @@ input:checked + .slider:before {
   justify-content: center;
   box-shadow: 0 2px 6px rgba(158, 42, 43, 0.3);
   flex-shrink: 0;
+  filter: blur(3.5px);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .reviewer-info {
@@ -1876,11 +1879,17 @@ input:checked + .slider:before {
   font-size: 13px;
   color: var(--text-dark);
   line-height: 1.2;
+  filter: blur(4.5px);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .reviewer-location {
   font-size: 10px;
   color: var(--text-muted);
+  filter: blur(4px);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .verified-badge {
