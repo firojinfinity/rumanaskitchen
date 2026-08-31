@@ -667,21 +667,22 @@ section {
 }
 
 .btn-whatsapp {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  max-width: 240px;
+  box-sizing: border-box;
   background: #25D366;
   color: white !important;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 14px;
   text-decoration: none;
-  padding: 10px 16px;
-  border-radius: 12px; /* Sleek compact rounded corner instead of long oval */
+  padding: 12px 18px;
+  min-height: 48px;
+  border-radius: 12px;
   margin: 15px auto 0;
-  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
   transition: var(--transition-smooth);
   cursor: pointer;
   border: none;
@@ -690,18 +691,16 @@ section {
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-tap-highlight-color: rgba(37, 211, 102, 0.3);
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-}
-
-.btn-whatsapp * {
-  pointer-events: none;
 }
 
 .btn-whatsapp:hover, .btn-whatsapp:active {
   background: #20ba59;
   transform: scale(0.98);
-  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
 }
 
 /* Small Round Responsive Floating WhatsApp Button (Requested by Firoj Sir) */
@@ -922,34 +921,34 @@ section {
 .cart-checkout-btn {
   flex-grow: 1;
   width: 100%;
+  box-sizing: border-box;
   background: #25D366;
   color: white !important;
   border: none;
-  padding: 10px 16px;
-  border-radius: 12px; /* Sleek compact rounded pattern instead of long oval */
+  padding: 12px 18px;
+  min-height: 48px;
+  border-radius: 12px;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
   transition: var(--transition-smooth);
   user-select: none;
   -webkit-user-select: none;
-  -webkit-tap-highlight-color: rgba(37, 211, 102, 0.3);
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-}
-
-.cart-checkout-btn * {
-  pointer-events: none;
 }
 
 .cart-checkout-btn:hover, .cart-checkout-btn:active {
   background: #20ba59;
   transform: scale(0.98);
-  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
 }
 
 /* Floating Cart Badge */
