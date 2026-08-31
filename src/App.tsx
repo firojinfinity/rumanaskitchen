@@ -29,6 +29,8 @@ interface CartItem {
   prices?: { half: number; full: number };
   hasPotatoOption?: boolean;
   withPotato?: boolean;
+  withEgg?: boolean;
+  withRaita?: boolean;
 }
 
 interface CarouselItem {
@@ -857,6 +859,16 @@ export default function App() {
     });
   };
 
+  const updateCartItemAddon = (name: string, addon: 'withEgg' | 'withRaita', value: boolean) => {
+    setCart(prev => {
+      const updated = { ...prev };
+      if (updated[name]) {
+        updated[name][addon] = value;
+      }
+      return updated;
+    });
+  };
+
   // Add to Cart
   const addToCart = (
     name: string, 
@@ -938,7 +950,10 @@ export default function App() {
 
   // Cart helper quantities
   const totalCartCount = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
-  const totalCartPrice = Object.values(cart).reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const totalCartPrice = Object.values(cart).reduce((sum, item) => {
+    const addonPrice = (item.withEgg ? 15 : 0) + (item.withRaita ? 15 : 0);
+    return sum + ((item.price + addonPrice) * item.qty);
+  }, 0);
 
   // WhatsApp Order Checkouts
   const handleCheckout = () => {
@@ -957,7 +972,9 @@ export default function App() {
 
     let messageText = "Hello Rumana's Kitchen! 🍽️\nI would like to place a custom homemade order:\n\n";
     Object.values(cart).forEach(item => {
-      const itemTotal = item.price * item.qty;
+      const addonPrice = (item.withEgg ? 15 : 0) + (item.withRaita ? 15 : 0);
+      const unitPrice = item.price + addonPrice;
+      const itemTotal = unitPrice * item.qty;
       let details: string[] = [];
       if (item.hasSizes && item.size) {
         details.push(item.size === 'half' ? 'Half' : 'Full');
@@ -965,9 +982,15 @@ export default function App() {
       if (item.hasPotatoOption || isPotatoEligibleItem(item.name)) {
         details.push(item.withPotato ? 'With Potato 🥔' : 'No Potato');
       }
+      if (item.withEgg) {
+        details.push('Boiled Egg 🥚 (+₹15)');
+      }
+      if (item.withRaita) {
+        details.push('Fresh Raita 🥣 (+₹15)');
+      }
       const detailsStr = details.length > 0 ? ` (${details.join(', ')})` : '';
       const displayName = `${item.name}${detailsStr}`;
-      messageText += `• ${displayName} x ${item.qty} (₹${item.price} each) - ₹${itemTotal}\n`;
+      messageText += `• ${displayName} x ${item.qty} (₹${unitPrice} each) - ₹${itemTotal}\n`;
     });
 
     messageText += `\n💵 *Total Bill Amount:* ₹${totalCartPrice}\n`;
@@ -1758,6 +1781,35 @@ export default function App() {
                           </div>
                         </div>
                       )}
+
+                      {/* Biriyani Checkout Add-ons (Boiled Egg ₹15, Raita ₹15) requested by Firoj Sir */}
+                      {(item.name.toLowerCase().includes('biriyani') || item.name.toLowerCase().includes('biryani')) && (
+                        <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed rgba(158, 42, 43, 0.15)' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary)', display: 'block', marginBottom: '4px' }}>
+                            ✨ Add-ons (Optional):
+                          </span>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600, color: '#333', cursor: 'pointer' }}>
+                              <input 
+                                type="checkbox" 
+                                checked={!!item.withEgg} 
+                                onChange={(e) => updateCartItemAddon(item.name, 'withEgg', e.target.checked)} 
+                                style={{ accentColor: 'var(--primary)', width: '14px', height: '14px', cursor: 'pointer' }}
+                              />
+                              <span>🥚 Add Boiled Egg (+₹15)</span>
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600, color: '#333', cursor: 'pointer' }}>
+                              <input 
+                                type="checkbox" 
+                                checked={!!item.withRaita} 
+                                onChange={(e) => updateCartItemAddon(item.name, 'withRaita', e.target.checked)} 
+                                style={{ accentColor: 'var(--primary)', width: '14px', height: '14px', cursor: 'pointer' }}
+                              />
+                              <span>🥣 Add Fresh Raita (+₹15)</span>
+                            </label>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="cart-item-qty">
                       <button className="qty-btn" onClick={() => changeQty(item.name, -1)}>-</button>
@@ -1815,12 +1867,21 @@ export default function App() {
                           <span className="smart-receipt-id">#RK-{Math.floor(Date.now() / 1000).toString().slice(-5)}</span>
                         </div>
                         <div className="smart-receipt-items">
-                          {Object.values(cart).map(item => (
-                            <div key={item.name} className="smart-receipt-row">
-                              <span>{item.name} x {item.qty}</span>
-                              <span>₹{item.price * item.qty}</span>
-                            </div>
-                          ))}
+                          {Object.values(cart).map(item => {
+                            const addonPrice = (item.withEgg ? 15 : 0) + (item.withRaita ? 15 : 0);
+                            const unitPrice = item.price + addonPrice;
+                            const itemTotal = unitPrice * item.qty;
+                            let addons: string[] = [];
+                            if (item.withEgg) addons.push('Egg');
+                            if (item.withRaita) addons.push('Raita');
+                            const addonText = addons.length > 0 ? ` [${addons.join('+')}]` : '';
+                            return (
+                              <div key={item.name} className="smart-receipt-row">
+                                <span>{item.name}{addonText} x {item.qty}</span>
+                                <span>₹{itemTotal}</span>
+                              </div>
+                            );
+                          })}
                         </div>
                         <div className="smart-receipt-divider" />
                         <div className="smart-receipt-total">
