@@ -2106,7 +2106,7 @@ export default function App() {
 
             {/* Small Round Responsive Floating WhatsApp Button requested by Firoj Sir */}
             <a
-              href={`https://api.whatsapp.com/send?phone=919874830177&text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
+              href={`https://api.whatsapp.com/send?phone=918331810574&text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="floating-whatsapp-btn"
