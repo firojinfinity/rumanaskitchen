@@ -2104,6 +2104,21 @@ export default function App() {
               </div>
             </div>
 
+            {/* Small Round Responsive Floating WhatsApp Button requested by Firoj Sir */}
+            <a
+              href={`https://api.whatsapp.com/send?phone=919874830177&text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="floating-whatsapp-btn"
+              title="Chat with Rumana's Kitchen on WhatsApp"
+              aria-label="WhatsApp Chat"
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '55%', height: '55%' }}>
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="#ffffff" stroke="none" />
+              </svg>
+              <span className="floating-whatsapp-pulse"></span>
+            </a>
+
             {/* Floating cart trigger */}
             {totalCartCount > 0 && (
               <div className="cart-badge" id="cartBadge" onClick={() => setIsCartOpen(true)}>

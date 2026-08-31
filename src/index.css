@@ -672,14 +672,14 @@ section {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  max-width: 260px;
+  max-width: 240px;
   background: #25D366;
   color: white !important;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13.5px;
   text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 24px;
+  padding: 10px 16px;
+  border-radius: 12px; /* Sleek compact rounded corner instead of long oval */
   margin: 15px auto 0;
   box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
   transition: var(--transition-smooth);
@@ -702,6 +702,84 @@ section {
   background: #20ba59;
   transform: scale(0.98);
   box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
+}
+
+/* Small Round Responsive Floating WhatsApp Button (Requested by Firoj Sir) */
+.floating-whatsapp-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+  z-index: 997;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.floating-whatsapp-btn:hover, .floating-whatsapp-btn:active {
+  transform: scale(1.12);
+  background: #20ba59;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.6);
+}
+
+.floating-whatsapp-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.4);
+  z-index: -1;
+  animation: whatsappPulse 2s infinite;
+}
+
+@keyframes whatsappPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Small Round WhatsApp Icon Button */
+.btn-whatsapp-round {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #25D366;
+  color: white !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-whatsapp-round:hover {
+  background: #20ba59;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
 }
 
 /* Floating Cart Drawer */
@@ -847,10 +925,10 @@ section {
   background: #25D366;
   color: white !important;
   border: none;
-  padding: 10px 18px;
-  border-radius: 24px;
+  padding: 10px 16px;
+  border-radius: 12px; /* Sleek compact rounded pattern instead of long oval */
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13.5px;
   cursor: pointer;
   display: flex;
   align-items: center;
