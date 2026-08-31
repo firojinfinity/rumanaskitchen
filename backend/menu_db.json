@@ -59,6 +59,18 @@
             "prepTime": "1h 30m"
         },
         {
+            "id": 37,
+            "name": "Veg Noodles",
+            "category": "snacks",
+            "diet": "veg",
+            "image": "vegnoodles.jpg",
+            "description": "Delicious wok-tossed Hakka Noodles with crisp vegetables & mild Chinese spices",
+            "price": 100,
+            "available": true,
+            "stockCount": 20,
+            "prepTime": "20m"
+        },
+        {
             "id": 5,
             "name": "Mutton Kasha",
             "category": "curries",

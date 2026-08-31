@@ -406,6 +406,14 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     cookingTime: 'Simmered (30 Mins)',
     spiceLevel: '🌶️🌶️ Medium',
     bestPairedWith: 'Fulka (Roti)'
+  },
+  'veg noodles': {
+    origin: 'Indo-Chinese Fusion (Kolkata Street Style)',
+    history: 'Popular street style Hakka noodles wok-tossed with shredded cabbage, carrots, bell peppers, soy sauce, and garlic.',
+    ingredients: ['Noodles', 'Shredded Cabbage', 'Carrots & Capsicum', 'Garlic & Spring Onion', 'Dark Soy Sauce'],
+    cookingTime: 'Wok Tossed (15 Mins)',
+    spiceLevel: '🌶️ Mild',
+    bestPairedWith: 'Chicken Pakora (Boneless)'
   }
 };
 
@@ -456,7 +464,10 @@ const EXACT_DISH_IMAGE_MAP: Record<string, string> = {
   'fulko luchi': '/fulkoluchi.jpg',
   'dhokla': '/dhokla.jpg',
   'gravy sawaiyan': '/gsawaiyan.jpg',
-  'dry sawaiyan': '/dsawaiyan.jpg'
+  'dry sawaiyan': '/dsawaiyan.jpg',
+  'veg noodles': '/vegnoodles.jpg',
+  'veg hakka noodles': '/vegnoodles.jpg',
+  'vegnoodles': '/vegnoodles.jpg'
 };
 
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://rumanaskitchen.onrender.com');
@@ -466,6 +477,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mbiriyani.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, available: true, stockCount: 20, prepTime: "1h 30m", hasPotatoOption: true },
   { id: 36, name: "Paneer Biriyani", category: "biryani", diet: "veg", image: "paneerbiriyani.jpg", description: "Rich Saffron Rice cooked with fresh cottage cheese cubes & aromatic spices", price: 170, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 35, name: "Aloo Biriyani", category: "biryani", diet: "veg", image: "aloobiriyani.jpg", description: "Authentic Fragrant Rice cooked with soft spiced potatoes", price: 100, available: true, stockCount: 20, prepTime: "1h 30m" },
+  { id: 37, name: "Veg Noodles", category: "snacks", diet: "veg", image: "vegnoodles.jpg", description: "Delicious wok-tossed Hakka Noodles with crisp vegetables & mild Chinese spices", price: 100, available: true, stockCount: 20, prepTime: "20m" },
   { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true, stockCount: 20, hasPotatoOption: true },
   { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "ccurry.jpg", description: "6 pieces per plate", price: 180, available: true, stockCount: 20, hasPotatoOption: true },
   { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true, stockCount: 20, hasPotatoOption: true },
