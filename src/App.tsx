@@ -414,6 +414,14 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     cookingTime: 'Wok Tossed (15 Mins)',
     spiceLevel: '🌶️ Mild',
     bestPairedWith: 'Chicken Pakora (Boneless)'
+  },
+  'chicken noodles': {
+    origin: 'Indo-Chinese Fusion (Kolkata Tangra Style)',
+    history: 'Iconic Kolkata Chinatown style Hakka noodles wok-tossed with juicy shredded chicken pieces, spring onions, garlic, and light soy sauce.',
+    ingredients: ['Hakka Noodles', 'Tender Chicken Chunks', 'Spring Onions & Peppers', 'Garlic & Egg', 'Dark Soy & Chili Sauce'],
+    cookingTime: 'Wok Tossed (15 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Chicken Pakora (Boneless)'
   }
 };
 
@@ -467,7 +475,10 @@ const EXACT_DISH_IMAGE_MAP: Record<string, string> = {
   'dry sawaiyan': '/dsawaiyan.jpg',
   'veg noodles': '/vegnoodles.jpg',
   'veg hakka noodles': '/vegnoodles.jpg',
-  'vegnoodles': '/vegnoodles.jpg'
+  'vegnoodles': '/vegnoodles.jpg',
+  'chicken noodles': '/chickennoodles.jpg',
+  'chicken hakka noodles': '/chickennoodles.jpg',
+  'chickennoodles': '/chickennoodles.jpg'
 };
 
 const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://rumanaskitchen.onrender.com');
@@ -478,6 +489,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 36, name: "Paneer Biriyani", category: "biryani", diet: "veg", image: "paneerbiriyani.jpg", description: "Rich Saffron Rice cooked with fresh cottage cheese cubes & aromatic spices", price: 170, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 35, name: "Aloo Biriyani", category: "biryani", diet: "veg", image: "aloobiriyani.jpg", description: "Authentic Fragrant Rice cooked with soft spiced potatoes", price: 100, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 37, name: "Veg Noodles", category: "snacks", diet: "veg", image: "vegnoodles.jpg", description: "Delicious wok-tossed Hakka Noodles with crisp vegetables & mild Chinese spices", price: 100, available: true, stockCount: 20, prepTime: "20m" },
+  { id: 38, name: "Chicken Noodles", category: "snacks", diet: "nonveg", image: "chickennoodles.jpg", description: "Delicious wok-tossed Hakka Noodles with tender chicken chunks, spring onion & Indo-Chinese spices", price: 150, available: true, stockCount: 20, prepTime: "20m" },
   { id: 5, name: "Mutton Kasha", category: "curries", diet: "nonveg", image: "mutton.jpg", description: "5 pieces per plate", price: 280, available: true, stockCount: 20, hasPotatoOption: true },
   { id: 6, name: "Chicken Kasha", category: "curries", diet: "nonveg", image: "ccurry.jpg", description: "6 pieces per plate", price: 180, available: true, stockCount: 20, hasPotatoOption: true },
   { id: 7, name: "Fish Curry", category: "curries", diet: "nonveg", image: "fish.jpg", description: "2 pieces per plate", price: 170, available: true, stockCount: 20, hasPotatoOption: true },

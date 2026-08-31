@@ -71,6 +71,18 @@
             "prepTime": "20m"
         },
         {
+            "id": 38,
+            "name": "Chicken Noodles",
+            "category": "snacks",
+            "diet": "nonveg",
+            "image": "chickennoodles.jpg",
+            "description": "Delicious wok-tossed Hakka Noodles with tender chicken chunks, spring onion & Indo-Chinese spices",
+            "price": 150,
+            "available": true,
+            "stockCount": 20,
+            "prepTime": "20m"
+        },
+        {
             "id": 5,
             "name": "Mutton Kasha",
             "category": "curries",
