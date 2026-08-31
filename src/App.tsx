@@ -18,6 +18,8 @@ interface MenuItem {
   stockCount?: number;
   prepTime?: string;
   hasPotatoOption?: boolean;
+  isSpecialOrder?: boolean;
+  hasChiliStyleOption?: boolean;
 }
 
 interface CartItem {
@@ -31,6 +33,8 @@ interface CartItem {
   withPotato?: boolean;
   withEgg?: boolean;
   withRaita?: boolean;
+  chiliStyle?: 'dry' | 'gravy';
+  hasChiliStyleOption?: boolean;
 }
 
 interface CarouselItem {
@@ -893,6 +897,16 @@ export default function App() {
     });
   };
 
+  const updateCartItemChiliStyle = (name: string, style: 'dry' | 'gravy') => {
+    setCart(prev => {
+      const updated = { ...prev };
+      if (updated[name]) {
+        updated[name].chiliStyle = style;
+      }
+      return updated;
+    });
+  };
+
   // Add to Cart
   const addToCart = (
     name: string, 
@@ -905,6 +919,7 @@ export default function App() {
     setCart(prev => {
       const updated = { ...prev };
       const isEligible = isPotatoEligibleItem(name, itemId, hasPotatoOption);
+      const isChili = name.toLowerCase().includes('chili chicken') || name.toLowerCase().includes('chilli chicken');
       if (updated[name]) {
         updated[name].qty += 1;
       } else {
@@ -916,7 +931,8 @@ export default function App() {
           size: hasSizes ? 'full' : undefined,
           prices,
           hasPotatoOption: isEligible,
-          withPotato: isEligible ? false : undefined
+          withPotato: isEligible ? false : undefined,
+          chiliStyle: isChili ? 'dry' : undefined
         };
       }
       return updated;
@@ -1011,6 +1027,10 @@ export default function App() {
       }
       if (item.withRaita) {
         details.push('Fresh Raita 🥣 (+₹15)');
+      }
+      if (item.name.toLowerCase().includes('chili chicken') || item.name.toLowerCase().includes('chilli chicken') || item.chiliStyle) {
+        details.push(item.chiliStyle === 'gravy' ? 'Gravy Style 🍲' : 'Dry Style 🥢');
+        details.push('⭐ Special Order');
       }
       const detailsStr = details.length > 0 ? ` (${details.join(', ')})` : '';
       const displayName = `${item.name}${detailsStr}`;
@@ -1284,6 +1304,12 @@ export default function App() {
         {item.prepTime && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#e65100', fontWeight: 600, margin: '6px 0' }}>
             <span>⏱️</span><span>Ready in {item.prepTime}</span>
+          </div>
+        )}
+
+        {(item.isSpecialOrder || item.name.toLowerCase().includes('chili chicken')) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#d84315', fontWeight: 800, margin: '4px 0', background: '#fbe9e7', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
+            <span>⭐</span><span>Special Order Only</span>
           </div>
         )}
 
@@ -1801,6 +1827,45 @@ export default function App() {
                               }}
                             >
                               No
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Dry / Gravy Style Selector for Chili Chicken requested by Firoj Sir */}
+                      {(item.name.toLowerCase().includes('chili chicken') || item.name.toLowerCase().includes('chilli chicken') || item.hasChiliStyleOption) && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)' }}>🌶️ Style:</span>
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            <button
+                              onClick={() => updateCartItemChiliStyle(item.name, 'dry')}
+                              style={{
+                                border: (item.chiliStyle || 'dry') === 'dry' ? '1px solid var(--primary)' : '1px solid rgba(158, 42, 43, 0.18)',
+                                background: (item.chiliStyle || 'dry') === 'dry' ? 'var(--primary)' : 'transparent',
+                                color: (item.chiliStyle || 'dry') === 'dry' ? 'white' : 'var(--text)',
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                padding: '2px 8px',
+                                borderRadius: '12px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Dry
+                            </button>
+                            <button
+                              onClick={() => updateCartItemChiliStyle(item.name, 'gravy')}
+                              style={{
+                                border: item.chiliStyle === 'gravy' ? '1px solid var(--primary)' : '1px solid rgba(158, 42, 43, 0.18)',
+                                background: item.chiliStyle === 'gravy' ? 'var(--primary)' : 'transparent',
+                                color: item.chiliStyle === 'gravy' ? 'white' : 'var(--text)',
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                padding: '2px 8px',
+                                borderRadius: '12px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Gravy
                             </button>
                           </div>
                         </div>

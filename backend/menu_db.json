@@ -83,6 +83,32 @@
             "prepTime": "20m"
         },
         {
+            "id": 39,
+            "name": "Prawn Noodles",
+            "category": "snacks",
+            "diet": "nonveg",
+            "image": "prawnnoodles.jpg",
+            "description": "Delicious wok-tossed Hakka Noodles with juicy river prawns & fresh crisp vegetables",
+            "price": 140,
+            "available": true,
+            "stockCount": 20,
+            "prepTime": "20m"
+        },
+        {
+            "id": 40,
+            "name": "Chili Chicken",
+            "category": "curries",
+            "diet": "nonveg",
+            "image": "chilichicken.jpg",
+            "description": "Special Order Only • Crispy chicken tossed in spicy garlic soy sauce (Choose Dry or Gravy)",
+            "price": 170,
+            "available": true,
+            "stockCount": 20,
+            "prepTime": "25m",
+            "isSpecialOrder": true,
+            "hasChiliStyleOption": true
+        },
+        {
             "id": 5,
             "name": "Mutton Kasha",
             "category": "curries",
