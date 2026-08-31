@@ -47,6 +47,8 @@ interface CarouselItem {
 
 interface DishDetails {
   origin: string;
+  firstOriginCountry?: string;
+  yearCreated?: string;
   history: string;
   ingredients: string[];
   cookingTime: string;
@@ -149,6 +151,8 @@ const INDIAN_CUSTOMER_FEEDBACKS: CustomerFeedback[] = [
 const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   'chicken biriyani': {
     origin: 'Kolkata, West Bengal (1856 Royal Mughlai Lineage)',
+    firstOriginCountry: 'India & Persia (Mughal Dynasty)',
+    yearCreated: '1856 AD (19th Century in Kolkata)',
     history: 'Adapted from Awadhi Biryani by Nawab Wajid Ali Shah in Metiabruz, Kolkata in 1856. Famous for its aromatic saffron basmati rice, tender chicken leg, and signature golden spiced potato.',
     ingredients: ['Aromatic Basmati Rice', 'Tender Chicken Leg', 'Golden Spiced Potato', 'Pure Cow Ghee', 'Kewra & Rose Water', 'Shahi Garam Masala'],
     cookingTime: 'Slow Dum Cooked (2.5 Hours)',
@@ -157,6 +161,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'mutton biriyani': {
     origin: 'Kolkata, West Bengal (Heritage Royal Recipe)',
+    firstOriginCountry: 'India & Persia (Royal Mughlai Court)',
+    yearCreated: '1856 AD (19th Century in Kolkata)',
     history: 'The crown jewel of Kolkata Mughlai gastronomy. Slow dum cooked in heavy handi with tender mutton shank bone, aromatic spices, and melt-in-mouth potato.',
     ingredients: ['Premium Basmati Rice', 'Fresh Mutton Shank', 'Kolkata Spiced Potato', 'Pure Desi Ghee', 'Saffron Milk', 'Jaiphal & Javitri'],
     cookingTime: 'Slow Dum Cooked (3 Hours)',
@@ -165,6 +171,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'aloo biriyani': {
     origin: 'Kolkata, India',
+    firstOriginCountry: 'India (Bengal Royal Kitchens)',
+    yearCreated: '1856 AD (19th Century)',
     history: 'A revered vegetarian specialty born in Bengal. Whole potatoes are marinated in yogurt, saffron, and biryani spices, then dum cooked with aromatic long-grain rice.',
     ingredients: ['Basmati Rice', 'Marinated Whole Potatoes', 'Pure Ghee', 'Saffron & Spices', 'Fried Onions (Beresta)'],
     cookingTime: 'Dum Cooked (2 Hours)',
@@ -173,6 +181,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'paneer biriyani': {
     origin: 'North & East India Fusion',
+    firstOriginCountry: 'India (North & East Subcontinent)',
+    yearCreated: '20th Century AD',
     history: 'Rich cottage cheese cubes marinated in aromatic spices and layered with fragrant saffron rice, cooked under sealed steam.',
     ingredients: ['Fresh Malai Paneer', 'Basmati Rice', 'Whole Spices', 'Pure Ghee', 'Mint & Cilantro'],
     cookingTime: 'Dum Cooked (1.5 Hours)',
@@ -181,6 +191,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'chicken kasha': {
     origin: 'West Bengal, India (Traditional Homestyle)',
+    firstOriginCountry: 'India (Bengal)',
+    yearCreated: '19th Century AD',
     history: 'A rich, dark, semi-dry Bengali chicken curry. Chicken pieces are slow-roasted in mustard oil with caramelized onions, ginger, garlic, and fresh ground spices.',
     ingredients: ['Fresh Chicken', 'Mustard Oil', 'Caramelized Onions', 'Ginger-Garlic Paste', 'Green Chilies', 'Bengali Garam Masala'],
     cookingTime: 'Slow Kasha Roasted (1 Hour)',
@@ -189,6 +201,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'mutton kasha': {
     origin: 'Bengal Heritage Recipe',
+    firstOriginCountry: 'India (Bengal Heritage)',
+    yearCreated: '19th Century AD',
     history: 'The iconic Bengali Sunday feast centerpiece. Mutton pieces slow-cooked until the gravy turns rich, dark, and deeply aromatic.',
     ingredients: ['Tender Goat Mutton', 'Mustard Oil', 'Whole Potatoes', 'Red Chili Paste', 'Garlic & Onion Kasha Gravy'],
     cookingTime: 'Slow Braised (2 Hours)',
@@ -197,6 +211,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'chicken chaap': {
     origin: 'Kolkata Royal Mughlai Kitchens',
+    firstOriginCountry: 'India (Awadh & Kolkata Royal Court)',
+    yearCreated: '1856 AD (19th Century)',
     history: 'Whole chicken leg quarters slow-cooked on a large flat tawa in a rich, nutty gravy made of poppy seeds (posto), melon seeds, yogurt, and rose water.',
     ingredients: ['Chicken Leg Quarter', 'Poppy Seeds (Posto)', 'Cashew & Melon Paste', 'Yogurt', 'Ghee & Nutmeg'],
     cookingTime: 'Tawa Slow Simmered (1.5 Hours)',
@@ -205,6 +221,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'fish curry': {
     origin: 'Bengal Riverine Heritage',
+    firstOriginCountry: 'India (Ancient Bengal)',
+    yearCreated: 'c. 300 BC (Vedic Era / Ancient India)',
     history: 'Traditional Bengali Machher Jhol/Curry. Fresh fish steak shallow fried in mustard oil and simmered in a light, spiced tomato curry.',
     ingredients: ['Fresh Fish Steak', 'Mustard Oil', 'Kalo Jeere (Nigella Seeds)', 'Green Chilies', 'Turmeric & Tomatoes'],
     cookingTime: 'Freshly Prepared (30 Mins)',
@@ -213,6 +231,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'mixed veg curry': {
     origin: 'Bengal Homestyle Classic',
+    firstOriginCountry: 'India (Bengal Panch Phoron Tradition)',
+    yearCreated: 'Ancient India (c. 1000 BC)',
     history: 'A wholesome medley of seasonal vegetables tossed in aromatic panch phoron spices and light turmeric gravy.',
     ingredients: ['Seasonal Vegetables', 'Panch Phoron (5 Spices)', 'Mustard Oil', 'Turmeric & Cumin'],
     cookingTime: 'Simmered (30 Mins)',
@@ -221,6 +241,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'aloo gobi curry': {
     origin: 'North & East Indian Staple',
+    firstOriginCountry: 'India (North & East Subcontinent)',
+    yearCreated: '19th Century AD',
     history: 'Classic combination of tender potatoes and fresh cauliflower florets sautéed with ginger, cumin, and cilantro.',
     ingredients: ['Cauliflower Florets', 'Diced Potatoes', 'Ginger-Garlic Paste', 'Coriander & Cumin Powder'],
     cookingTime: 'Sautéed (25 Mins)',
@@ -229,6 +251,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'bhindi aloo curry': {
     origin: 'Indian Homestyle Special',
+    firstOriginCountry: 'India',
+    yearCreated: '19th Century AD',
     history: 'Crispy pan-fried okra (lady finger) cooked with golden potato cubes and tangy dry mango (amchur) seasoning.',
     ingredients: ['Fresh Okra (Bhindi)', 'Diced Potatoes', 'Amchur Powder', 'Mustard Seeds', 'Green Chilies'],
     cookingTime: 'Pan Fried (20 Mins)',
@@ -237,6 +261,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'patta gobi curry': {
     origin: 'Bengal Bandhakopi Tarkari',
+    firstOriginCountry: 'India (Bengal)',
+    yearCreated: '19th Century AD',
     history: 'Shredded cabbage slow-cooked with green peas, potatoes, cumin, and mild garam masala.',
     ingredients: ['Shredded Cabbage', 'Green Peas', 'Potatoes', 'Cumin & Whole Spices'],
     cookingTime: 'Slow Cooked (25 Mins)',
@@ -245,6 +271,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'chicken pakora (boneless)': {
     origin: 'Kolkata Evening Street Food',
+    firstOriginCountry: 'India (Pakora origin in ancient texts)',
+    yearCreated: '1130 AD (12th Century Manasollasa)',
     history: 'Crispy boneless chicken bites marinated in ginger, garlic, and green chili batter, deep-fried to crunchy golden perfection.',
     ingredients: ['Boneless Chicken', 'Gram Flour (Besan)', 'Ginger-Garlic Paste', 'Green Chilies', 'Chaat Masala'],
     cookingTime: 'Fresh Deep Fried (15 Mins)',
@@ -253,6 +281,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'paneer masala': {
     origin: 'North Indian Cuisine',
+    firstOriginCountry: 'India & Persia Fusion',
+    yearCreated: '16th Century AD (Mughal Era)',
     history: 'Soft malai paneer cubes cooked in a rich, buttery tomato-onion gravy infused with kasuri methi.',
     ingredients: ['Fresh Paneer Cubes', 'Tomato Puree', 'Onion Paste', 'Kasuri Methi', 'Butter & Cream'],
     cookingTime: 'Simmered (30 Mins)',
@@ -261,6 +291,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'choley paneer masala': {
     origin: 'North Indian Classics',
+    firstOriginCountry: 'India',
+    yearCreated: '19th Century AD',
     history: 'A hearty combination of soft paneer cubes and tender chickpeas simmered in a spiced onion-tomato gravy.',
     ingredients: ['Fresh Paneer Cubes', 'Kabuli Chana (Chickpeas)', 'Onion-Tomato Gravy', 'Chole Masala Spices'],
     cookingTime: 'Simmered (40 Mins)',
@@ -269,6 +301,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'dhokla': {
     origin: 'Gujarat & Western India',
+    firstOriginCountry: 'India (Gujarat)',
+    yearCreated: '1068 AD (11th Century in Jain text Dukkar)',
     history: 'Steamed spongy savory cake made from fermented gram flour batter, tempered with mustard seeds and green chilies.',
     ingredients: ['Gram Flour (Besan)', 'Mustard Seeds', 'Curry Leaves', 'Green Chilies', 'Lemon Juice'],
     cookingTime: 'Steamed (20 Mins)',
@@ -277,6 +311,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'prawn curry': {
     origin: 'Bengal Riverine Heritage',
+    firstOriginCountry: 'India & Maritime Trade Routes',
+    yearCreated: '17th Century AD',
     history: 'Juicy prawns cooked in a coconut-infused mustard gravy with subtle spices, a coastal Bengal delicacy.',
     ingredients: ['Fresh River Prawns', 'Mustard Seeds Paste', 'Green Chilies', 'Turmeric', 'Coconut Extract'],
     cookingTime: 'Simmered (25 Mins)',
@@ -285,6 +321,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'plain rice': {
     origin: 'Bengal Grain Staple',
+    firstOriginCountry: 'India & China',
+    yearCreated: 'c. 7000 BC (Neolithic Era)',
     history: 'Steamed long-grain rice, fluffy and warm, cooked fresh for every order.',
     ingredients: ['Aromatic White Rice', 'Pure Water'],
     cookingTime: 'Steamed (20 Mins)',
@@ -293,6 +331,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'dal pakora': {
     origin: 'East Indian Teatime Snack',
+    firstOriginCountry: 'India',
+    yearCreated: '1130 AD (12th Century Manasollasa)',
     history: 'Crispy deep-fried fritters made from soaked ground yellow lentils, seasoned with chilies, coriander, and onion.',
     ingredients: ['Moong/Chana Dal', 'Green Chilies', 'Cilantro', 'Onions', 'Mustard Oil Frying'],
     cookingTime: 'Fresh Deep Fried (15 Mins)',
@@ -301,6 +341,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'normal paratha': {
     origin: 'Indian Flatbread Staple',
+    firstOriginCountry: 'India',
+    yearCreated: '1130 AD (12th Century Sanskrit Texts)',
     history: 'Golden pan-fried flatbread layered with ghee, crisp on the outside and soft inside.',
     ingredients: ['Wheat Flour', 'Pure Ghee', 'Salt'],
     cookingTime: 'Tawa Fried (10 Mins)',
@@ -309,6 +351,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'laccha paratha': {
     origin: 'North India & Bengal',
+    firstOriginCountry: 'India (North & East)',
+    yearCreated: '16th Century AD',
     history: 'Multi-layered spiral crispy flatbread folded with ghee and pan-fried on a hot tawa.',
     ingredients: ['Whole Wheat Flour', 'Pure Ghee', 'Salt'],
     cookingTime: 'Fresh Tawa Toasted (10 Mins)',
@@ -317,6 +361,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'gravy sawaiyan': {
     origin: 'Shahi Mughlai Dessert',
+    firstOriginCountry: 'Persia & India (Silk Road Lineage)',
+    yearCreated: '10th Century AD (Sheer Khurma Origin)',
     history: 'Rich Sheer Khurma style sweet vermicelli simmered in thick cardamom milk topped with pistachios and almonds.',
     ingredients: ['Roasted Vermicelli', 'Full Cream Milk', 'Sugar & Saffron', 'Sliced Almonds & Pistachios'],
     cookingTime: 'Slow Milk Simmered (30 Mins)',
@@ -325,6 +371,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'dry sawaiyan': {
     origin: 'Traditional Festive Dessert',
+    firstOriginCountry: 'Persia & India',
+    yearCreated: '10th Century AD',
     history: 'Golden roasted fine vermicelli cooked dry in sugar syrup with cardamom and crunchy toasted cashews.',
     ingredients: ['Fine Vermicelli', 'Pure Ghee', 'Cardamom Syrup', 'Toasted Cashews & Raisins'],
     cookingTime: 'Slow Roasted (20 Mins)',
@@ -333,6 +381,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'fried rice': {
     origin: 'Indo-Chinese Fusion',
+    firstOriginCountry: 'China (Sui Dynasty origin) & India Adaptation',
+    yearCreated: '589 AD (China) & 1970s AD (Kolkata)',
     history: 'Wok-tossed long grain rice with finely diced vegetables, garlic, black pepper, and soy sauce.',
     ingredients: ['Basmati Rice', 'Carrots & Beans', 'Spring Onion', 'Soy Sauce & Black Pepper'],
     cookingTime: 'Wok Tossed (15 Mins)',
@@ -341,6 +391,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'aloo paratha': {
     origin: 'Punjab & North India',
+    firstOriginCountry: 'India (Punjab)',
+    yearCreated: '19th Century AD',
     history: 'Whole wheat flatbread stuffed with a spiced mashed potato filling, pan-fried with butter or ghee.',
     ingredients: ['Wheat Flour', 'Spiced Mashed Potatoes', 'Coriander', 'Pure Ghee'],
     cookingTime: 'Tawa Toast (12 Mins)',
@@ -349,6 +401,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'normal dal': {
     origin: 'Indian Daily Comfort Food',
+    firstOriginCountry: 'India',
+    yearCreated: 'c. 2500 BC (Indus Valley Civilization)',
     history: 'Yellow lentil stew cooked until creamy and tempered with cumin seeds, garlic, and ghee.',
     ingredients: ['Yellow Dal (Arhar/Moong)', 'Cumin Seeds', 'Garlic & Ghee', 'Turmeric'],
     cookingTime: 'Pressure Cooked & Tempered (25 Mins)',
@@ -357,6 +411,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'muri ghonto': {
     origin: 'Bengal & Assam Heritage Recipe',
+    firstOriginCountry: 'India (Bengal & Assam)',
+    yearCreated: '18th Century AD',
     history: 'Traditional dish prepared with fried carp/rohu fish head cooked with aromatic Gobindobhog rice or yellow dal and spices.',
     ingredients: ['Fried Fish Head', 'Gobindobhog Rice / Yellow Dal', 'Ginger-Garlic Paste', 'Whole Garam Masala'],
     cookingTime: 'Slow Simmered (45 Mins)',
@@ -365,6 +421,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'tandoori roti': {
     origin: 'Mughlai & Punjabi Tandoor',
+    firstOriginCountry: 'India & Central Asia (Harappan Tandoors)',
+    yearCreated: 'c. 3000 BC (Indus Valley Era)',
     history: 'Whole wheat flatbread baked inside a high-heat clay tandoor oven for a smoky char texture.',
     ingredients: ['Whole Wheat Flour', 'Yogurt', 'Pinch of Baking Powder'],
     cookingTime: 'Tandoor Baked (5 Mins)',
@@ -373,6 +431,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'kashmiri aloo dum': {
     origin: 'Kashmir & Bengal Adaptation',
+    firstOriginCountry: 'India (Kashmir & Bengal)',
+    yearCreated: '18th Century AD',
     history: 'Baby potatoes fried and slow-cooked in a rich, fragrant curd and fennel-infused red gravy without onion or garlic.',
     ingredients: ['Baby Potatoes', 'Hing (Asafoetida)', 'Fennel Powder (Saunf)', 'Yogurt Gravy', 'Kashmiri Red Chili'],
     cookingTime: 'Slow Dum Cooked (40 Mins)',
@@ -381,6 +441,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'fulko luchi': {
     origin: 'Bengal Traditional Breakfast / Festival',
+    firstOriginCountry: 'India (Bengal)',
+    yearCreated: '16th Century AD',
     history: 'Deep-fried puffed flatbread made from refined flour, crisp on the outside and hollow inside.',
     ingredients: ['Refined Flour (Maida)', 'Pure Ghee / Oil Frying'],
     cookingTime: 'Fresh Deep Fried (10 Mins)',
@@ -389,6 +451,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'chicken varta': {
     origin: 'Kolkata Dhaba Classic',
+    firstOriginCountry: 'India (Kolkata Dhaba Lineage)',
+    yearCreated: '1960s AD',
     history: 'Shredded chicken cooked in a rich, creamy, buttery gravy with boiled egg slices and ground spices.',
     ingredients: ['Shredded Chicken', 'Boiled Egg Slices', 'Cashew Paste', 'Butter & Cream', 'Kasuri Methi'],
     cookingTime: 'Slow Simmered (40 Mins)',
@@ -397,6 +461,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'egg curry with potato': {
     origin: 'Bengali Dim-er Jhol',
+    firstOriginCountry: 'India (Bengal)',
+    yearCreated: '19th Century AD',
     history: 'Hard-boiled eggs and golden fried potato halves simmered in a comforting onion-tomato ginger gravy.',
     ingredients: ['Hard-Boiled Eggs', 'Fried Potato Halves', 'Onion-Tomato Paste', 'Bengali Spices'],
     cookingTime: 'Simmered (30 Mins)',
@@ -405,6 +471,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'soya chunks curry': {
     origin: 'Indian Plant Protein Special',
+    firstOriginCountry: 'India',
+    yearCreated: '20th Century AD',
     history: 'Tender high-protein soy chunks cooked in a rich, spiced gravy with diced potatoes and cumin.',
     ingredients: ['Soya Chunks', 'Diced Potatoes', 'Onion-Tomato Paste', 'Garam Masala'],
     cookingTime: 'Simmered (30 Mins)',
@@ -413,6 +481,8 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'veg noodles': {
     origin: 'Indo-Chinese Fusion (Kolkata Street Style)',
+    firstOriginCountry: 'China (Noodles Origin c. 2000 BC) & India (Hakka Fusion)',
+    yearCreated: 'c. 2000 BC (China) & 1970s AD (Kolkata Chinatown)',
     history: 'Popular street style Hakka noodles wok-tossed with shredded cabbage, carrots, bell peppers, soy sauce, and garlic.',
     ingredients: ['Noodles', 'Shredded Cabbage', 'Carrots & Capsicum', 'Garlic & Spring Onion', 'Dark Soy Sauce'],
     cookingTime: 'Wok Tossed (15 Mins)',
@@ -421,11 +491,33 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
   },
   'chicken noodles': {
     origin: 'Indo-Chinese Fusion (Kolkata Tangra Style)',
+    firstOriginCountry: 'China (Origin) & India (Tangra Chinatown, Kolkata)',
+    yearCreated: 'c. 2000 BC (China) & 1970s AD (Kolkata)',
     history: 'Iconic Kolkata Chinatown style Hakka noodles wok-tossed with juicy shredded chicken pieces, spring onions, garlic, and light soy sauce.',
     ingredients: ['Hakka Noodles', 'Tender Chicken Chunks', 'Spring Onions & Peppers', 'Garlic & Egg', 'Dark Soy & Chili Sauce'],
     cookingTime: 'Wok Tossed (15 Mins)',
     spiceLevel: '🌶️🌶️ Medium',
     bestPairedWith: 'Chicken Pakora (Boneless)'
+  },
+  'prawn noodles': {
+    origin: 'Indo-Chinese Fusion (Bengal Coastal Style)',
+    firstOriginCountry: 'China (Origin) & India (Kolkata Hakka Fusion)',
+    yearCreated: 'c. 2000 BC (China) & 1970s AD (Kolkata)',
+    history: 'Wok-tossed Hakka noodles with fresh succulent river prawns, spring onions, garlic, and light soy sauce.',
+    ingredients: ['Hakka Noodles', 'Fresh River Prawns', 'Snap Peas & Bell Peppers', 'Garlic & Spring Onions', 'Soy & Chili Oil Sauce'],
+    cookingTime: 'Wok Tossed (15 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Chili Chicken'
+  },
+  'chili chicken': {
+    origin: 'Indo-Chinese Classic (Kolkata Tangra Specialty)',
+    firstOriginCountry: 'India (Created in Tangra Chinatown, Kolkata by Nelson Wang)',
+    yearCreated: '1975 AD (Created at Cricket Club of India / Tangra)',
+    history: 'Special Order Only • Tender chicken bites marinated and fried, tossed with diced onions, capsicum, green chilies, and tangy soy-chili sauce.',
+    ingredients: ['Boneless Chicken Bites', 'Capsicum & Diced Onions', 'Green Chilies & Garlic', 'Dark Soy & Chili Sauce', 'Spring Onions'],
+    cookingTime: 'Freshly Prepared (20 Mins)',
+    spiceLevel: '🌶️🌶️🌶️ Spicy',
+    bestPairedWith: 'Fried Rice or Hakka Noodles'
   }
 };
 
@@ -2039,8 +2131,24 @@ export default function App() {
                     {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()] ? (
                       <>
                         <div className="dish-info-section">
-                          <h4>🏛️ Culinary Heritage & History</h4>
-                          <p className="origin-tag">📍 {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].origin}</p>
+                          <h4>🏛️ Culinary Origin & History</h4>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', margin: '10px 0 14px 0' }}>
+                            <div style={{ background: 'rgba(158, 42, 43, 0.05)', padding: '10px 12px', borderRadius: '10px', borderLeft: '4px solid var(--primary)' }}>
+                              <span style={{ fontSize: '11px', color: '#666', fontWeight: 600, display: 'block', marginBottom: '2px' }}>🌐 Country First Made</span>
+                              <strong style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.3, display: 'block' }}>
+                                {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].firstOriginCountry || DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].origin}
+                              </strong>
+                            </div>
+                            <div style={{ background: 'rgba(230, 81, 0, 0.05)', padding: '10px 12px', borderRadius: '10px', borderLeft: '4px solid #e65100' }}>
+                              <span style={{ fontSize: '11px', color: '#666', fontWeight: 600, display: 'block', marginBottom: '2px' }}>📅 Year / Era Created</span>
+                              <strong style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.3, display: 'block' }}>
+                                {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].yearCreated || 'Historical Recipe'}
+                              </strong>
+                            </div>
+                          </div>
+
+                          <p className="origin-tag" style={{ marginTop: 0 }}>📍 Region: {DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].origin}</p>
                           <p className="history-text">{DISH_KNOWLEDGE_MAP[dishInfoModalItem.name.toLowerCase()].history}</p>
                         </div>
 
