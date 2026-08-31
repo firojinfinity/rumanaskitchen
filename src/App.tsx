@@ -736,8 +736,18 @@ export default function App() {
 
   const applyMenuData = (data: any) => {
     if (!data || !data.items) return;
-    setMenuItems(data.items);
-    setEditedItems(JSON.parse(JSON.stringify(data.items)));
+
+    // Auto-merge any new default items if missing from incoming cloud payload
+    let mergedItems: MenuItem[] = [...data.items];
+    DEFAULT_MENU_ITEMS.forEach(defItem => {
+      const exists = mergedItems.some(item => item.name.toLowerCase().trim() === defItem.name.toLowerCase().trim());
+      if (!exists) {
+        mergedItems.push(defItem);
+      }
+    });
+
+    setMenuItems(mergedItems);
+    setEditedItems(JSON.parse(JSON.stringify(mergedItems)));
     if (data.carousel && Array.isArray(data.carousel) && data.carousel.length > 0) {
       setCarouselItems(data.carousel);
       setEditedCarouselItems(JSON.parse(JSON.stringify(data.carousel)));
@@ -750,7 +760,7 @@ export default function App() {
     setPrepTime(pt);
     setEditedPrepTime(pt);
     try {
-      localStorage.setItem('rumana_menu_backup', JSON.stringify(data));
+      localStorage.setItem('rumana_menu_backup', JSON.stringify({ ...data, items: mergedItems }));
     } catch (e) {}
   };
 
