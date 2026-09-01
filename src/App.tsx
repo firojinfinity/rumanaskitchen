@@ -1397,7 +1397,7 @@ export default function App() {
           </h3>
           <button 
             className="know-more-btn" 
-            onClick={() => setDishInfoModalItem(item)}
+            onClick={(e) => { e.stopPropagation(); setDishInfoModalItem(item); }}
             style={{ marginTop: 0, flexShrink: 0 }}
             title="Origin, History, Ingredients & Details"
           >
@@ -1424,15 +1424,15 @@ export default function App() {
           </div>
           {item.available && (
             cart[item.name] ? (
-              <div className="card-qty-stepper">
-                <button onClick={() => changeQty(item.name, -1)} className="qty-stepper-btn">-</button>
+              <div className="card-qty-stepper" onClick={(e) => e.stopPropagation()}>
+                <button onClick={(e) => { e.stopPropagation(); changeQty(item.name, -1); }} className="qty-stepper-btn" aria-label="Decrease quantity">-</button>
                 <span className="qty-stepper-num">{cart[item.name].qty}</span>
-                <button onClick={() => changeQty(item.name, 1)} className="qty-stepper-btn">+</button>
+                <button onClick={(e) => { e.stopPropagation(); changeQty(item.name, 1); }} className="qty-stepper-btn" aria-label="Increase quantity">+</button>
               </div>
             ) : (
               <button 
                 className="add-to-cart-btn-sleek" 
-                onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption)}
+                onClick={(e) => { e.stopPropagation(); addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id); }}
               >
                 <span>ADD</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
               </button>
