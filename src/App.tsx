@@ -1018,6 +1018,13 @@ export default function App() {
     hasPotatoOption?: boolean,
     itemId?: number
   ) => {
+    // Availability guard: prevent adding sold out items to cart from any modal or route
+    const currentMenuItem = menuItems.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim() || m.id === itemId);
+    if (currentMenuItem && !currentMenuItem.available) {
+      triggerToast(`Sorry, "${name}" is currently Sold Out today!`);
+      return;
+    }
+
     setCart(prev => {
       const updated = { ...prev };
       const isEligible = isPotatoEligibleItem(name, itemId, hasPotatoOption);
@@ -2197,16 +2204,37 @@ export default function App() {
                       </div>
                     )}
 
-                    <div style={{ marginTop: '10px' }}>
-                      <button 
-                        className="btn-primary-large" 
-                        onClick={() => {
-                          addToCart(dishInfoModalItem.name, dishInfoModalItem.price, dishInfoModalItem.hasSizes, dishInfoModalItem.prices, dishInfoModalItem.hasPotatoOption);
-                          setDishInfoModalItem(null);
-                        }}
-                      >
-                        🛒 Add {dishInfoModalItem.name} to Cart • ₹{dishInfoModalItem.price}
-                      </button>
+                    <div style={{ marginTop: '14px' }}>
+                      {dishInfoModalItem.available ? (
+                        <button 
+                          className="btn-primary-large" 
+                          onClick={() => {
+                            addToCart(dishInfoModalItem.name, dishInfoModalItem.price, dishInfoModalItem.hasSizes, dishInfoModalItem.prices, dishInfoModalItem.hasPotatoOption, dishInfoModalItem.id);
+                            setDishInfoModalItem(null);
+                          }}
+                        >
+                          🛒 Add {dishInfoModalItem.name} to Cart • ₹{dishInfoModalItem.price}
+                        </button>
+                      ) : (
+                        <div style={{
+                          background: '#ffebee',
+                          color: '#c62828',
+                          border: '1.5px solid #ffcdd2',
+                          borderRadius: '12px',
+                          padding: '14px 18px',
+                          textAlign: 'center',
+                          fontWeight: 800,
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          boxShadow: '0 4px 12px rgba(198,40,40,0.1)'
+                        }}>
+                          <span>❌</span>
+                          <span>Currently Sold Out / Unavailable Today</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
