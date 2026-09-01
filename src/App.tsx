@@ -1146,10 +1146,13 @@ export default function App() {
 
     const encodedText = encodeURIComponent(messageText);
     const phone = "918331810574";
-    const whatsappURL = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedText}`;
+    const whatsappURL = `https://wa.me/${phone}?text=${encodedText}`;
 
-    // Direct window location navigation (guaranteed to work across 100% of mobile, tablet, and desktop devices without popup blocker interference)
-    window.location.href = whatsappURL;
+    // Direct universal wa.me deep-linking with popup fallback
+    const win = window.open(whatsappURL, '_blank');
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      window.location.href = whatsappURL;
+    }
   };
 
   // Copy UPI Address
@@ -2106,7 +2109,7 @@ export default function App() {
 
             {/* Small Round Responsive Floating WhatsApp Button requested by Firoj Sir */}
             <a
-              href={`https://api.whatsapp.com/send?phone=918331810574&text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
+              href={`https://wa.me/918331810574?text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="floating-whatsapp-btn"
