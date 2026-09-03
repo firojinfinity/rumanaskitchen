@@ -100,12 +100,11 @@
             "category": "curries",
             "diet": "nonveg",
             "image": "chilichicken.jpg",
-            "description": "Special Order Only • Crispy chicken tossed in spicy garlic soy sauce (Choose Dry or Gravy)",
+            "description": "Crispy chicken tossed in spicy garlic soy sauce (Choose Dry or Gravy)",
             "price": 170,
             "available": true,
             "stockCount": 20,
             "prepTime": "25m",
-            "isSpecialOrder": true,
             "hasChiliStyleOption": true
         },
         {

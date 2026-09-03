@@ -513,7 +513,7 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     origin: 'Indo-Chinese Classic (Kolkata Tangra Specialty)',
     firstOriginCountry: 'India (Created in Tangra Chinatown, Kolkata by Nelson Wang)',
     yearCreated: '1975 AD (Created at Cricket Club of India / Tangra)',
-    history: 'Special Order Only • Tender chicken bites marinated and fried, tossed with diced onions, capsicum, green chilies, and tangy soy-chili sauce.',
+    history: 'Tender chicken bites marinated and fried, tossed with diced onions, capsicum, green chilies, and tangy soy-chili sauce.',
     ingredients: ['Boneless Chicken Bites', 'Capsicum & Diced Onions', 'Green Chilies & Garlic', 'Dark Soy & Chili Sauce', 'Spring Onions'],
     cookingTime: 'Freshly Prepared (20 Mins)',
     spiceLevel: '🌶️🌶️🌶️ Spicy',
@@ -1105,11 +1105,8 @@ export default function App() {
   }, 0);
 
   // WhatsApp Order Checkouts
-  const handleCheckout = () => {
-    if (totalCartCount === 0) {
-      triggerToast("Your cart is empty! Please add some dishes to your cart first.");
-      return;
-    }
+  const getCheckoutWhatsappUrl = () => {
+    if (totalCartCount === 0) return '#';
 
     const orderTime = new Date().toLocaleString('en-IN', {
       day: 'numeric',
@@ -1139,7 +1136,6 @@ export default function App() {
       }
       if (item.name.toLowerCase().includes('chili chicken') || item.name.toLowerCase().includes('chilli chicken') || item.chiliStyle) {
         details.push(item.chiliStyle === 'gravy' ? 'Gravy Style 🍲' : 'Dry Style 🥢');
-        details.push('⭐ Special Order');
       }
       const detailsStr = details.length > 0 ? ` (${details.join(', ')})` : '';
       const displayName = `${item.name}${detailsStr}`;
@@ -1152,14 +1148,7 @@ export default function App() {
     messageText += `📍 *Pickup Location:* Near Pine Block Veg Shop\n\n_Please confirm availability and pick-up timing._`;
 
     const encodedText = encodeURIComponent(messageText);
-    const phone = "918331810574";
-    const whatsappURL = `https://wa.me/${phone}?text=${encodedText}`;
-
-    // Direct universal wa.me deep-linking with popup fallback
-    const win = window.open(whatsappURL, '_blank');
-    if (!win || win.closed || typeof win.closed === 'undefined') {
-      window.location.href = whatsappURL;
-    }
+    return `https://wa.me/918331810574?text=${encodedText}`;
   };
 
   // Copy UPI Address
@@ -1419,7 +1408,7 @@ export default function App() {
           </div>
         )}
 
-        {(item.isSpecialOrder || item.name.toLowerCase().includes('chili chicken')) && (
+        {item.isSpecialOrder && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#d84315', fontWeight: 800, margin: '4px 0', background: '#fbe9e7', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
             <span>⭐</span><span>Special Order Only</span>
           </div>
@@ -1833,9 +1822,14 @@ export default function App() {
                     📍 Strict Pickup Only: Near Pine Block Veg Shop. (No Home Delivery).<br />
                     📧 Email: <a href="mailto:rizwangazi2018@gmail.com" style={{ color: 'var(--primary)', fontWeight: 600 }}>rizwangazi2018@gmail.com</a>
                   </p>
-                  <button onClick={handleCheckout} className="btn-whatsapp">
+                  <a
+                    href={totalCartCount > 0 ? getCheckoutWhatsappUrl() : `https://wa.me/918331810574?text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-whatsapp"
+                  >
                     💬 Open Chat & Order
-                  </button>
+                  </a>
                 </div>
 
                 <div className="payment-card">
@@ -2108,9 +2102,24 @@ export default function App() {
                   <span className="cart-total-label">Total Payable</span>
                   <span className="cart-total-amount" id="cartTotal">₹{totalCartPrice}</span>
                 </div>
-                <button className="cart-checkout-btn" onClick={handleCheckout} disabled={totalCartCount === 0}>
+                <a 
+                  href={totalCartCount > 0 ? getCheckoutWhatsappUrl() : '#'}
+                  target={totalCartCount > 0 ? "_blank" : "_self"}
+                  rel="noopener noreferrer"
+                  className={`cart-checkout-btn ${totalCartCount === 0 ? 'disabled' : ''}`}
+                  onClick={(e) => {
+                    if (totalCartCount === 0) {
+                      e.preventDefault();
+                      triggerToast("Your cart is empty! Please add some dishes to your cart first.");
+                    }
+                  }}
+                  style={{
+                    opacity: totalCartCount === 0 ? 0.6 : 1,
+                    cursor: totalCartCount === 0 ? 'not-allowed' : 'pointer'
+                  }}
+                >
                   💬 Order via WhatsApp
-                </button>
+                </a>
               </div>
             </div>
 
