@@ -1814,7 +1814,7 @@ export default function App() {
                     rel="noopener noreferrer"
                     className="btn-whatsapp"
                   >
-                    💬 Open Chat & Order
+                    👉 Click to Proceed with Order on WhatsApp 💬
                   </a>
                 </div>
 
@@ -2104,7 +2104,7 @@ export default function App() {
                     cursor: totalCartCount === 0 ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  💬 Order via WhatsApp
+                  👉 Click to Proceed with Order 💬
                 </a>
               </div>
             </div>
@@ -2141,7 +2141,7 @@ export default function App() {
                   rel="noopener noreferrer"
                   className="sticky-whatsapp-btn"
                 >
-                  <span>💬 Order via WhatsApp</span>
+                  <span>👉 Click to Proceed with Order</span>
                   <span style={{ fontSize: '15px' }}>➔</span>
                 </a>
               </div>
