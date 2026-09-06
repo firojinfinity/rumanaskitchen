@@ -724,6 +724,118 @@ section {
   text-decoration: none;
 }
 
+/* Sticky Mobile Cart & WhatsApp Checkout Bar (Zomato / Swiggy Style) */
+.mobile-sticky-checkout-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-sticky-checkout-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid rgba(158, 42, 43, 0.12);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.15);
+    z-index: 998;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    box-sizing: border-box;
+    animation: slideUpBar 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUpBar {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .sticky-bar-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .sticky-cart-icon {
+    font-size: 22px;
+    background: rgba(158, 42, 43, 0.08);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sticky-cart-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sticky-cart-qty {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .sticky-cart-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.1;
+  }
+
+  .sticky-whatsapp-btn {
+    background: #25D366;
+    color: #ffffff;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    min-height: 48px;
+    flex-grow: 1;
+    max-width: 210px;
+    justify-content: center;
+  }
+
+  .sticky-whatsapp-btn:active {
+    background: #20ba59;
+    transform: scale(0.97);
+  }
+
+  /* Position floating round WhatsApp icon neatly above sticky bottom bar on mobile */
+  .floating-whatsapp-btn {
+    bottom: 78px !important;
+    right: 16px !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .cart-badge {
+    display: none !important;
+  }
+}
+
 .floating-whatsapp-btn:hover, .floating-whatsapp-btn:active {
   transform: scale(1.12);
   background: #20ba59;

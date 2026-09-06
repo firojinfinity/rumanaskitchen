@@ -2141,6 +2141,24 @@ export default function App() {
               <span className="floating-whatsapp-pulse"></span>
             </a>
 
+            {/* Sticky Mobile Cart & WhatsApp Checkout Bar (Zomato / Swiggy Style) */}
+            {totalCartCount > 0 && !isCartOpen && (
+              <div className="mobile-sticky-checkout-bar">
+                <div className="sticky-bar-info" onClick={() => setIsCartOpen(true)}>
+                  <div className="sticky-cart-icon">🛒</div>
+                  <div className="sticky-cart-text">
+                    <span className="sticky-cart-qty">{totalCartCount} {totalCartCount === 1 ? 'ITEM' : 'ITEMS'}</span>
+                    <span className="sticky-cart-price">₹{totalCartPrice}</span>
+                  </div>
+                </div>
+
+                <button className="sticky-whatsapp-btn" onClick={handleOrderClick}>
+                  <span>💬 Order via WhatsApp</span>
+                  <span style={{ fontSize: '15px' }}>➔</span>
+                </button>
+              </div>
+            )}
+
             {/* Floating cart trigger */}
             {totalCartCount > 0 && (
               <div className="cart-badge" id="cartBadge" onClick={() => setIsCartOpen(true)}>
