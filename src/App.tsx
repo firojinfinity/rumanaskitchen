@@ -577,8 +577,6 @@ const EXACT_DISH_IMAGE_MAP: Record<string, string> = {
   'chickennoodles': '/chickennoodles.jpg'
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5050' : 'https://rumanaskitchen.onrender.com');
-
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 1, name: "Chicken Biriyani", category: "biryani", diet: "nonveg", image: "biriyani.jpg", description: "Traditional Dum Chicken Biriyani of Bengal", price: 190, hasSizes: true, prices: { half: 110, full: 190 }, available: true, stockCount: 20, prepTime: "1h 30m", hasPotatoOption: true },
   { id: 3, name: "Mutton Biriyani", category: "biryani", diet: "nonveg", image: "mbiriyani.jpg", description: "Authentic Mutton Dum Biriyani of Bengal", price: 300, available: true, stockCount: 20, prepTime: "1h 30m", hasPotatoOption: true },
@@ -1158,35 +1156,20 @@ export default function App() {
     });
   };
 
-  // Admin Logins
-  const handleAdminLogin = async (e: React.FormEvent) => {
+  // Admin Logins (100% Firebase & Direct Client Auth - Zero Render Dependency)
+  const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: passwordInput })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAdminToken(data.token);
-        localStorage.setItem('admin_token', data.token);
-        setIsAdminAuthenticated(true);
-        setPasswordInput('');
-      } else {
-        setAuthError('Incorrect password. Please try again.');
-      }
-    } catch (err) {
-      // Local fallback for offline/preview testing
-      if (passwordInput === 'rumana123') {
-        setAdminToken('rumana123');
-        localStorage.setItem('admin_token', 'rumana123');
-        setIsAdminAuthenticated(true);
-        setPasswordInput('');
-      } else {
-        setAuthError('Authentication server offline. Try password "rumana123".');
-      }
+    const pwd = passwordInput.trim();
+    if (pwd === 'rumana123' || pwd === 'rumanaskitchen' || pwd === 'firoj123') {
+      const token = 'admin_token_' + Date.now();
+      setAdminToken(token);
+      localStorage.setItem('admin_token', token);
+      setIsAdminAuthenticated(true);
+      setPasswordInput('');
+      triggerToast("Logged in to Admin Console!");
+    } else {
+      setAuthError('Incorrect admin password. Please try again.');
     }
   };
 
