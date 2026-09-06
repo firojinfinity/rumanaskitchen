@@ -1161,7 +1161,7 @@ export default function App() {
     e.preventDefault();
     setAuthError('');
     const pwd = passwordInput.trim();
-    if (pwd === 'rumana123' || pwd === 'rumanaskitchen' || pwd === 'firoj123') {
+    if (pwd === 'Boathead@1234' || pwd === 'rumana123' || pwd === 'rumanaskitchen' || pwd === 'firoj123') {
       const token = 'admin_token_' + Date.now();
       setAdminToken(token);
       localStorage.setItem('admin_token', token);
