@@ -661,7 +661,6 @@ export default function App() {
   // Smart Feature States
   const [dishInfoModalItem, setDishInfoModalItem] = useState<MenuItem | null>(null);
   const [showSmartReceipt, setShowSmartReceipt] = useState<boolean>(false);
-  const [showOrderOptionsModal, setShowOrderOptionsModal] = useState<boolean>(false);
 
   // Add New Item States
   const [showAddItemModal, setShowAddItemModal] = useState<boolean>(false);
@@ -1103,7 +1102,7 @@ export default function App() {
     return sum + ((item.price + addonPrice) * item.qty);
   }, 0);
 
-  // WhatsApp & Mobile Order Fail-Safe Helpers
+  // WhatsApp Order Helper
   const getRawMessageText = () => {
     const orderTime = new Date().toLocaleString('en-IN', {
       day: 'numeric',
@@ -1129,7 +1128,7 @@ export default function App() {
         details.push('Boiled Egg 🥚 (+₹15)');
       }
       if (item.withRaita) {
-        details.push('Fresh Raita 轨 (+₹15)');
+        details.push('Fresh Raita 🥣 (+₹15)');
       }
       if (item.name.toLowerCase().includes('chili chicken') || item.name.toLowerCase().includes('chilli chicken') || item.chiliStyle) {
         details.push(item.chiliStyle === 'gravy' ? 'Gravy Style 🍲' : 'Dry Style 🥢');
@@ -1151,31 +1150,6 @@ export default function App() {
     const messageText = getRawMessageText();
     const encodedText = encodeURIComponent(messageText);
     return `https://wa.me/918331810574?text=${encodedText}`;
-  };
-
-  const getCheckoutWhatsappAppUrl = () => {
-    if (totalCartCount === 0) return '#';
-    const messageText = getRawMessageText();
-    const encodedText = encodeURIComponent(messageText);
-    return `whatsapp://send?phone=918331810574&text=${encodedText}`;
-  };
-
-  const handleCopyOrderText = () => {
-    const text = getRawMessageText();
-    navigator.clipboard.writeText(text).then(() => {
-      triggerToast("Order receipt text copied!");
-    }).catch(() => {
-      triggerToast("Order text ready!");
-    });
-  };
-
-  const handleOrderClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (totalCartCount === 0) {
-      triggerToast("Your cart is empty! Please add some dishes to your cart first.");
-      return;
-    }
-    setShowOrderOptionsModal(true);
   };
 
   // Copy UPI Address
@@ -1834,12 +1808,14 @@ export default function App() {
                     📍 Strict Pickup Only: Near Pine Block Veg Shop. (No Home Delivery).<br />
                     📧 Email: <a href="mailto:rizwangazi2018@gmail.com" style={{ color: 'var(--primary)', fontWeight: 600 }}>rizwangazi2018@gmail.com</a>
                   </p>
-                  <button
-                    onClick={handleOrderClick}
+                  <a
+                    href={totalCartCount > 0 ? getCheckoutWhatsappUrl() : `https://wa.me/918331810574?text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="btn-whatsapp"
                   >
                     💬 Open Chat & Order
-                  </button>
+                  </a>
                 </div>
 
                 <div className="payment-card">
@@ -2112,17 +2088,24 @@ export default function App() {
                   <span className="cart-total-label">Total Payable</span>
                   <span className="cart-total-amount" id="cartTotal">₹{totalCartPrice}</span>
                 </div>
-                <button 
+                <a 
+                  href={totalCartCount > 0 ? getCheckoutWhatsappUrl() : '#'}
+                  target={totalCartCount > 0 ? "_blank" : "_self"}
+                  rel="noopener noreferrer"
                   className={`cart-checkout-btn ${totalCartCount === 0 ? 'disabled' : ''}`}
-                  onClick={handleOrderClick}
-                  disabled={totalCartCount === 0}
+                  onClick={(e) => {
+                    if (totalCartCount === 0) {
+                      e.preventDefault();
+                      triggerToast("Your cart is empty! Please add some dishes to your cart first.");
+                    }
+                  }}
                   style={{
                     opacity: totalCartCount === 0 ? 0.6 : 1,
                     cursor: totalCartCount === 0 ? 'not-allowed' : 'pointer'
                   }}
                 >
                   💬 Order via WhatsApp
-                </button>
+                </a>
               </div>
             </div>
 
@@ -2152,10 +2135,15 @@ export default function App() {
                   </div>
                 </div>
 
-                <button className="sticky-whatsapp-btn" onClick={handleOrderClick}>
+                <a
+                  href={getCheckoutWhatsappUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sticky-whatsapp-btn"
+                >
                   <span>💬 Order via WhatsApp</span>
                   <span style={{ fontSize: '15px' }}>➔</span>
-                </button>
+                </a>
               </div>
             )}
 
@@ -2164,78 +2152,6 @@ export default function App() {
               <div className="cart-badge" id="cartBadge" onClick={() => setIsCartOpen(true)}>
                 <span>🛒</span>
                 <div className="cart-badge-count" id="cartCount">{totalCartCount}</div>
-              </div>
-            )}
-
-            {/* Fail-Safe Mobile & Desktop Order Modal */}
-            {showOrderOptionsModal && (
-              <div className="modal-overlay" onClick={() => setShowOrderOptionsModal(false)}>
-                <div className="dish-info-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '440px', padding: '24px' }}>
-                  <button className="modal-close-btn" onClick={() => setShowOrderOptionsModal(false)}>✕</button>
-
-                  <div style={{ textAlign: 'center', marginBottom: '18px' }}>
-                    <div style={{ fontSize: '38px', marginBottom: '4px' }}>📲</div>
-                    <h3 style={{ margin: 0, fontSize: '20px', color: 'var(--text-dark)', fontWeight: 800 }}>Complete Your Order</h3>
-                    <p style={{ margin: '6px 0 0 0', fontSize: '13px', color: 'var(--text-muted)' }}>
-                      Total Payable: <strong style={{ color: 'var(--primary)' }}>₹{totalCartPrice}</strong> ({totalCartCount} items)
-                    </p>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <a
-                      href={getCheckoutWhatsappAppUrl()}
-                      className="btn-primary-large"
-                      style={{ background: '#25D366', color: '#ffffff', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px', borderRadius: '14px', fontWeight: 800, fontSize: '14px', boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)' }}
-                      onClick={() => setShowOrderOptionsModal(false)}
-                    >
-                      <span>💬</span><span>Open WhatsApp App Directly</span>
-                    </a>
-
-                    <a
-                      href={getCheckoutWhatsappUrl()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-primary-large"
-                      style={{ background: '#128C7E', color: '#ffffff', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px', borderRadius: '14px', fontWeight: 800, fontSize: '14px' }}
-                      onClick={() => setShowOrderOptionsModal(false)}
-                    >
-                      <span>🌐</span><span>Open via WhatsApp Web</span>
-                    </a>
-
-                    <button
-                      className="btn-primary-large"
-                      style={{ background: 'var(--primary)', color: '#ffffff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px', borderRadius: '14px', fontWeight: 800, fontSize: '14px', cursor: 'pointer' }}
-                      onClick={() => {
-                        handleCopyOrderText();
-                        window.open(getCheckoutWhatsappUrl(), '_blank');
-                        setShowOrderOptionsModal(false);
-                      }}
-                    >
-                      <span>📋</span><span>Copy Order Receipt & Chat</span>
-                    </button>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
-                      <a
-                        href="tel:918331810574"
-                        style={{ background: '#0288d1', color: '#ffffff', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '12px', borderRadius: '12px', fontWeight: 800, fontSize: '13px' }}
-                        onClick={() => setShowOrderOptionsModal(false)}
-                      >
-                        <span>📞</span><span>Call Kitchen</span>
-                      </a>
-                      <a
-                        href={`sms:918331810574?body=${encodeURIComponent("Hello Rumana's Kitchen! I want to place an order for " + totalCartCount + " items (Total ₹" + totalCartPrice + "). Please confirm!")}`}
-                        style={{ background: '#7b1fa2', color: '#ffffff', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '12px', borderRadius: '12px', fontWeight: 800, fontSize: '13px' }}
-                        onClick={() => setShowOrderOptionsModal(false)}
-                      >
-                        <span>💬</span><span>Send SMS</span>
-                      </a>
-                    </div>
-                  </div>
-
-                  <p style={{ margin: '16px 0 0 0', textAlign: 'center', fontSize: '11px', color: '#666', fontStyle: 'italic' }}>
-                    📍 Kitchen Contact: +91 8331810574 • Pickup Near Pine Block Veg Shop
-                  </p>
-                </div>
               </div>
             )}
 
