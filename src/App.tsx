@@ -2130,7 +2130,9 @@ export default function App() {
                 <div className="sticky-bar-info" onClick={() => setIsCartOpen(true)}>
                   <div className="sticky-cart-icon">🛒</div>
                   <div className="sticky-cart-text">
-                    <span className="sticky-cart-qty">{totalCartCount} {totalCartCount === 1 ? 'ITEM' : 'ITEMS'}</span>
+                    <span className="sticky-cart-qty" style={{ textDecoration: 'underline', textUnderlineOffset: '2.5px', color: 'var(--primary)', fontWeight: 800, fontSize: '11px' }}>
+                      Review Items ({totalCartCount})
+                    </span>
                     <span className="sticky-cart-price">₹{totalCartPrice}</span>
                   </div>
                 </div>
