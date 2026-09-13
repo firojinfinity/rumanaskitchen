@@ -977,31 +977,31 @@ export default function App() {
     return n.includes('biriyani') || n.includes('kasha') || n.includes('fish curry');
   };
 
-  const updateCartItemPotato = (name: string, withPotato: boolean) => {
+  const updateCartItemPotato = (cartKey: string, withPotato: boolean) => {
     setCart(prev => {
       const updated = { ...prev };
-      if (updated[name]) {
-        updated[name].withPotato = withPotato;
+      if (updated[cartKey]) {
+        updated[cartKey].withPotato = withPotato;
       }
       return updated;
     });
   };
 
-  const updateCartItemAddon = (name: string, addon: 'withEgg' | 'withRaita', value: boolean) => {
+  const updateCartItemAddon = (cartKey: string, addon: 'withEgg' | 'withRaita', value: boolean) => {
     setCart(prev => {
       const updated = { ...prev };
-      if (updated[name]) {
-        updated[name][addon] = value;
+      if (updated[cartKey]) {
+        updated[cartKey][addon] = value;
       }
       return updated;
     });
   };
 
-  const updateCartItemChiliStyle = (name: string, style: 'dry' | 'gravy') => {
+  const updateCartItemChiliStyle = (cartKey: string, style: 'dry' | 'gravy') => {
     setCart(prev => {
       const updated = { ...prev };
-      if (updated[name]) {
-        updated[name].chiliStyle = style;
+      if (updated[cartKey]) {
+        updated[cartKey].chiliStyle = style;
       }
       return updated;
     });
@@ -1014,7 +1014,8 @@ export default function App() {
     hasSizes?: boolean, 
     prices?: { half: number; full: number },
     hasPotatoOption?: boolean,
-    itemId?: number
+    itemId?: number,
+    selectedSize?: 'half' | 'full'
   ) => {
     // Availability guard: prevent adding sold out items to cart from any modal or route
     const currentMenuItem = menuItems.find(m => m.name.toLowerCase().trim() === name.toLowerCase().trim() || m.id === itemId);
@@ -1023,19 +1024,23 @@ export default function App() {
       return;
     }
 
+    const effectiveSize = hasSizes ? (selectedSize || 'full') : undefined;
+    const effectivePrice = (hasSizes && prices && effectiveSize) ? prices[effectiveSize] : price;
+    const cartKey = (hasSizes && effectiveSize) ? `${name} (${effectiveSize === 'half' ? 'Half' : 'Full'})` : name;
+
     setCart(prev => {
       const updated = { ...prev };
       const isEligible = isPotatoEligibleItem(name, itemId, hasPotatoOption);
       const isChili = name.toLowerCase().includes('chili chicken') || name.toLowerCase().includes('chilli chicken');
-      if (updated[name]) {
-        updated[name].qty += 1;
+      if (updated[cartKey]) {
+        updated[cartKey].qty += 1;
       } else {
-        updated[name] = { 
+        updated[cartKey] = { 
           name, 
-          price, 
+          price: effectivePrice, 
           qty: 1,
           hasSizes,
-          size: hasSizes ? 'full' : undefined,
+          size: effectiveSize,
           prices,
           hasPotatoOption: isEligible,
           withPotato: isEligible ? false : undefined,
@@ -1044,30 +1049,47 @@ export default function App() {
       }
       return updated;
     });
-    triggerToast(`${name} added to cart!`);
+    const sizeToast = effectiveSize ? ` (${effectiveSize === 'half' ? 'Half' : 'Full'})` : '';
+    triggerToast(`${name}${sizeToast} added to cart!`);
   };
 
-  // Update Cart Item Size
-  const updateCartItemSize = (name: string, newSize: 'half' | 'full') => {
+  // Update Cart Item Size in Cart Drawer
+  const updateCartItemSize = (cartKey: string, newSize: 'half' | 'full') => {
     setCart(prev => {
       const updated = { ...prev };
-      const item = updated[name];
-      if (item && item.prices) {
-        item.size = newSize;
-        item.price = item.prices[newSize];
+      const oldItem = updated[cartKey];
+      if (!oldItem || !oldItem.prices) return prev;
+
+      const baseName = oldItem.name;
+      const newCartKey = `${baseName} (${newSize === 'half' ? 'Half' : 'Full'})`;
+
+      if (cartKey === newCartKey) return prev;
+
+      const newPrice = oldItem.prices[newSize];
+
+      if (updated[newCartKey]) {
+        updated[newCartKey].qty += oldItem.qty;
+        delete updated[cartKey];
+      } else {
+        updated[newCartKey] = {
+          ...oldItem,
+          size: newSize,
+          price: newPrice
+        };
+        delete updated[cartKey];
       }
       return updated;
     });
   };
 
   // Change Quantity in Cart
-  const changeQty = (name: string, amount: number) => {
+  const changeQty = (cartKey: string, amount: number) => {
     setCart(prev => {
       const updated = { ...prev };
-      if (!updated[name]) return prev;
-      updated[name].qty += amount;
-      if (updated[name].qty <= 0) {
-        delete updated[name];
+      if (!updated[cartKey]) return prev;
+      updated[cartKey].qty += amount;
+      if (updated[cartKey].qty <= 0) {
+        delete updated[cartKey];
       }
       return updated;
     });
@@ -1075,7 +1097,7 @@ export default function App() {
 
   // Smart AI Pairing Recommender
   const getSmartPairingSuggestion = () => {
-    const cartItemNames = Object.keys(cart).map(k => k.toLowerCase());
+    const cartItemNames = Object.values(cart).map(item => item.name.toLowerCase());
     if (cartItemNames.length === 0) return null;
 
     for (const cartName of cartItemNames) {
@@ -1405,19 +1427,57 @@ export default function App() {
             {item.hasSizes && item.prices ? `₹${item.prices.half} - ₹${item.prices.full}` : `₹${item.price}`}
           </div>
           {item.available && (
-            cart[item.name] ? (
-              <div className="card-qty-stepper" onClick={(e) => e.stopPropagation()}>
-                <button onClick={(e) => { e.stopPropagation(); changeQty(item.name, -1); }} className="qty-stepper-btn" aria-label="Decrease quantity">-</button>
-                <span className="qty-stepper-num">{cart[item.name].qty}</span>
-                <button onClick={(e) => { e.stopPropagation(); changeQty(item.name, 1); }} className="qty-stepper-btn" aria-label="Increase quantity">+</button>
+            item.hasSizes && item.prices ? (
+              <div className="card-size-actions" onClick={(e) => e.stopPropagation()} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                {cart[`${item.name} (Half)`] ? (
+                  <div className="card-qty-stepper" style={{ height: '32px', padding: '2px 6px' }}>
+                    <button onClick={() => changeQty(`${item.name} (Half)`, -1)} className="qty-stepper-btn" style={{ fontSize: '11px' }}>-</button>
+                    <span className="qty-stepper-num" style={{ fontSize: '11px' }}>H: {cart[`${item.name} (Half)`].qty}</span>
+                    <button onClick={() => changeQty(`${item.name} (Half)`, 1)} className="qty-stepper-btn" style={{ fontSize: '11px' }}>+</button>
+                  </div>
+                ) : (
+                  <button 
+                    className="add-to-cart-btn-sleek" 
+                    style={{ padding: '6px 10px', fontSize: '11px', minWidth: 'auto' }}
+                    onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id, 'half')}
+                    title={`Add Half Portion (₹${item.prices.half})`}
+                  >
+                    <span>+ Half ₹{item.prices.half}</span>
+                  </button>
+                )}
+
+                {cart[`${item.name} (Full)`] ? (
+                  <div className="card-qty-stepper" style={{ height: '32px', padding: '2px 6px' }}>
+                    <button onClick={() => changeQty(`${item.name} (Full)`, -1)} className="qty-stepper-btn" style={{ fontSize: '11px' }}>-</button>
+                    <span className="qty-stepper-num" style={{ fontSize: '11px' }}>F: {cart[`${item.name} (Full)`].qty}</span>
+                    <button onClick={() => changeQty(`${item.name} (Full)`, 1)} className="qty-stepper-btn" style={{ fontSize: '11px' }}>+</button>
+                  </div>
+                ) : (
+                  <button 
+                    className="add-to-cart-btn-sleek"
+                    style={{ padding: '6px 10px', fontSize: '11px', minWidth: 'auto' }}
+                    onClick={() => addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id, 'full')}
+                    title={`Add Full Portion (₹${item.prices.full})`}
+                  >
+                    <span>+ Full ₹{item.prices.full}</span>
+                  </button>
+                )}
               </div>
             ) : (
-              <button 
-                className="add-to-cart-btn-sleek" 
-                onClick={(e) => { e.stopPropagation(); addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id); }}
-              >
-                <span>ADD</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
-              </button>
+              cart[item.name] ? (
+                <div className="card-qty-stepper" onClick={(e) => e.stopPropagation()}>
+                  <button onClick={(e) => { e.stopPropagation(); changeQty(item.name, -1); }} className="qty-stepper-btn" aria-label="Decrease quantity">-</button>
+                  <span className="qty-stepper-num">{cart[item.name].qty}</span>
+                  <button onClick={(e) => { e.stopPropagation(); changeQty(item.name, 1); }} className="qty-stepper-btn" aria-label="Increase quantity">+</button>
+                </div>
+              ) : (
+                <button 
+                  className="add-to-cart-btn-sleek" 
+                  onClick={(e) => { e.stopPropagation(); addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id); }}
+                >
+                  <span>ADD</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
+                </button>
+              )
             )
           )}
         </div>
@@ -1852,10 +1912,10 @@ export default function App() {
                 <button className="cart-close" onClick={() => setIsCartOpen(false)}>✕</button>
               </div>
               <div className="cart-items" id="cartItems">
-                {Object.values(cart).map(item => (
-                  <div key={item.name} className="cart-item">
+                {Object.entries(cart).map(([cartKey, item]) => (
+                  <div key={cartKey} className="cart-item">
                     <div className="cart-item-info">
-                      <span className="cart-item-name">{item.name}</span>
+                      <span className="cart-item-name">{item.name}{item.size ? ` (${item.size === 'half' ? 'Half' : 'Full'})` : ''}</span>
                       <span className="cart-item-price">₹{item.price} each</span>
                       
                       {item.hasSizes && item.prices && (
@@ -1865,7 +1925,7 @@ export default function App() {
                             return (
                               <button
                                 key={sz}
-                                onClick={() => updateCartItemSize(item.name, sz)}
+                                onClick={() => updateCartItemSize(cartKey, sz)}
                                 style={{
                                   border: isActive ? '1px solid var(--primary)' : '1px solid rgba(158, 42, 43, 0.18)',
                                   background: isActive ? 'var(--primary)' : 'transparent',
@@ -1891,7 +1951,7 @@ export default function App() {
                           <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)' }}>🥔 Potato:</span>
                           <div style={{ display: 'flex', gap: '4px' }}>
                             <button
-                              onClick={() => updateCartItemPotato(item.name, true)}
+                              onClick={() => updateCartItemPotato(cartKey, true)}
                               style={{
                                 border: item.withPotato ? '1px solid #2e7d32' : '1px solid rgba(158, 42, 43, 0.18)',
                                 background: item.withPotato ? '#2e7d32' : 'transparent',
@@ -1906,7 +1966,7 @@ export default function App() {
                               Yes
                             </button>
                             <button
-                              onClick={() => updateCartItemPotato(item.name, false)}
+                              onClick={() => updateCartItemPotato(cartKey, false)}
                               style={{
                                 border: !item.withPotato ? '1px solid #c62828' : '1px solid rgba(158, 42, 43, 0.18)',
                                 background: !item.withPotato ? '#c62828' : 'transparent',
@@ -1930,7 +1990,7 @@ export default function App() {
                           <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)' }}>🌶️ Style:</span>
                           <div style={{ display: 'flex', gap: '4px' }}>
                             <button
-                              onClick={() => updateCartItemChiliStyle(item.name, 'dry')}
+                              onClick={() => updateCartItemChiliStyle(cartKey, 'dry')}
                               style={{
                                 border: (item.chiliStyle || 'dry') === 'dry' ? '1px solid var(--primary)' : '1px solid rgba(158, 42, 43, 0.18)',
                                 background: (item.chiliStyle || 'dry') === 'dry' ? 'var(--primary)' : 'transparent',
@@ -1945,7 +2005,7 @@ export default function App() {
                               Dry
                             </button>
                             <button
-                              onClick={() => updateCartItemChiliStyle(item.name, 'gravy')}
+                              onClick={() => updateCartItemChiliStyle(cartKey, 'gravy')}
                               style={{
                                 border: item.chiliStyle === 'gravy' ? '1px solid var(--primary)' : '1px solid rgba(158, 42, 43, 0.18)',
                                 background: item.chiliStyle === 'gravy' ? 'var(--primary)' : 'transparent',
@@ -1974,7 +2034,7 @@ export default function App() {
                               <input 
                                 type="checkbox" 
                                 checked={!!item.withEgg} 
-                                onChange={(e) => updateCartItemAddon(item.name, 'withEgg', e.target.checked)} 
+                                onChange={(e) => updateCartItemAddon(cartKey, 'withEgg', e.target.checked)} 
                                 style={{ accentColor: 'var(--primary)', width: '14px', height: '14px', cursor: 'pointer' }}
                               />
                               <span>🥚 Add Boiled Egg (+₹15)</span>
@@ -1983,7 +2043,7 @@ export default function App() {
                               <input 
                                 type="checkbox" 
                                 checked={!!item.withRaita} 
-                                onChange={(e) => updateCartItemAddon(item.name, 'withRaita', e.target.checked)} 
+                                onChange={(e) => updateCartItemAddon(cartKey, 'withRaita', e.target.checked)} 
                                 style={{ accentColor: 'var(--primary)', width: '14px', height: '14px', cursor: 'pointer' }}
                               />
                               <span>🥣 Add Fresh Raita (+₹15)</span>
@@ -1993,9 +2053,9 @@ export default function App() {
                       )}
                     </div>
                     <div className="cart-item-qty">
-                      <button className="qty-btn" onClick={() => changeQty(item.name, -1)}>-</button>
+                      <button className="qty-btn" onClick={() => changeQty(cartKey, -1)}>-</button>
                       <span className="qty-num">{item.qty}</span>
-                      <button className="qty-btn" onClick={() => changeQty(item.name, 1)}>+</button>
+                      <button className="qty-btn" onClick={() => changeQty(cartKey, 1)}>+</button>
                     </div>
                   </div>
                 ))}
@@ -2048,7 +2108,7 @@ export default function App() {
                           <span className="smart-receipt-id">#RK-{Math.floor(Date.now() / 1000).toString().slice(-5)}</span>
                         </div>
                         <div className="smart-receipt-items">
-                          {Object.values(cart).map(item => {
+                          {Object.entries(cart).map(([cartKey, item]) => {
                             const addonPrice = (item.withEgg ? 15 : 0) + (item.withRaita ? 15 : 0);
                             const unitPrice = item.price + addonPrice;
                             const itemTotal = unitPrice * item.qty;
@@ -2056,9 +2116,10 @@ export default function App() {
                             if (item.withEgg) addons.push('Egg');
                             if (item.withRaita) addons.push('Raita');
                             const addonText = addons.length > 0 ? ` [${addons.join('+')}]` : '';
+                            const sizeText = item.size ? ` (${item.size === 'half' ? 'Half' : 'Full'})` : '';
                             return (
-                              <div key={item.name} className="smart-receipt-row">
-                                <span>{item.name}{addonText} x {item.qty}</span>
+                              <div key={cartKey} className="smart-receipt-row">
+                                <span>{item.name}{sizeText}{addonText} x {item.qty}</span>
                                 <span>₹{itemTotal}</span>
                               </div>
                             );
@@ -2226,15 +2287,40 @@ export default function App() {
 
                     <div style={{ marginTop: '14px' }}>
                       {dishInfoModalItem.available ? (
-                        <button 
-                          className="btn-primary-large" 
-                          onClick={() => {
-                            addToCart(dishInfoModalItem.name, dishInfoModalItem.price, dishInfoModalItem.hasSizes, dishInfoModalItem.prices, dishInfoModalItem.hasPotatoOption, dishInfoModalItem.id);
-                            setDishInfoModalItem(null);
-                          }}
-                        >
-                          🛒 Add {dishInfoModalItem.name} to Cart • ₹{dishInfoModalItem.price}
-                        </button>
+                        dishInfoModalItem.hasSizes && dishInfoModalItem.prices ? (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                            <button 
+                              className="btn-primary-large" 
+                              style={{ padding: '12px 10px', fontSize: '13px' }}
+                              onClick={() => {
+                                addToCart(dishInfoModalItem.name, dishInfoModalItem.price, true, dishInfoModalItem.prices, dishInfoModalItem.hasPotatoOption, dishInfoModalItem.id, 'half');
+                                setDishInfoModalItem(null);
+                              }}
+                            >
+                              🛒 Add Half • ₹{dishInfoModalItem.prices.half}
+                            </button>
+                            <button 
+                              className="btn-primary-large"
+                              style={{ padding: '12px 10px', fontSize: '13px' }}
+                              onClick={() => {
+                                addToCart(dishInfoModalItem.name, dishInfoModalItem.price, true, dishInfoModalItem.prices, dishInfoModalItem.hasPotatoOption, dishInfoModalItem.id, 'full');
+                                setDishInfoModalItem(null);
+                              }}
+                            >
+                              🛒 Add Full • ₹{dishInfoModalItem.prices.full}
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            className="btn-primary-large" 
+                            onClick={() => {
+                              addToCart(dishInfoModalItem.name, dishInfoModalItem.price, dishInfoModalItem.hasSizes, dishInfoModalItem.prices, dishInfoModalItem.hasPotatoOption, dishInfoModalItem.id);
+                              setDishInfoModalItem(null);
+                            }}
+                          >
+                            🛒 Add {dishInfoModalItem.name} to Cart • ₹{dishInfoModalItem.price}
+                          </button>
+                        )
                       ) : (
                         <div style={{
                           background: '#ffebee',
