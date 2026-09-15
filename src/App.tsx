@@ -661,6 +661,7 @@ export default function App() {
   // Smart Feature States
   const [dishInfoModalItem, setDishInfoModalItem] = useState<MenuItem | null>(null);
   const [showSmartReceipt, setShowSmartReceipt] = useState<boolean>(false);
+  const [isPaymentCheckoutModalOpen, setIsPaymentCheckoutModalOpen] = useState<boolean>(false);
 
   // Add New Item States
   const [showAddItemModal, setShowAddItemModal] = useState<boolean>(false);
@@ -1878,14 +1879,18 @@ export default function App() {
                     📍 Strict Pickup Only: Near Pine Block Veg Shop. (No Home Delivery).<br />
                     📧 Email: <a href="mailto:rizwangazi2018@gmail.com" style={{ color: 'var(--primary)', fontWeight: 600 }}>rizwangazi2018@gmail.com</a>
                   </p>
-                  <a
-                    href={totalCartCount > 0 ? getCheckoutWhatsappUrl() : `https://wa.me/918331810574?text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => {
+                      if (totalCartCount > 0) {
+                        setIsPaymentCheckoutModalOpen(true);
+                      } else {
+                        window.open(`https://wa.me/918331810574?text=${encodeURIComponent("Hello Rumana's Kitchen! 🍽️ I have an inquiry / custom order request:")}`, '_blank');
+                      }
+                    }}
                     className="btn-whatsapp"
                   >
                     👉 Click to Proceed with Order on WhatsApp 💬
-                  </a>
+                  </button>
                 </div>
 
                 <div className="payment-card">
@@ -2165,49 +2170,6 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Instant GPay / PhonePe & Copy UPI ID Box in Cart Drawer */}
-                {totalCartCount > 0 && (
-                  <div className="cart-upi-payment-box">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 800, color: '#1b5e20', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <span>💳</span><span>GPay / PhonePe / UPI Payment</span>
-                      </span>
-                      <span style={{ fontSize: '10px', background: '#e8f5e9', color: '#2e7d32', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
-                        FAST & EASY
-                      </span>
-                    </div>
-
-                    <div className="upi-id-copy-strip">
-                      <span style={{ fontSize: '12px', fontWeight: 800, fontFamily: 'monospace', color: '#1a237e' }}>
-                        rumanafiroj91@oksbi
-                      </span>
-                      <button 
-                        onClick={handleCopyUpi}
-                        className="copy-upi-btn"
-                        title="Copy GPay UPI ID"
-                      >
-                        📋 Copy ID
-                      </button>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
-                      <a 
-                        href={getUpiPayUrl()}
-                        onClick={handleUpiPayClick}
-                        className="upi-pay-app-btn gpay-btn"
-                      >
-                        <span>📱 Open GPay App</span>
-                      </a>
-                      <button 
-                        onClick={handleCopyUpi}
-                        className="upi-pay-app-btn copy-btn-full"
-                      >
-                        <span>📋 Copy GPay ID</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-
                 {totalCartCount === 0 && (
                   <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
                     Your cart is empty. Add some delicacies!
@@ -2219,15 +2181,14 @@ export default function App() {
                   <span className="cart-total-label">Total Payable</span>
                   <span className="cart-total-amount" id="cartTotal">₹{totalCartPrice}</span>
                 </div>
-                <a 
-                  href={totalCartCount > 0 ? getCheckoutWhatsappUrl() : '#'}
-                  target={totalCartCount > 0 ? "_blank" : "_self"}
-                  rel="noopener noreferrer"
+                <button 
                   className={`cart-checkout-btn ${totalCartCount === 0 ? 'disabled' : ''}`}
                   onClick={(e) => {
+                    e.preventDefault();
                     if (totalCartCount === 0) {
-                      e.preventDefault();
                       triggerToast("Your cart is empty! Please add some dishes to your cart first.");
+                    } else {
+                      setIsPaymentCheckoutModalOpen(true);
                     }
                   }}
                   style={{
@@ -2236,7 +2197,7 @@ export default function App() {
                   }}
                 >
                   👉 Click to Proceed with Order 💬
-                </a>
+                </button>
               </div>
             </div>
 
@@ -2268,15 +2229,13 @@ export default function App() {
                   </div>
                 </div>
 
-                <a
-                  href={getCheckoutWhatsappUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => setIsPaymentCheckoutModalOpen(true)}
                   className="sticky-whatsapp-btn"
                 >
                   <span>👉 Click to Proceed with Order</span>
                   <span style={{ fontSize: '15px' }}>➔</span>
-                </a>
+                </button>
               </div>
             )}
 
@@ -2412,6 +2371,86 @@ export default function App() {
                         </div>
                       )}
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Interactive Payment & Checkout Modal */}
+            {isPaymentCheckoutModalOpen && (
+              <div className="modal-overlay" onClick={() => setIsPaymentCheckoutModalOpen(false)}>
+                <div className="dish-info-modal payment-checkout-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '440px', padding: '24px 20px' }}>
+                  <button className="modal-close-btn" onClick={() => setIsPaymentCheckoutModalOpen(false)}>✕</button>
+
+                  <div style={{ textAlign: 'center', marginBottom: '18px' }}>
+                    <div style={{ fontSize: '36px', marginBottom: '4px' }}>💳</div>
+                    <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text)', margin: '0 0 4px 0' }}>
+                      Select Payment & Order Method
+                    </h3>
+                    <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--primary)' }}>
+                      Total Bill Amount: ₹{totalCartPrice} ({totalCartCount} {totalCartCount === 1 ? 'item' : 'items'})
+                    </span>
+                  </div>
+
+                  {/* STEP 1: MAKE PAYMENT */}
+                  <div style={{ background: 'rgba(46, 125, 50, 0.06)', border: '1.5px solid rgba(46, 125, 50, 0.25)', borderRadius: '12px', padding: '14px', marginBottom: '16px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>1️⃣</span><span>Step 1: Choose Payment App or Copy UPI ID</span>
+                    </div>
+
+                    {/* UPI Copy Strip */}
+                    <div className="upi-id-copy-strip" style={{ marginBottom: '10px' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'monospace', color: '#1a237e' }}>
+                        rumanafiroj91@oksbi
+                      </span>
+                      <button 
+                        onClick={handleCopyUpi}
+                        className="copy-upi-btn"
+                      >
+                        📋 Copy ID
+                      </button>
+                    </div>
+
+                    {/* UPI App Buttons Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                      <a 
+                        href={getUpiPayUrl()}
+                        onClick={handleUpiPayClick}
+                        className="upi-pay-app-btn gpay-btn"
+                        style={{ padding: '11px 8px', fontSize: '12.5px' }}
+                      >
+                        <span>📱 Pay via GPay</span>
+                      </a>
+                      <a 
+                        href={getUpiPayUrl()}
+                        onClick={handleUpiPayClick}
+                        className="upi-pay-app-btn"
+                        style={{ background: '#5f259f', color: '#ffffff', boxShadow: '0 3px 10px rgba(95, 37, 159, 0.3)', padding: '11px 8px', fontSize: '12.5px' }}
+                      >
+                        <span>🟣 Pay via PhonePe</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* STEP 2: CONFIRM ON WHATSAPP */}
+                  <div style={{ background: 'rgba(37, 211, 102, 0.08)', border: '1.5px solid rgba(37, 211, 102, 0.3)', borderRadius: '12px', padding: '14px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>2️⃣</span><span>Step 2: Confirm Order on WhatsApp</span>
+                    </div>
+                    <p style={{ fontSize: '12px', color: '#444', margin: '0 0 12px 0', lineHeight: 1.4 }}>
+                      Send your itemized bill and payment screenshot to Rumana's Kitchen on WhatsApp to confirm your slot!
+                    </p>
+
+                    <a
+                      href={getCheckoutWhatsappUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-whatsapp"
+                      style={{ width: '100%', margin: 0 }}
+                      onClick={() => setIsPaymentCheckoutModalOpen(false)}
+                    >
+                      💬 Send Order & Receipt on WhatsApp
+                    </a>
                   </div>
                 </div>
               </div>
