@@ -1174,11 +1174,21 @@ export default function App() {
     return `https://wa.me/918331810574?text=${encodedText}`;
   };
 
-  // Copy UPI Address
+  // Copy UPI Address & Deep Link Helpers
   const handleCopyUpi = () => {
     navigator.clipboard.writeText("rumanafiroj91@oksbi").then(() => {
-      triggerToast("UPI ID copied to clipboard!");
+      triggerToast("📋 GPay / UPI ID (rumanafiroj91@oksbi) copied to clipboard!");
     });
+  };
+
+  const getUpiPayUrl = () => {
+    const amountParam = totalCartPrice > 0 ? `&am=${totalCartPrice}` : '';
+    return `upi://pay?pa=rumanafiroj91@oksbi&pn=Rumana%27s%20Kitchen&cu=INR&tn=Rumana%20Kitchen%20Order${amountParam}`;
+  };
+
+  const handleUpiPayClick = () => {
+    navigator.clipboard.writeText("rumanafiroj91@oksbi");
+    triggerToast("📱 Opening GPay/PhonePe & copied UPI ID (rumanafiroj91@oksbi)!");
   };
 
   // Admin Logins (100% Firebase & Direct Client Auth - Zero Render Dependency)
@@ -1880,17 +1890,34 @@ export default function App() {
 
                 <div className="payment-card">
                   <div className="card-icon">💳</div>
-                  <h3>Secure UPI Payment</h3>
-                  <p className="about-text">Scan the QR using any UPI app (GPay, PhonePe, Paytm, etc.)</p>
+                  <h3>Secure UPI Payment (GPay, PhonePe, Paytm)</h3>
+                  <p className="about-text">Scan QR code or click below to launch GPay / PhonePe / Paytm directly</p>
                   <div className="qr-container">
                     <img className="qr-image" src="upi_qr.png" alt="UPI Payment QR" />
                   </div>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)' }}>UPI Address</span>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)' }}>GPay / UPI Address</span>
                   <div className="upi-box">
                     <span className="upi-id" id="upiId">rumanafiroj91@oksbi</span>
-                    <button className="copy-btn" onClick={handleCopyUpi} title="Copy Address">📋</button>
+                    <button className="copy-btn" onClick={handleCopyUpi} title="Copy Address">📋 Copy</button>
                   </div>
-                  <p className="about-text" style={{ fontSize: '13px', marginTop: '20px', fontStyle: 'italic' }}>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px', width: '100%' }}>
+                    <a 
+                      href={getUpiPayUrl()}
+                      onClick={handleUpiPayClick}
+                      className="btn-gpay-launch"
+                    >
+                      📱 Pay via GPay / PhonePe / Paytm
+                    </a>
+                    <button 
+                      onClick={handleCopyUpi}
+                      className="btn-copy-upi-large"
+                    >
+                      📋 Copy GPay ID (rumanafiroj91@oksbi)
+                    </button>
+                  </div>
+
+                  <p className="about-text" style={{ fontSize: '13px', marginTop: '16px', fontStyle: 'italic' }}>
                     📸 Please take a snapshot of the completed transaction page and send it via WhatsApp to confirm the order.
                   </p>
                 </div>
@@ -2135,6 +2162,49 @@ export default function App() {
                         </div>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Instant GPay / PhonePe & Copy UPI ID Box in Cart Drawer */}
+                {totalCartCount > 0 && (
+                  <div className="cart-upi-payment-box">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: 800, color: '#1b5e20', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <span>💳</span><span>GPay / PhonePe / UPI Payment</span>
+                      </span>
+                      <span style={{ fontSize: '10px', background: '#e8f5e9', color: '#2e7d32', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
+                        FAST & EASY
+                      </span>
+                    </div>
+
+                    <div className="upi-id-copy-strip">
+                      <span style={{ fontSize: '12px', fontWeight: 800, fontFamily: 'monospace', color: '#1a237e' }}>
+                        rumanafiroj91@oksbi
+                      </span>
+                      <button 
+                        onClick={handleCopyUpi}
+                        className="copy-upi-btn"
+                        title="Copy GPay UPI ID"
+                      >
+                        📋 Copy ID
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
+                      <a 
+                        href={getUpiPayUrl()}
+                        onClick={handleUpiPayClick}
+                        className="upi-pay-app-btn gpay-btn"
+                      >
+                        <span>📱 Open GPay App</span>
+                      </a>
+                      <button 
+                        onClick={handleCopyUpi}
+                        className="upi-pay-app-btn copy-btn-full"
+                      >
+                        <span>📋 Copy GPay ID</span>
+                      </button>
+                    </div>
                   </div>
                 )}
 
