@@ -67,6 +67,14 @@ interface CustomerFeedback {
 
 const INDIAN_CUSTOMER_FEEDBACKS: CustomerFeedback[] = [
   {
+    name: "Firoj Gazi",
+    location: "Raintree / Pine Block",
+    avatar: "FG",
+    stars: 5,
+    comment: "Biryani was very tasty...like Dada Boudi Biryani!",
+    dish: "Chicken Biriyani"
+  },
+  {
     name: "Ananya Sengupta",
     location: "Salt Lake, Kolkata",
     avatar: "AS",
