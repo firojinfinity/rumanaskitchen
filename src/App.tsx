@@ -1109,6 +1109,7 @@ export default function App() {
     setCart(prev => {
       const updated = { ...prev };
       const isEligible = isPotatoEligibleItem(name, itemId, hasPotatoOption);
+      const isSoya = name.toLowerCase().includes('soya');
       const isChili = name.toLowerCase().includes('chili chicken') || name.toLowerCase().includes('chilli chicken');
       if (updated[cartKey]) {
         updated[cartKey].qty += 1;
@@ -1121,7 +1122,7 @@ export default function App() {
           size: effectiveSize,
           prices,
           hasPotatoOption: isEligible,
-          withPotato: isEligible ? false : undefined,
+          withPotato: isEligible ? (isSoya ? true : false) : undefined,
           chiliStyle: isChili ? 'dry' : undefined
         };
       }
