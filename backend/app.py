@@ -313,14 +313,15 @@ DEFAULT_MENU = {
         },
         {
             "id": 29,
-            "name": "Soya Chunks Curry",
+            "name": "Soya Chunk Curry",
             "category": "curries",
             "diet": "veg",
             "image": "soyachunks.jpg",
             "fallbackImage": "soyachunks.jpg",
             "description": "Per plate",
             "price": 90,
-            "available": True
+            "available": True,
+            "hasPotatoOption": True
         },
         {
             "id": 30,
@@ -348,7 +349,7 @@ DEFAULT_MENU = {
         },
         {
             "id": 32,
-            "name": "Kashmiri Aloo Dum",
+            "name": "Aloor Dum",
             "category": "curries",
             "diet": "veg",
             "image": "kashmirialoodum.jpg",

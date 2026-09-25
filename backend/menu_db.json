@@ -376,14 +376,15 @@
         },
         {
             "id": 29,
-            "name": "Soya Chunks Curry",
+            "name": "Soya Chunk Curry",
             "category": "curries",
             "diet": "veg",
             "image": "soyachunks.jpg",
             "description": "Per plate",
             "price": 90,
             "available": true,
-            "stockCount": 20
+            "stockCount": 20,
+            "hasPotatoOption": true
         },
         {
             "id": 30,
@@ -411,7 +412,7 @@
         },
         {
             "id": 32,
-            "name": "Kashmiri Aloo Dum",
+            "name": "Aloor Dum",
             "category": "curries",
             "diet": "veg",
             "image": "kashmirialoodum.jpg",

@@ -437,6 +437,16 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     spiceLevel: '🌶️ Mild',
     bestPairedWith: 'Chicken Kasha'
   },
+  'aloor dum': {
+    origin: 'Bengal Traditional Special',
+    firstOriginCountry: 'India (Bengal)',
+    yearCreated: '18th Century AD',
+    history: 'Baby potatoes fried and slow-cooked in a rich, fragrant curd and fennel-infused red gravy.',
+    ingredients: ['Baby Potatoes', 'Hing (Asafoetida)', 'Fennel Powder (Saunf)', 'Yogurt Gravy', 'Kashmiri Red Chili'],
+    cookingTime: 'Slow Dum Cooked (40 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Laccha Paratha'
+  },
   'kashmiri aloo dum': {
     origin: 'Kashmir & Bengal Adaptation',
     firstOriginCountry: 'India (Kashmir & Bengal)',
@@ -455,7 +465,7 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     ingredients: ['Refined Flour (Maida)', 'Pure Ghee / Oil Frying'],
     cookingTime: 'Fresh Deep Fried (10 Mins)',
     spiceLevel: '🌶️ Mild',
-    bestPairedWith: 'Kashmiri Aloo Dum'
+    bestPairedWith: 'Aloor Dum'
   },
   'chicken varta': {
     origin: 'Kolkata Dhaba Classic',
@@ -476,6 +486,16 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     cookingTime: 'Simmered (30 Mins)',
     spiceLevel: '🌶️🌶️ Medium',
     bestPairedWith: 'Plain Rice'
+  },
+  'soya chunk curry': {
+    origin: 'Indian Plant Protein Special',
+    firstOriginCountry: 'India',
+    yearCreated: '20th Century AD',
+    history: 'Tender high-protein soy chunks cooked in a rich, spiced gravy with diced potatoes and cumin.',
+    ingredients: ['Soya Chunks', 'Diced Potatoes', 'Onion-Tomato Paste', 'Garam Masala'],
+    cookingTime: 'Simmered (30 Mins)',
+    spiceLevel: '🌶️🌶️ Medium',
+    bestPairedWith: 'Fulka (Roti)'
   },
   'soya chunks curry': {
     origin: 'Indian Plant Protein Special',
@@ -561,8 +581,11 @@ const EXACT_DISH_IMAGE_MAP: Record<string, string> = {
   'normal dal': '/dal.jpg',
   'muri ghonto': '/murighonto.jpg',
   'egg curry with potato': '/eggcurry.jpg',
+  'soya chunk curry': '/soyachunks.jpg',
   'soya chunks curry': '/soyachunks.jpg',
   'chicken chaap': '/chickenchaap.jpg',
+  'aloor dum': '/kashmirialoodum.jpg',
+  'aloo dum': '/kashmirialoodum.jpg',
   'kashmiri aloo dum': '/kashmirialoodum.jpg',
   'chicken varta': '/chickenvarta.jpg',
   'chicken pakora (boneless)': '/cpakora.jpg',
@@ -616,10 +639,10 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 26, name: "Muri Ghonto", category: "curries", diet: "nonveg", image: "murighonto.jpg", description: "Assamese style - Per plate", price: 60, available: true, stockCount: 20 },
   { id: 27, name: "Fulka (Roti)", category: "snacks", diet: "veg", image: "fulka.jpg", description: "Per piece • Min. 3 rotis mandatory", price: 8, available: true, stockCount: 20 },
   { id: 28, name: "Egg Curry with Potato", category: "curries", diet: "nonveg", image: "eggcurry.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 },
-  { id: 29, name: "Soya Chunks Curry", category: "curries", diet: "veg", image: "soyachunks.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 },
+  { id: 29, name: "Soya Chunk Curry", category: "curries", diet: "veg", image: "soyachunks.jpg", description: "Per plate", price: 90, available: true, stockCount: 20, hasPotatoOption: true },
   { id: 30, name: "Tandoori Roti", category: "snacks", diet: "veg", image: "tandooriroti.jpg", description: "Per piece • Min. 3 rotis mandatory", price: 40, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 31, name: "Chicken Chaap", category: "curries", diet: "nonveg", image: "chickenchaap.jpg", description: "1 piece per plate", price: 120, available: true, stockCount: 20, prepTime: "1h 30m" },
-  { id: 32, name: "Kashmiri Aloo Dum", category: "curries", diet: "veg", image: "kashmirialoodum.jpg", description: "5 pcs per plate", price: 100, available: true, stockCount: 20, prepTime: "1h 30m" },
+  { id: 32, name: "Aloor Dum", category: "curries", diet: "veg", image: "kashmirialoodum.jpg", description: "5 pcs per plate", price: 100, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 33, name: "Fulko Luchi", category: "snacks", diet: "veg", image: "fulkoluchi.jpg", description: "4 pcs per plate", price: 50, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 34, name: "Chicken Varta", category: "curries", diet: "nonveg", image: "chickenvarta.jpg", description: "Per plate", price: 120, available: true, stockCount: 20, prepTime: "1h 30m" }
 ];
@@ -991,8 +1014,8 @@ export default function App() {
   const normalizeDishName = (name?: string): string => {
     if (!name) return '';
     let n = name.toLowerCase().trim();
-    if (n.includes('soya') && n.includes('curry')) return 'soya chunks curry';
-    if ((n.includes('aloo') || n.includes('aloor')) && n.includes('dum')) return 'kashmiri aloo dum';
+    if (n.includes('soya')) return 'soya chunk curry';
+    if ((n.includes('aloo') || n.includes('aloor')) && n.includes('dum')) return 'aloor dum';
     return n;
   };
 
@@ -1026,9 +1049,9 @@ export default function App() {
   const isPotatoEligibleItem = (name: string, id?: number, flag?: boolean) => {
     if (flag) return true;
     const n = (name || '').toLowerCase().trim();
-    if (n.includes('aloo biriyani') || n.includes('aloo biryani') || n.includes('kashmiri aloo dum') || n.includes('bhindi aloo')) return false;
-    if (id && [1, 3, 5, 6, 7].includes(id)) return true;
-    return n.includes('biriyani') || n.includes('kasha') || n.includes('fish curry');
+    if (n.includes('aloo biriyani') || n.includes('aloo biryani') || n.includes('kashmiri aloo dum') || n.includes('aloor dum') || n.includes('aloo dum') || n.includes('bhindi aloo')) return false;
+    if (id && [1, 3, 5, 6, 7, 29].includes(id)) return true;
+    return n.includes('biriyani') || n.includes('kasha') || n.includes('fish curry') || n.includes('soya');
   };
 
   const updateCartItemPotato = (cartKey: string, withPotato: boolean) => {
@@ -1460,7 +1483,7 @@ export default function App() {
             const nameLower = (item.name || '').toLowerCase();
             if (item.id === 30 || nameLower.includes('tandoori roti')) t.src = '/tandooriroti.png';
             else if (item.id === 31 || nameLower.includes('chicken chaap')) t.src = '/chickenchaap.png';
-            else if (item.id === 32 || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) t.src = '/kashmirialoodum.png';
+            else if (item.id === 32 || nameLower.includes('aloor dum') || nameLower.includes('aloo dum') || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) t.src = '/kashmirialoodum.png';
             else if (item.id === 33 || nameLower.includes('fulko luchi')) t.src = '/fulkoluchi.png';
             else if (item.id === 34 || nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) t.src = '/chickenvarta.png';
             else t.src = item.fallbackImage || '/veg.jpg';
@@ -3051,7 +3074,7 @@ export default function App() {
                             const nameLower = (item.name || '').toLowerCase();
                             if (item.id === 30 || nameLower.includes('tandoori roti')) target.src = '/tandooriroti.png';
                             else if (item.id === 31 || nameLower.includes('chicken chaap')) target.src = '/chickenchaap.png';
-                            else if (item.id === 32 || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) target.src = '/kashmirialoodum.png';
+                            else if (item.id === 32 || nameLower.includes('aloor dum') || nameLower.includes('aloo dum') || nameLower.includes('kashmiri aloo dum') || nameLower.includes('kasmiri aloo dum')) target.src = '/kashmirialoodum.png';
                             else if (item.id === 33 || nameLower.includes('fulko luchi')) target.src = '/fulkoluchi.png';
                             else if (item.id === 34 || nameLower.includes('chicken varta') || nameLower.includes('chicken bharta')) target.src = '/chickenvarta.png';
                             else target.src = item.fallbackImage || '/veg.jpg';
