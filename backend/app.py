@@ -296,7 +296,7 @@ DEFAULT_MENU = {
             "diet": "veg",
             "image": "fulka.jpg",
             "fallbackImage": "fulka.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 3 rotis mandatory",
             "price": 8,
             "available": True
         },
@@ -328,7 +328,7 @@ DEFAULT_MENU = {
             "category": "snacks",
             "diet": "veg",
             "image": "tandooriroti.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 3 rotis mandatory",
             "price": 40,
             "available": True,
             "stockCount": 20,

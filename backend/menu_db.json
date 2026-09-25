@@ -358,7 +358,7 @@
             "category": "snacks",
             "diet": "veg",
             "image": "fulka.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 3 rotis mandatory",
             "price": 8,
             "available": true,
             "stockCount": 20
@@ -391,7 +391,7 @@
             "category": "snacks",
             "diet": "veg",
             "image": "fulka.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 3 rotis mandatory",
             "price": 40,
             "available": true,
             "stockCount": 20,

@@ -614,10 +614,10 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 24, name: "Aloo Paratha", category: "snacks", diet: "veg", image: "alooparatha.jpg", description: "Per piece", price: 45, available: true, stockCount: 20 },
   { id: 25, name: "Normal Dal", category: "curries", diet: "veg", image: "dal.jpg", description: "Per plate", price: 45, available: true, stockCount: 20 },
   { id: 26, name: "Muri Ghonto", category: "curries", diet: "nonveg", image: "murighonto.jpg", description: "Assamese style - Per plate", price: 60, available: true, stockCount: 20 },
-  { id: 27, name: "Fulka (Roti)", category: "snacks", diet: "veg", image: "fulka.jpg", description: "Per piece", price: 8, available: true, stockCount: 20 },
+  { id: 27, name: "Fulka (Roti)", category: "snacks", diet: "veg", image: "fulka.jpg", description: "Per piece • Min. 3 rotis mandatory", price: 8, available: true, stockCount: 20 },
   { id: 28, name: "Egg Curry with Potato", category: "curries", diet: "nonveg", image: "eggcurry.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 },
   { id: 29, name: "Soya Chunks Curry", category: "curries", diet: "veg", image: "soyachunks.jpg", description: "Per plate", price: 90, available: true, stockCount: 20 },
-  { id: 30, name: "Tandoori Roti", category: "snacks", diet: "veg", image: "tandooriroti.jpg", description: "Per piece", price: 40, available: true, stockCount: 20, prepTime: "1h 30m" },
+  { id: 30, name: "Tandoori Roti", category: "snacks", diet: "veg", image: "tandooriroti.jpg", description: "Per piece • Min. 3 rotis mandatory", price: 40, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 31, name: "Chicken Chaap", category: "curries", diet: "nonveg", image: "chickenchaap.jpg", description: "1 piece per plate", price: 120, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 32, name: "Kashmiri Aloo Dum", category: "curries", diet: "veg", image: "kashmirialoodum.jpg", description: "5 pcs per plate", price: 100, available: true, stockCount: 20, prepTime: "1h 30m" },
   { id: 33, name: "Fulko Luchi", category: "snacks", diet: "veg", image: "fulkoluchi.jpg", description: "4 pcs per plate", price: 50, available: true, stockCount: 20, prepTime: "1h 30m" },
@@ -804,16 +804,17 @@ export default function App() {
     currPrep = prepTime,
     updatedCarousel = editedCarouselItems
   ) => {
+    const cleanItems = deduplicateMenuItems(updatedItems);
     const payload = {
       dinnerMode: currDinnerMode,
       announcement: currAnnounce,
       prepTime: currPrep,
-      items: updatedItems,
+      items: cleanItems,
       carousel: updatedCarousel
     };
 
-    setMenuItems(JSON.parse(JSON.stringify(updatedItems)));
-    setEditedItems(JSON.parse(JSON.stringify(updatedItems)));
+    setMenuItems(JSON.parse(JSON.stringify(cleanItems)));
+    setEditedItems(JSON.parse(JSON.stringify(cleanItems)));
     setCarouselItems(JSON.parse(JSON.stringify(updatedCarousel)));
     setEditedCarouselItems(JSON.parse(JSON.stringify(updatedCarousel)));
 
@@ -839,11 +840,13 @@ export default function App() {
     // Auto-merge any new default items if missing from incoming cloud payload
     let mergedItems: MenuItem[] = [...data.items];
     DEFAULT_MENU_ITEMS.forEach(defItem => {
-      const exists = mergedItems.some(item => item.name.toLowerCase().trim() === defItem.name.toLowerCase().trim());
+      const exists = mergedItems.some(item => normalizeDishName(item.name) === normalizeDishName(defItem.name));
       if (!exists) {
         mergedItems.push(defItem);
       }
     });
+
+    mergedItems = deduplicateMenuItems(mergedItems);
 
     setMenuItems(mergedItems);
     setEditedItems(JSON.parse(JSON.stringify(mergedItems)));
@@ -978,6 +981,48 @@ export default function App() {
     }, 2500);
   };
 
+  const isRotiItem = (name?: string): boolean => {
+    if (!name) return false;
+    const n = name.toLowerCase().trim();
+    if (n.includes('luchi')) return false;
+    return n.includes('roti') || n.includes('fulka');
+  };
+
+  const normalizeDishName = (name?: string): string => {
+    if (!name) return '';
+    let n = name.toLowerCase().trim();
+    if (n.includes('soya') && n.includes('curry')) return 'soya chunks curry';
+    if ((n.includes('aloo') || n.includes('aloor')) && n.includes('dum')) return 'kashmiri aloo dum';
+    return n;
+  };
+
+  const deduplicateMenuItems = (items: MenuItem[]): MenuItem[] => {
+    if (!Array.isArray(items)) return [];
+    const seenNames = new Set<string>();
+    const seenIds = new Set<number | string>();
+    const result: MenuItem[] = [];
+
+    for (const item of items) {
+      if (!item || !item.name) continue;
+      const normKey = normalizeDishName(item.name);
+      
+      if (seenNames.has(normKey)) {
+        console.warn(`[Deduplicator] Filtered duplicate dish: "${item.name}"`);
+        continue;
+      }
+      if (item.id && seenIds.has(item.id)) {
+        console.warn(`[Deduplicator] Filtered duplicate ID: "${item.name}" (${item.id})`);
+        continue;
+      }
+
+      seenNames.add(normKey);
+      if (item.id) seenIds.add(item.id);
+      result.push(item);
+    }
+
+    return result;
+  };
+
   const isPotatoEligibleItem = (name: string, id?: number, flag?: boolean) => {
     if (flag) return true;
     const n = (name || '').toLowerCase().trim();
@@ -1036,6 +1081,7 @@ export default function App() {
     const effectiveSize = hasSizes ? (selectedSize || 'full') : undefined;
     const effectivePrice = (hasSizes && prices && effectiveSize) ? prices[effectiveSize] : price;
     const cartKey = (hasSizes && effectiveSize) ? `${name} (${effectiveSize === 'half' ? 'Half' : 'Full'})` : name;
+    const isRoti = isRotiItem(name);
 
     setCart(prev => {
       const updated = { ...prev };
@@ -1047,7 +1093,7 @@ export default function App() {
         updated[cartKey] = { 
           name, 
           price: effectivePrice, 
-          qty: 1,
+          qty: isRoti ? 3 : 1,
           hasSizes,
           size: effectiveSize,
           prices,
@@ -1059,7 +1105,8 @@ export default function App() {
       return updated;
     });
     const sizeToast = effectiveSize ? ` (${effectiveSize === 'half' ? 'Half' : 'Full'})` : '';
-    triggerToast(`${name}${sizeToast} added to cart!`);
+    const rotiToast = isRoti ? ' (Min. 3 rotis)' : '';
+    triggerToast(`${name}${sizeToast}${rotiToast} added to cart!`);
   };
 
   // Update Cart Item Size in Cart Drawer
@@ -1096,9 +1143,17 @@ export default function App() {
     setCart(prev => {
       const updated = { ...prev };
       if (!updated[cartKey]) return prev;
-      updated[cartKey].qty += amount;
-      if (updated[cartKey].qty <= 0) {
+      
+      const item = updated[cartKey];
+      const isRoti = isRotiItem(item.name);
+      const nextQty = item.qty + amount;
+
+      if (isRoti && nextQty < 3) {
         delete updated[cartKey];
+      } else if (nextQty <= 0) {
+        delete updated[cartKey];
+      } else {
+        updated[cartKey].qty = nextQty;
       }
       return updated;
     });
@@ -1435,6 +1490,12 @@ export default function App() {
           </div>
         )}
 
+        {isRotiItem(item.name) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#c2410c', fontWeight: 700, margin: '4px 0', background: '#fff7ed', border: '1px solid #ffedd5', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
+            <span>🫓</span><span>Min. 3 Pcs Mandatory</span>
+          </div>
+        )}
+
         {item.isSpecialOrder && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#d84315', fontWeight: 800, margin: '4px 0', background: '#fbe9e7', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
             <span>⭐</span><span>Special Order Only</span>
@@ -1494,7 +1555,7 @@ export default function App() {
                   className="add-to-cart-btn-sleek" 
                   onClick={(e) => { e.stopPropagation(); addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id); }}
                 >
-                  <span>ADD</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
+                  <span>{isRotiItem(item.name) ? 'ADD (3 pcs)' : 'ADD'}</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
                 </button>
               )
             )
@@ -1956,6 +2017,11 @@ export default function App() {
                   <div key={cartKey} className="cart-item">
                     <div className="cart-item-info">
                       <span className="cart-item-name">{item.name}{item.size ? ` (${item.size === 'half' ? 'Half' : 'Full'})` : ''}</span>
+                      {isRotiItem(item.name) && (
+                        <span style={{ fontSize: '10px', color: '#ea580c', fontWeight: 600, display: 'block', marginTop: '2px' }}>
+                          🫓 Min. 3 rotis required per order
+                        </span>
+                      )}
                       <span className="cart-item-price">₹{item.price} each</span>
                       
                       {item.hasSizes && item.prices && (
@@ -2322,6 +2388,12 @@ export default function App() {
                       </div>
                     )}
 
+                    {isRotiItem(dishInfoModalItem.name) && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#c2410c', fontWeight: 700, margin: '8px 0', background: '#fff7ed', border: '1px solid #ffedd5', padding: '6px 12px', borderRadius: '8px' }}>
+                        <span>🫓</span><span>Note: Minimum 3 rotis mandatory per order</span>
+                      </div>
+                    )}
+
                     <div style={{ marginTop: '14px' }}>
                       {dishInfoModalItem.available ? (
                         dishInfoModalItem.hasSizes && dishInfoModalItem.prices ? (
@@ -2355,7 +2427,7 @@ export default function App() {
                               setDishInfoModalItem(null);
                             }}
                           >
-                            🛒 Add {dishInfoModalItem.name} to Cart • ₹{dishInfoModalItem.price}
+                            🛒 Add {dishInfoModalItem.name} {isRotiItem(dishInfoModalItem.name) ? '(3 pcs)' : ''} to Cart • ₹{dishInfoModalItem.price * (isRotiItem(dishInfoModalItem.name) ? 3 : 1)}
                           </button>
                         )
                       ) : (
