@@ -1869,7 +1869,7 @@ export default function App() {
                   marginBottom: '35px'
                 }}>
                   <div className="scrolling-marquee">
-                    <span>📢 {announcement}</span>
+                    <span>{announcement}</span>
                   </div>
                 </div>
               )}
@@ -2649,7 +2649,7 @@ export default function App() {
                 {/* Dynamic Announcement Setting */}
                 <div className="dinner-toggle-banner" style={{ marginTop: '20px', flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
                   <div className="dinner-banner-text" style={{ width: '100%' }}>
-                    <h3>📢 Dynamic Scrolling Announcement Message</h3>
+                    <h3>Dynamic Scrolling Announcement Message</h3>
                     <p>Type your message below. It will scroll dynamically at the top of the customer's explore menu. (Leave blank to hide).</p>
                   </div>
                   <textarea
