@@ -270,7 +270,7 @@
             "category": "snacks",
             "diet": "veg",
             "image": "paratha.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 2 parathas mandatory",
             "price": 20,
             "available": true,
             "stockCount": 20
@@ -281,7 +281,7 @@
             "category": "snacks",
             "diet": "veg",
             "image": "lacchaparatha.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 2 parathas mandatory",
             "price": 30,
             "available": true,
             "stockCount": 20
@@ -325,7 +325,7 @@
             "category": "snacks",
             "diet": "veg",
             "image": "alooparatha.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 2 parathas mandatory",
             "price": 45,
             "available": true,
             "stockCount": 20

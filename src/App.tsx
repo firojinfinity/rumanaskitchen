@@ -629,12 +629,12 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 16, name: "Prawn Curry", category: "curries", diet: "nonveg", image: "prawn.png", description: "Per plate", price: 130, available: true, stockCount: 20 },
   { id: 17, name: "Plain Rice", category: "biryani", diet: "veg", image: "plainrice.jpg", description: "Per plate", price: 35, available: true, stockCount: 20 },
   { id: 18, name: "Dal Pakora", category: "snacks", diet: "veg", image: "dalpakora.jpg", description: "500 g", price: 200, available: true, stockCount: 20 },
-  { id: 19, name: "Normal Paratha", category: "snacks", diet: "veg", image: "nparatha.jpg", description: "Per piece", price: 20, available: true, stockCount: 20 },
-  { id: 20, name: "Laccha Paratha", category: "snacks", diet: "veg", image: "lacchaparatha.jpg", description: "Per piece", price: 30, available: true, stockCount: 20 },
+  { id: 19, name: "Normal Paratha", category: "snacks", diet: "veg", image: "nparatha.jpg", description: "Per piece • Min. 2 parathas mandatory", price: 20, available: true, stockCount: 20 },
+  { id: 20, name: "Laccha Paratha", category: "snacks", diet: "veg", image: "lacchaparatha.jpg", description: "Per piece • Min. 2 parathas mandatory", price: 30, available: true, stockCount: 20 },
   { id: 21, name: "Gravy Sawaiyan", category: "sweets", diet: "veg", image: "gsawaiyan.jpg", description: "Per plate", price: 70, available: true, stockCount: 20 },
   { id: 22, name: "Dry Sawaiyan", category: "sweets", diet: "veg", image: "dsawaiyan.jpg", description: "Per plate", price: 50, available: true, stockCount: 20 },
   { id: 23, name: "Fried Rice", category: "biryani", diet: "veg", image: "friedrice.jpg", description: "Per plate", price: 120, available: true, stockCount: 20 },
-  { id: 24, name: "Aloo Paratha", category: "snacks", diet: "veg", image: "alooparatha.jpg", description: "Per piece", price: 45, available: true, stockCount: 20 },
+  { id: 24, name: "Aloo Paratha", category: "snacks", diet: "veg", image: "alooparatha.jpg", description: "Per piece • Min. 2 parathas mandatory", price: 45, available: true, stockCount: 20 },
   { id: 25, name: "Normal Dal", category: "curries", diet: "veg", image: "dal.jpg", description: "Per plate", price: 45, available: true, stockCount: 20 },
   { id: 26, name: "Muri Ghonto", category: "curries", diet: "nonveg", image: "murighonto.jpg", description: "Assamese style - Per plate", price: 60, available: true, stockCount: 20 },
   { id: 27, name: "Fulka (Roti)", category: "snacks", diet: "veg", image: "fulka.jpg", description: "Per piece • Min. 3 rotis mandatory", price: 8, available: true, stockCount: 20 },
@@ -869,7 +869,15 @@ export default function App() {
       }
     });
 
-    mergedItems = deduplicateMenuItems(mergedItems);
+    mergedItems = deduplicateMenuItems(mergedItems).map(item => {
+      if (isParathaItem(item.name) && (!item.description || item.description.trim().toLowerCase() === 'per piece')) {
+        return { ...item, description: 'Per piece • Min. 2 parathas mandatory' };
+      }
+      if (isRotiItem(item.name) && (!item.description || item.description.trim().toLowerCase() === 'per piece')) {
+        return { ...item, description: 'Per piece • Min. 3 rotis mandatory' };
+      }
+      return item;
+    });
 
     setMenuItems(mergedItems);
     setEditedItems(JSON.parse(JSON.stringify(mergedItems)));
@@ -1011,6 +1019,12 @@ export default function App() {
     return n.includes('roti') || n.includes('fulka');
   };
 
+  const isParathaItem = (name?: string): boolean => {
+    if (!name) return false;
+    const n = name.toLowerCase().trim();
+    return n.includes('paratha');
+  };
+
   const normalizeDishName = (name?: string): string => {
     if (!name) return '';
     let n = name.toLowerCase().trim();
@@ -1105,6 +1119,8 @@ export default function App() {
     const effectivePrice = (hasSizes && prices && effectiveSize) ? prices[effectiveSize] : price;
     const cartKey = (hasSizes && effectiveSize) ? `${name} (${effectiveSize === 'half' ? 'Half' : 'Full'})` : name;
     const isRoti = isRotiItem(name);
+    const isParatha = isParathaItem(name);
+    const minQty = isRoti ? 3 : (isParatha ? 2 : 1);
 
     setCart(prev => {
       const updated = { ...prev };
@@ -1117,7 +1133,7 @@ export default function App() {
         updated[cartKey] = { 
           name, 
           price: effectivePrice, 
-          qty: isRoti ? 3 : 1,
+          qty: minQty,
           hasSizes,
           size: effectiveSize,
           prices,
@@ -1129,8 +1145,8 @@ export default function App() {
       return updated;
     });
     const sizeToast = effectiveSize ? ` (${effectiveSize === 'half' ? 'Half' : 'Full'})` : '';
-    const rotiToast = isRoti ? ' (Min. 3 rotis)' : '';
-    triggerToast(`${name}${sizeToast}${rotiToast} added to cart!`);
+    const minOrderToast = isRoti ? ' (Min. 3 rotis)' : (isParatha ? ' (Min. 2 parathas)' : '');
+    triggerToast(`${name}${sizeToast}${minOrderToast} added to cart!`);
   };
 
   // Update Cart Item Size in Cart Drawer
@@ -1170,11 +1186,11 @@ export default function App() {
       
       const item = updated[cartKey];
       const isRoti = isRotiItem(item.name);
+      const isParatha = isParathaItem(item.name);
+      const minQty = isRoti ? 3 : (isParatha ? 2 : 1);
       const nextQty = item.qty + amount;
 
-      if (isRoti && nextQty < 3) {
-        delete updated[cartKey];
-      } else if (nextQty <= 0) {
+      if (nextQty < minQty) {
         delete updated[cartKey];
       } else {
         updated[cartKey].qty = nextQty;
@@ -1248,7 +1264,7 @@ export default function App() {
       messageText += `• ${displayName} x ${item.qty} (₹${unitPrice} each) - ₹${itemTotal}\n`;
     });
 
-    messageText += `\n💵 *Total Bill Amount:* ₹${totalCartPrice}\n`;
+    messageText += `\n💵 *Total Bill Amount:* ₹${totalCartPrice} (Only Cash)\n`;
     messageText += `📅 *Order Time:* ${orderTime}\n`;
     messageText += `⏱️ *Est. Preparation Time:* ${prepTime || '1h 30m'} from confirmation\n`;
     messageText += `📍 *Pickup Location:* Near Pine Block Veg Shop\n\n_Please confirm availability and pick-up timing._`;
@@ -1260,23 +1276,6 @@ export default function App() {
     const messageText = getRawMessageText();
     const encodedText = encodeURIComponent(messageText);
     return `https://wa.me/918331810574?text=${encodedText}`;
-  };
-
-  // Copy UPI Address & Deep Link Helpers
-  const handleCopyUpi = () => {
-    navigator.clipboard.writeText("rumanafiroj91@oksbi").then(() => {
-      triggerToast("📋 GPay / UPI ID (rumanafiroj91@oksbi) copied to clipboard!");
-    });
-  };
-
-  const getUpiPayUrl = () => {
-    const amountParam = totalCartPrice > 0 ? `&am=${totalCartPrice}` : '';
-    return `upi://pay?pa=rumanafiroj91@oksbi&pn=Rumana%27s%20Kitchen&cu=INR&tn=Rumana%20Kitchen%20Order${amountParam}`;
-  };
-
-  const handleUpiPayClick = () => {
-    navigator.clipboard.writeText("rumanafiroj91@oksbi");
-    triggerToast("📱 Opening GPay/PhonePe & copied UPI ID (rumanafiroj91@oksbi)!");
   };
 
   // Admin Logins (100% Firebase & Direct Client Auth - Zero Render Dependency)
@@ -1520,6 +1519,12 @@ export default function App() {
           </div>
         )}
 
+        {isParathaItem(item.name) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#c2410c', fontWeight: 700, margin: '4px 0', background: '#fff7ed', border: '1px solid #ffedd5', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
+            <span>🫓</span><span>Min. 2 Pcs Mandatory</span>
+          </div>
+        )}
+
         {item.isSpecialOrder && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#d84315', fontWeight: 800, margin: '4px 0', background: '#fbe9e7', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
             <span>⭐</span><span>Special Order Only</span>
@@ -1579,7 +1584,7 @@ export default function App() {
                   className="add-to-cart-btn-sleek" 
                   onClick={(e) => { e.stopPropagation(); addToCart(item.name, item.price, item.hasSizes, item.prices, item.hasPotatoOption, item.id); }}
                 >
-                  <span>{isRotiItem(item.name) ? 'ADD (3 pcs)' : 'ADD'}</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
+                  <span>{isRotiItem(item.name) ? 'ADD (3 pcs)' : isParathaItem(item.name) ? 'ADD (2 pcs)' : 'ADD'}</span><span style={{ fontSize: '14px', fontWeight: 800 }}>+</span>
                 </button>
               )
             )
@@ -1968,7 +1973,7 @@ export default function App() {
                     </div>
                   </div>
                   <p className="about-text" style={{ fontSize: '14px', marginTop: '10px' }}>
-                    ⚡ Confirmations are completed on WhatsApp only after receipt of payment screenshot.<br />
+                    ⚡ Order confirmations are completed directly on WhatsApp.<br />
                     📍 Strict Pickup Only: Near Pine Block Veg Shop. (No Home Delivery).<br />
                     📧 Email: <a href="mailto:rizwangazi2018@gmail.com" style={{ color: 'var(--primary)', fontWeight: 600 }}>rizwangazi2018@gmail.com</a>
                   </p>
@@ -1987,37 +1992,28 @@ export default function App() {
                 </div>
 
                 <div className="payment-card">
-                  <div className="card-icon">💳</div>
-                  <h3>Secure UPI Payment (GPay, PhonePe, Paytm)</h3>
-                  <p className="about-text">Scan QR code or click below to launch GPay / PhonePe / Paytm directly</p>
-                  <div className="qr-container">
-                    <img className="qr-image" src="upi_qr.png" alt="UPI Payment QR" />
-                  </div>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)' }}>GPay / UPI Address</span>
-                  <div className="upi-box">
-                    <span className="upi-id" id="upiId">rumanafiroj91@oksbi</span>
-                    <button className="copy-btn" onClick={handleCopyUpi} title="Copy Address">📋 Copy</button>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px', width: '100%' }}>
-                    <a 
-                      href={getUpiPayUrl()}
-                      onClick={handleUpiPayClick}
-                      className="btn-gpay-launch"
-                    >
-                      📱 Pay via GPay / PhonePe / Paytm
-                    </a>
-                    <button 
-                      onClick={handleCopyUpi}
-                      className="btn-copy-upi-large"
-                    >
-                      📋 Copy GPay ID (rumanafiroj91@oksbi)
-                    </button>
-                  </div>
-
-                  <p className="about-text" style={{ fontSize: '13px', marginTop: '16px', fontStyle: 'italic' }}>
-                    📸 Please take a snapshot of the completed transaction page and send it via WhatsApp to confirm the order.
+                  <div className="card-icon">💵</div>
+                  <h3>Only Cash Accepted</h3>
+                  <p className="about-text" style={{ marginTop: '10px' }}>
+                    Currently we are accepting <strong>Only Cash</strong> payment at the time of order pickup.
                   </p>
+                  <div style={{
+                    background: 'rgba(46, 125, 50, 0.08)',
+                    border: '1.5px solid rgba(46, 125, 50, 0.25)',
+                    borderRadius: '14px',
+                    padding: '20px',
+                    margin: '18px 0',
+                    textAlign: 'center',
+                    width: '100%'
+                  }}>
+                    <div style={{ fontSize: '32px', marginBottom: '6px' }}>💵</div>
+                    <div style={{ fontSize: '18px', fontWeight: 800, color: '#1b5e20' }}>
+                      ONLY CASH
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#2e7d32', fontWeight: 600, marginTop: '4px' }}>
+                      Pay by cash during pickup near Pine Block Veg Shop
+                    </div>
+                  </div>
                 </div>
               </div>
             </section>
@@ -2044,6 +2040,11 @@ export default function App() {
                       {isRotiItem(item.name) && (
                         <span style={{ fontSize: '10px', color: '#ea580c', fontWeight: 600, display: 'block', marginTop: '2px' }}>
                           🫓 Min. 3 rotis required per order
+                        </span>
+                      )}
+                      {isParathaItem(item.name) && (
+                        <span style={{ fontSize: '10px', color: '#ea580c', fontWeight: 600, display: 'block', marginTop: '2px' }}>
+                          🫓 Min. 2 parathas required per order
                         </span>
                       )}
                       <span className="cart-item-price">₹{item.price} each</span>
@@ -2418,6 +2419,12 @@ export default function App() {
                       </div>
                     )}
 
+                    {isParathaItem(dishInfoModalItem.name) && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#c2410c', fontWeight: 700, margin: '8px 0', background: '#fff7ed', border: '1px solid #ffedd5', padding: '6px 12px', borderRadius: '8px' }}>
+                        <span>🫓</span><span>Note: Minimum 2 parathas mandatory per order</span>
+                      </div>
+                    )}
+
                     <div style={{ marginTop: '14px' }}>
                       {dishInfoModalItem.available ? (
                         dishInfoModalItem.hasSizes && dishInfoModalItem.prices ? (
@@ -2451,7 +2458,7 @@ export default function App() {
                               setDishInfoModalItem(null);
                             }}
                           >
-                            🛒 Add {dishInfoModalItem.name} {isRotiItem(dishInfoModalItem.name) ? '(3 pcs)' : ''} to Cart • ₹{dishInfoModalItem.price * (isRotiItem(dishInfoModalItem.name) ? 3 : 1)}
+                            🛒 Add {dishInfoModalItem.name} {isRotiItem(dishInfoModalItem.name) ? '(3 pcs)' : isParathaItem(dishInfoModalItem.name) ? '(2 pcs)' : ''} to Cart • ₹{dishInfoModalItem.price * (isRotiItem(dishInfoModalItem.name) ? 3 : isParathaItem(dishInfoModalItem.name) ? 2 : 1)}
                           </button>
                         )
                       ) : (
@@ -2487,62 +2494,32 @@ export default function App() {
                   <button className="modal-close-btn" onClick={() => setIsPaymentCheckoutModalOpen(false)}>✕</button>
 
                   <div style={{ textAlign: 'center', marginBottom: '18px' }}>
-                    <div style={{ fontSize: '36px', marginBottom: '4px' }}>💳</div>
+                    <div style={{ fontSize: '36px', marginBottom: '4px' }}>💵</div>
                     <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text)', margin: '0 0 4px 0' }}>
-                      Select Payment & Order Method
+                      Confirm Your Order
                     </h3>
                     <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--primary)' }}>
                       Total Bill Amount: ₹{totalCartPrice} ({totalCartCount} {totalCartCount === 1 ? 'item' : 'items'})
                     </span>
                   </div>
 
-                  {/* STEP 1: MAKE PAYMENT */}
-                  <div style={{ background: 'rgba(46, 125, 50, 0.06)', border: '1.5px solid rgba(46, 125, 50, 0.25)', borderRadius: '12px', padding: '14px', marginBottom: '16px' }}>
-                    <div style={{ fontSize: '12px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span>1️⃣</span><span>Step 1: Choose Payment App or Copy UPI ID</span>
+                  {/* STEP 1: ONLY CASH NOTICE */}
+                  <div style={{ background: 'rgba(46, 125, 50, 0.06)', border: '1.5px solid rgba(46, 125, 50, 0.25)', borderRadius: '12px', padding: '14px', marginBottom: '16px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                      <span>💵</span><span>Payment Mode: Only Cash</span>
                     </div>
-
-                    {/* UPI Copy Strip */}
-                    <div className="upi-id-copy-strip" style={{ marginBottom: '10px' }}>
-                      <span style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'monospace', color: '#1a237e' }}>
-                        rumanafiroj91@oksbi
-                      </span>
-                      <button 
-                        onClick={handleCopyUpi}
-                        className="copy-upi-btn"
-                      >
-                        📋 Copy ID
-                      </button>
-                    </div>
-
-                    {/* UPI App Buttons Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                      <a 
-                        href={getUpiPayUrl()}
-                        onClick={handleUpiPayClick}
-                        className="upi-pay-app-btn gpay-btn"
-                        style={{ padding: '11px 8px', fontSize: '12.5px' }}
-                      >
-                        <span>📱 Pay via GPay</span>
-                      </a>
-                      <a 
-                        href={getUpiPayUrl()}
-                        onClick={handleUpiPayClick}
-                        className="upi-pay-app-btn"
-                        style={{ background: '#5f259f', color: '#ffffff', boxShadow: '0 3px 10px rgba(95, 37, 159, 0.3)', padding: '11px 8px', fontSize: '12.5px' }}
-                      >
-                        <span>🟣 Pay via PhonePe</span>
-                      </a>
-                    </div>
+                    <p style={{ fontSize: '12.5px', color: '#2e7d32', fontWeight: 600, margin: 0 }}>
+                      Only Cash payment is accepted at the time of pickup.
+                    </p>
                   </div>
 
                   {/* STEP 2: CONFIRM ON WHATSAPP */}
                   <div style={{ background: 'rgba(37, 211, 102, 0.08)', border: '1.5px solid rgba(37, 211, 102, 0.3)', borderRadius: '12px', padding: '14px' }}>
                     <div style={{ fontSize: '12px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span>2️⃣</span><span>Step 2: Confirm Order on WhatsApp</span>
+                      <span>📲</span><span>Confirm Order on WhatsApp</span>
                     </div>
                     <p style={{ fontSize: '12px', color: '#444', margin: '0 0 12px 0', lineHeight: 1.4 }}>
-                      Send your itemized bill and payment screenshot to Rumana's Kitchen on WhatsApp to confirm your slot!
+                      Send your itemized bill to Rumana's Kitchen on WhatsApp to confirm your slot!
                     </p>
 
                     <a
@@ -2553,7 +2530,7 @@ export default function App() {
                       style={{ width: '100%', margin: 0 }}
                       onClick={() => setIsPaymentCheckoutModalOpen(false)}
                     >
-                      💬 Send Order & Receipt on WhatsApp
+                      💬 Send Order on WhatsApp
                     </a>
                   </div>
                 </div>

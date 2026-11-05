@@ -212,7 +212,7 @@ DEFAULT_MENU = {
             "category": "snacks",
             "diet": "veg",
             "image": "nparatha.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 2 parathas mandatory",
             "price": 20,
             "available": True
         },
@@ -222,7 +222,7 @@ DEFAULT_MENU = {
             "category": "snacks",
             "diet": "veg",
             "image": "paratha.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 2 parathas mandatory",
             "price": 30,
             "available": True
         },
@@ -263,7 +263,7 @@ DEFAULT_MENU = {
             "diet": "veg",
             "image": "alooparatha.jpg",
             "fallbackImage": "alooparatha.jpg",
-            "description": "Per piece",
+            "description": "Per piece • Min. 2 parathas mandatory",
             "price": 45,
             "available": True
         },
