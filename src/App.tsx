@@ -684,8 +684,8 @@ export default function App() {
   const [authError, setAuthError] = useState<string>('');
   const [editedItems, setEditedItems] = useState<MenuItem[]>([]);
   const [saveStatus, setSaveStatus] = useState<string>('');
-  const [announcement, setAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
-  const [editedAnnouncement, setEditedAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.');
+  const [announcement, setAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen');
+  const [editedAnnouncement, setEditedAnnouncement] = useState<string>('Welcome to Rumana\'s Kitchen');
   const [prepTime, setPrepTime] = useState<string>('1h 30m');
   const [editedPrepTime, setEditedPrepTime] = useState<string>('1h 30m');
 
@@ -909,9 +909,17 @@ export default function App() {
       setEditedCarouselItems(JSON.parse(JSON.stringify(data.carousel)));
     }
     setDinnerMode(!!data.dinnerMode);
-    const msg = data.announcement || 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.';
-    setAnnouncement(msg);
-    setEditedAnnouncement(msg);
+    let rawMsg = data.announcement || 'Welcome to Rumana\'s Kitchen';
+    if (
+      rawMsg.toLowerCase().includes('puja holidays') ||
+      rawMsg.toLowerCase().includes('october 10') ||
+      rawMsg.toLowerCase().includes('october 29') ||
+      rawMsg === 'Welcome to Rumana\'s Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.'
+    ) {
+      rawMsg = 'Welcome to Rumana\'s Kitchen';
+    }
+    setAnnouncement(rawMsg);
+    setEditedAnnouncement(rawMsg);
     const pt = data.prepTime || '1h 30m';
     setPrepTime(pt);
     setEditedPrepTime(pt);

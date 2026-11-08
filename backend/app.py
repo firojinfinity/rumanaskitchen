@@ -25,7 +25,7 @@ JSONBIN_HEADERS = {
 # Seed data
 DEFAULT_MENU = {
     "dinnerMode": False,
-    "announcement": "Welcome to Rumana's Kitchen! Authentic Bengali homemade delicacies prepared fresh from the heart.",
+    "announcement": "Welcome to Rumana's Kitchen",
     "prepTime": "1h 30m",
     "items": [
         {
