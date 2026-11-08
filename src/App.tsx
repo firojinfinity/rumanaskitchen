@@ -1310,6 +1310,20 @@ export default function App() {
     return messageText;
   };
 
+  // Revalidate applied coupon if admin changes or disables code in real-time
+  useEffect(() => {
+    if (appliedCoupon) {
+      const validCodes = (couponCode || '')
+        .split(',')
+        .map(c => c.trim().toUpperCase())
+        .filter(Boolean);
+      if (!couponEnabled || !validCodes.includes(appliedCoupon.trim().toUpperCase())) {
+        setAppliedCoupon('');
+        setCouponMessage(null);
+      }
+    }
+  }, [couponCode, couponEnabled]);
+
   // Coupon Handlers
   const handleApplyCoupon = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -1318,18 +1332,21 @@ export default function App() {
       setCouponMessage({ text: 'Please enter a coupon code first.', type: 'error' });
       return;
     }
-    const validCode = (couponCode || '').trim().toUpperCase();
-    if (couponEnabled && validCode && entered === validCode) {
-      setAppliedCoupon(validCode);
+    const validCodes = (couponCode || '')
+      .split(',')
+      .map(c => c.trim().toUpperCase())
+      .filter(Boolean);
+    if (couponEnabled && validCodes.includes(entered)) {
+      setAppliedCoupon(entered);
       setCouponMessage({
-        text: `🎉 Coupon "${validCode}" applied! You get ${couponReward || 'Free Dry Sawaiyan (1 Plate)'}!`,
+        text: `🎉 Coupon "${entered}" matched! You get ${couponReward || 'Free Dry Sawaiyan (1 Plate)'}!`,
         type: 'success'
       });
-      triggerToast(`🎉 Coupon Applied! ${couponReward || 'Free Dry Sawaiyan'} added!`);
+      triggerToast(`🎉 Coupon Matched! ${couponReward || 'Free Dry Sawaiyan'} added!`);
     } else {
       setAppliedCoupon('');
       setCouponMessage({
-        text: '❌ Invalid or expired coupon code.',
+        text: '❌ Coupon code does not match or is expired.',
         type: 'error'
       });
       triggerToast('❌ Invalid coupon code.');
@@ -1343,13 +1360,27 @@ export default function App() {
     triggerToast('Coupon removed.');
   };
 
-  const handleGenerateCouponCode = () => {
+  const handleGenerateCouponCode = async () => {
     const prefixes = ['SAWAIYAN', 'RUMANA', 'RKGIFT', 'SWEET'];
     const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
     const digits = Math.floor(100 + Math.random() * 900);
     const generated = `${prefix}${digits}`;
+    const cleanReward = editedCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)';
+    setEditedCouponEnabled(true);
+    setCouponEnabled(true);
     setEditedCouponCode(generated);
-    triggerToast(`🎲 Generated new code: ${generated}`);
+    setCouponCode(generated);
+    await publishMenuState(
+      editedItems,
+      dinnerMode,
+      announcement,
+      prepTime,
+      editedCarouselItems,
+      true,
+      generated,
+      cleanReward
+    );
+    triggerToast(`🎲 Generated & Published Live Code: ${generated}`);
   };
 
   const handleSaveCouponSettings = async () => {
@@ -2971,7 +3002,24 @@ export default function App() {
                         <input
                           type="checkbox"
                           checked={editedCouponEnabled}
-                          onChange={(e) => setEditedCouponEnabled(e.target.checked)}
+                          onChange={async (e) => {
+                            const nextVal = e.target.checked;
+                            setEditedCouponEnabled(nextVal);
+                            setCouponEnabled(nextVal);
+                            const cleanCode = editedCouponCode.trim().toUpperCase() || 'SAWAIYANFREE';
+                            const cleanReward = editedCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)';
+                            await publishMenuState(
+                              editedItems,
+                              dinnerMode,
+                              announcement,
+                              prepTime,
+                              editedCarouselItems,
+                              nextVal,
+                              cleanCode,
+                              cleanReward
+                            );
+                            triggerToast(`🎟️ Coupon section ${nextVal ? 'ENABLED' : 'DISABLED'} live!`);
+                          }}
                         />
                         <span className="slider"></span>
                       </label>
