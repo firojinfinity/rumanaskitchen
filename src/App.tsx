@@ -689,17 +689,6 @@ export default function App() {
   const [prepTime, setPrepTime] = useState<string>('1h 30m');
   const [editedPrepTime, setEditedPrepTime] = useState<string>('1h 30m');
 
-  // Coupon Code States (Admin & Customer Checkout)
-  const [couponEnabled, setCouponEnabled] = useState<boolean>(true);
-  const [editedCouponEnabled, setEditedCouponEnabled] = useState<boolean>(true);
-  const [couponCode, setCouponCode] = useState<string>('SAWAIYANFREE');
-  const [editedCouponCode, setEditedCouponCode] = useState<string>('SAWAIYANFREE');
-  const [couponReward, setCouponReward] = useState<string>('Free Dry Sawaiyan (1 Plate)');
-  const [editedCouponReward, setEditedCouponReward] = useState<string>('Free Dry Sawaiyan (1 Plate)');
-  const [couponInput, setCouponInput] = useState<string>('');
-  const [appliedCoupon, setAppliedCoupon] = useState<string>('');
-  const [couponMessage, setCouponMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
-
   // Smart Feature States
   const [dishInfoModalItem, setDishInfoModalItem] = useState<MenuItem | null>(null);
   const [showSmartReceipt, setShowSmartReceipt] = useState<boolean>(false);
@@ -836,10 +825,7 @@ export default function App() {
     currDinnerMode = dinnerMode,
     currAnnounce = announcement,
     currPrep = prepTime,
-    updatedCarousel = editedCarouselItems,
-    currCouponEnabled = editedCouponEnabled,
-    currCouponCode = editedCouponCode,
-    currCouponReward = editedCouponReward
+    updatedCarousel = editedCarouselItems
   ) => {
     const cleanItems = deduplicateMenuItems(updatedItems);
     const payload = {
@@ -847,22 +833,13 @@ export default function App() {
       announcement: currAnnounce,
       prepTime: currPrep,
       items: cleanItems,
-      carousel: updatedCarousel,
-      couponEnabled: currCouponEnabled,
-      couponCode: currCouponCode.trim().toUpperCase(),
-      couponReward: currCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)'
+      carousel: updatedCarousel
     };
 
     setMenuItems(JSON.parse(JSON.stringify(cleanItems)));
     setEditedItems(JSON.parse(JSON.stringify(cleanItems)));
     setCarouselItems(JSON.parse(JSON.stringify(updatedCarousel)));
     setEditedCarouselItems(JSON.parse(JSON.stringify(updatedCarousel)));
-    setCouponEnabled(currCouponEnabled);
-    setEditedCouponEnabled(currCouponEnabled);
-    setCouponCode(currCouponCode.trim().toUpperCase());
-    setEditedCouponCode(currCouponCode.trim().toUpperCase());
-    setCouponReward(currCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)');
-    setEditedCouponReward(currCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)');
 
     try {
       localStorage.setItem('rumana_menu_backup', JSON.stringify(payload));
@@ -923,15 +900,6 @@ export default function App() {
     const pt = data.prepTime || '1h 30m';
     setPrepTime(pt);
     setEditedPrepTime(pt);
-    const cEnabled = data.couponEnabled !== undefined ? !!data.couponEnabled : true;
-    setCouponEnabled(cEnabled);
-    setEditedCouponEnabled(cEnabled);
-    const cCode = (data.couponCode || 'SAWAIYANFREE').trim().toUpperCase();
-    setCouponCode(cCode);
-    setEditedCouponCode(cCode);
-    const cReward = data.couponReward || 'Free Dry Sawaiyan (1 Plate)';
-    setCouponReward(cReward);
-    setEditedCouponReward(cReward);
     try {
       localStorage.setItem('rumana_menu_backup', JSON.stringify({ ...data, items: mergedItems }));
     } catch (e) {}
@@ -1304,112 +1272,11 @@ export default function App() {
       messageText += `• ${displayName} x ${item.qty} (₹${unitPrice} each) - ₹${itemTotal}\n`;
     });
 
-    if (appliedCoupon && couponEnabled) {
-      messageText += `• 🎁 ${couponReward || 'Free Dry Sawaiyan (1 Plate)'} [Coupon: ${appliedCoupon}] x 1 - ₹0 (FREE)\n`;
-    }
-
     messageText += `\n💵 *Total Bill Amount:* ₹${totalCartPrice} (Only Cash)\n`;
-    if (appliedCoupon && couponEnabled) {
-      messageText += `🎟️ *Coupon Applied:* ${appliedCoupon} (🎁 ${couponReward || 'Free Dry Sawaiyan (1 Plate)'})\n`;
-    }
     messageText += `📅 *Order Time:* ${orderTime}\n`;
     messageText += `⏱️ *Est. Preparation Time:* ${prepTime || '1h 30m'} from confirmation\n`;
     messageText += `📍 *Pickup Location:* Near Pine Block Veg Shop\n\n_Please confirm availability and pick-up timing._`;
     return messageText;
-  };
-
-  // Revalidate applied coupon if admin changes or disables code in real-time
-  useEffect(() => {
-    if (appliedCoupon) {
-      const validCodes = (couponCode || '')
-        .split(',')
-        .map(c => c.trim().toUpperCase())
-        .filter(Boolean);
-      if (!couponEnabled || !validCodes.includes(appliedCoupon.trim().toUpperCase())) {
-        setAppliedCoupon('');
-        setCouponMessage(null);
-      }
-    }
-  }, [couponCode, couponEnabled]);
-
-  // Coupon Handlers
-  const handleApplyCoupon = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    const entered = couponInput.trim().toUpperCase();
-    if (!entered) {
-      setCouponMessage({ text: 'Please enter a coupon code first.', type: 'error' });
-      return;
-    }
-    const validCodes = (couponCode || '')
-      .split(',')
-      .map(c => c.trim().toUpperCase())
-      .filter(Boolean);
-    if (couponEnabled && validCodes.includes(entered)) {
-      setAppliedCoupon(entered);
-      setCouponMessage({
-        text: `🎉 Coupon "${entered}" matched! You get ${couponReward || 'Free Dry Sawaiyan (1 Plate)'}!`,
-        type: 'success'
-      });
-      triggerToast(`🎉 Coupon Matched! ${couponReward || 'Free Dry Sawaiyan'} added!`);
-    } else {
-      setAppliedCoupon('');
-      setCouponMessage({
-        text: '❌ Coupon code does not match or is expired.',
-        type: 'error'
-      });
-      triggerToast('❌ Invalid coupon code.');
-    }
-  };
-
-  const handleRemoveCoupon = () => {
-    setAppliedCoupon('');
-    setCouponInput('');
-    setCouponMessage(null);
-    triggerToast('Coupon removed.');
-  };
-
-  const handleGenerateCouponCode = async () => {
-    const prefixes = ['SAWAIYAN', 'RUMANA', 'RKGIFT', 'SWEET'];
-    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    const digits = Math.floor(100 + Math.random() * 900);
-    const generated = `${prefix}${digits}`;
-    const cleanReward = editedCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)';
-    setEditedCouponEnabled(true);
-    setCouponEnabled(true);
-    setEditedCouponCode(generated);
-    setCouponCode(generated);
-    await publishMenuState(
-      editedItems,
-      dinnerMode,
-      announcement,
-      prepTime,
-      editedCarouselItems,
-      true,
-      generated,
-      cleanReward
-    );
-    triggerToast(`🎲 Generated & Published Live Code: ${generated}`);
-  };
-
-  const handleSaveCouponSettings = async () => {
-    const cleanCode = editedCouponCode.trim().toUpperCase() || 'SAWAIYANFREE';
-    const cleanReward = editedCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)';
-    setCouponEnabled(editedCouponEnabled);
-    setCouponCode(cleanCode);
-    setEditedCouponCode(cleanCode);
-    setCouponReward(cleanReward);
-    setEditedCouponReward(cleanReward);
-    await publishMenuState(
-      editedItems,
-      dinnerMode,
-      announcement,
-      prepTime,
-      editedCarouselItems,
-      editedCouponEnabled,
-      cleanCode,
-      cleanReward
-    );
-    triggerToast(`🎟️ Coupon "${cleanCode}" saved & published live!`);
   };
 
   const getCheckoutWhatsappUrl = () => {
@@ -1456,20 +1323,8 @@ export default function App() {
     setMenuItems(JSON.parse(JSON.stringify(editedItems)));
     setAnnouncement(editedAnnouncement);
     setPrepTime(editedPrepTime);
-    setCouponEnabled(editedCouponEnabled);
-    setCouponCode(editedCouponCode.trim().toUpperCase());
-    setCouponReward(editedCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)');
 
-    await publishMenuState(
-      editedItems,
-      dinnerMode,
-      editedAnnouncement,
-      editedPrepTime,
-      editedCarouselItems,
-      editedCouponEnabled,
-      editedCouponCode,
-      editedCouponReward
-    );
+    await publishMenuState(editedItems, dinnerMode, editedAnnouncement, editedPrepTime, editedCarouselItems);
 
     setSaveStatus('Changes saved and published live to all devices!');
     triggerToast("Menu & Photos updated live across all devices!");
@@ -2364,99 +2219,6 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Coupon Code Box in Cart Drawer */}
-                {totalCartCount > 0 && couponEnabled && (
-                  <div style={{
-                    margin: '12px 20px 6px 20px',
-                    padding: '12px 14px',
-                    background: appliedCoupon ? 'rgba(46, 125, 50, 0.08)' : '#fff8f6',
-                    border: appliedCoupon ? '1.5px dashed #2e7d32' : '1.5px dashed rgba(158, 42, 43, 0.3)',
-                    borderRadius: '12px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 800, color: appliedCoupon ? '#1b5e20' : 'var(--primary)' }}>
-                        🎟️ Have a Coupon Code?
-                      </span>
-                      <span style={{ fontSize: '10.5px', fontWeight: 700, color: '#e65100', background: '#fff3e0', padding: '2px 8px', borderRadius: '50px' }}>
-                        🎁 Get {couponReward || 'Free Dry Sawaiyan'}
-                      </span>
-                    </div>
-
-                    {appliedCoupon ? (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                        <div style={{ fontSize: '12px', fontWeight: 700, color: '#2e7d32' }}>
-                          ✅ Code <strong>{appliedCoupon}</strong> applied! ({couponReward || 'Free Dry Sawaiyan'})
-                        </div>
-                        <button
-                          type="button"
-                          onClick={handleRemoveCoupon}
-                          style={{
-                            background: '#ffebee',
-                            color: '#c62828',
-                            border: '1px solid #ffcdd2',
-                            borderRadius: '6px',
-                            padding: '4px 8px',
-                            fontSize: '11px',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            flexShrink: 0
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
-                        <input
-                          type="text"
-                          placeholder="Enter coupon code..."
-                          value={couponInput}
-                          onChange={(e) => {
-                            setCouponInput(e.target.value.toUpperCase());
-                            if (couponMessage) setCouponMessage(null);
-                          }}
-                          style={{
-                            flex: 1,
-                            padding: '8px 10px',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(158, 42, 43, 0.25)',
-                            fontSize: '12px',
-                            fontWeight: 700,
-                            textTransform: 'uppercase',
-                            outline: 'none'
-                          }}
-                        />
-                        <button
-                          type="submit"
-                          style={{
-                            background: 'var(--primary)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '8px',
-                            padding: '8px 14px',
-                            fontSize: '12px',
-                            fontWeight: 800,
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Apply
-                        </button>
-                      </form>
-                    )}
-
-                    {couponMessage && !appliedCoupon && (
-                      <div style={{
-                        fontSize: '11px',
-                        fontWeight: 700,
-                        color: couponMessage.type === 'error' ? '#c62828' : '#2e7d32',
-                        marginTop: '6px'
-                      }}>
-                        {couponMessage.text}
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {/* Smart Digital Invoice Preview Toggle */}
                 {totalCartCount > 0 && (
                   <div style={{ padding: '0 20px', marginTop: '10px' }}>
@@ -2501,12 +2263,6 @@ export default function App() {
                               </div>
                             );
                           })}
-                          {appliedCoupon && couponEnabled && (
-                            <div className="smart-receipt-row" style={{ color: '#2e7d32', fontWeight: 700 }}>
-                              <span>🎁 {couponReward || 'Free Dry Sawaiyan'} [{appliedCoupon}]</span>
-                              <span>FREE (₹0)</span>
-                            </div>
-                          )}
                         </div>
                         <div className="smart-receipt-divider" />
                         <div className="smart-receipt-total">
@@ -2755,101 +2511,6 @@ export default function App() {
                     </span>
                   </div>
 
-                  {/* COUPON CODE SECTION DURING CHECKOUT */}
-                  {couponEnabled && (
-                    <div style={{
-                      background: appliedCoupon ? 'rgba(46, 125, 50, 0.08)' : '#fff8f6',
-                      border: appliedCoupon ? '1.5px dashed #2e7d32' : '1.5px dashed rgba(158, 42, 43, 0.35)',
-                      borderRadius: '12px',
-                      padding: '14px',
-                      marginBottom: '14px'
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '4px' }}>
-                        <div style={{ fontSize: '12px', fontWeight: 800, color: appliedCoupon ? '#1b5e20' : 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <span>🎟️</span><span>Have a Coupon Code?</span>
-                        </div>
-                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#e65100', background: '#fff3e0', padding: '2px 8px', borderRadius: '50px' }}>
-                          🎁 Get {couponReward || 'Free Dry Sawaiyan'}
-                        </span>
-                      </div>
-
-                      {appliedCoupon ? (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', background: 'white', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(46, 125, 50, 0.3)' }}>
-                          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#2e7d32', lineHeight: 1.3 }}>
-                            🎉 Coupon <strong>{appliedCoupon}</strong> Applied!<br />
-                            <span style={{ fontSize: '11.5px', color: '#1b5e20' }}>🎁 {couponReward || 'Free Dry Sawaiyan (1 Plate)'} included FREE!</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={handleRemoveCoupon}
-                            style={{
-                              background: '#ffebee',
-                              color: '#c62828',
-                              border: '1px solid #ffcdd2',
-                              borderRadius: '6px',
-                              padding: '5px 10px',
-                              fontSize: '11px',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              flexShrink: 0
-                            }}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ) : (
-                        <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: '8px' }}>
-                          <input
-                            type="text"
-                            placeholder="Enter Coupon Code..."
-                            value={couponInput}
-                            onChange={(e) => {
-                              setCouponInput(e.target.value.toUpperCase());
-                              if (couponMessage) setCouponMessage(null);
-                            }}
-                            style={{
-                              flex: 1,
-                              padding: '9px 12px',
-                              borderRadius: '8px',
-                              border: '1px solid rgba(158, 42, 43, 0.3)',
-                              fontSize: '13px',
-                              fontWeight: 700,
-                              textTransform: 'uppercase',
-                              outline: 'none'
-                            }}
-                          />
-                          <button
-                            type="submit"
-                            style={{
-                              background: 'var(--primary)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '8px',
-                              padding: '9px 16px',
-                              fontSize: '12.5px',
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              whiteSpace: 'nowrap'
-                            }}
-                          >
-                            Apply
-                          </button>
-                        </form>
-                      )}
-
-                      {couponMessage && !appliedCoupon && (
-                        <div style={{
-                          fontSize: '11.5px',
-                          fontWeight: 700,
-                          color: couponMessage.type === 'error' ? '#c62828' : '#2e7d32',
-                          marginTop: '6px'
-                        }}>
-                          {couponMessage.text}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
                   {/* STEP 1: ONLY CASH NOTICE */}
                   <div style={{ background: 'rgba(46, 125, 50, 0.06)', border: '1.5px solid rgba(46, 125, 50, 0.25)', borderRadius: '12px', padding: '14px', marginBottom: '16px', textAlign: 'center' }}>
                     <div style={{ fontSize: '13px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
@@ -2984,120 +2645,6 @@ export default function App() {
                     onChange={(e) => setEditedAnnouncement(e.target.value)}
                   />
                 </div>
-
-                {/* Coupon Code Generator & Free Dry Sawaiyan Offer Control */}
-                <div style={{
-                  background: 'white',
-                  borderRadius: '16px',
-                  padding: '25px',
-                  marginTop: '20px',
-                  marginBottom: '20px',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-                  border: '1px solid rgba(158,42,43,0.18)'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
-                    <div>
-                      <h3 style={{ color: 'var(--primary)', margin: 0, fontSize: '20px', fontWeight: 800 }}>
-                        🎟️ Checkout Coupon Code Generator (Free Dry Sawaiyan Offer)
-                      </h3>
-                      <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#666' }}>
-                        Generate or set a custom coupon code that customers can enter during checkout to receive Free Dry Sawaiyan.
-                      </p>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span className="toggle-label">{editedCouponEnabled ? 'ACTIVE (Shown at Checkout)' : 'DISABLED'}</span>
-                      <label className="switch">
-                        <input
-                          type="checkbox"
-                          checked={editedCouponEnabled}
-                          onChange={async (e) => {
-                            const nextVal = e.target.checked;
-                            setEditedCouponEnabled(nextVal);
-                            setCouponEnabled(nextVal);
-                            const cleanCode = editedCouponCode.trim().toUpperCase() || 'SAWAIYANFREE';
-                            const cleanReward = editedCouponReward.trim() || 'Free Dry Sawaiyan (1 Plate)';
-                            await publishMenuState(
-                              editedItems,
-                              dinnerMode,
-                              announcement,
-                              prepTime,
-                              editedCarouselItems,
-                              nextVal,
-                              cleanCode,
-                              cleanReward
-                            );
-                            triggerToast(`🎟️ Coupon section ${nextVal ? 'ENABLED' : 'DISABLED'} live!`);
-                          }}
-                        />
-                        <span className="slider"></span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', alignItems: 'end' }}>
-                    <div>
-                      <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Active Coupon Code</label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <input
-                          type="text"
-                          className="form-input"
-                          style={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', fontSize: '15px', color: 'var(--primary)' }}
-                          placeholder="e.g. SAWAIYANFREE"
-                          value={editedCouponCode}
-                          onChange={(e) => setEditedCouponCode(e.target.value.toUpperCase())}
-                        />
-                        <button
-                          type="button"
-                          className="btn-secondary"
-                          onClick={handleGenerateCouponCode}
-                          style={{ padding: '8px 12px', fontSize: '12px', whiteSpace: 'nowrap', fontWeight: 700 }}
-                          title="Generate a new random coupon code"
-                        >
-                          🎲 Generate Code
-                        </button>
-                        <button
-                          type="button"
-                          className="btn-secondary"
-                          onClick={() => {
-                            navigator.clipboard.writeText(editedCouponCode.trim().toUpperCase());
-                            triggerToast(`📋 Copied coupon code "${editedCouponCode.trim().toUpperCase()}"!`);
-                          }}
-                          style={{ padding: '8px 12px', fontSize: '12px', whiteSpace: 'nowrap', fontWeight: 700 }}
-                          title="Copy coupon code to share on WhatsApp"
-                        >
-                          📋 Copy
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="form-label" style={{ fontWeight: 700, fontSize: '12px' }}>Free Gift / Reward Description</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        placeholder="Free Dry Sawaiyan (1 Plate)"
-                        value={editedCouponReward}
-                        onChange={(e) => setEditedCouponReward(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ marginTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', paddingTop: '12px', borderTop: '1px dashed rgba(158,42,43,0.15)' }}>
-                    <span style={{ fontSize: '12px', color: '#2e7d32', fontWeight: 700 }}>
-                      Current Live Code: <strong style={{ background: '#e8f5e9', padding: '3px 8px', borderRadius: '6px', border: '1px solid #a5d6a7' }}>{couponCode}</strong> → 🎁 {couponReward}
-                    </span>
-                    <button
-                      type="button"
-                      className="btn-primary"
-                      onClick={handleSaveCouponSettings}
-                      style={{ padding: '8px 18px', fontSize: '13px' }}
-                    >
-                      💾 Save & Publish Coupon Code
-                    </button>
-                  </div>
-                </div>
-
-
 
                 {/* Carousel Banner Admin Control Section */}
                 <div style={{ background: 'white', borderRadius: '16px', padding: '25px', marginBottom: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid rgba(158,42,43,0.15)' }}>
