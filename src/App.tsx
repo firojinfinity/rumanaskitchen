@@ -35,6 +35,7 @@ interface CartItem {
   withRaita?: boolean;
   chiliStyle?: 'dry' | 'gravy';
   hasChiliStyleOption?: boolean;
+  friedRiceOption?: 'veg' | 'egg' | 'chicken' | 'egg_chicken';
 }
 
 interface CarouselItem {
@@ -391,11 +392,11 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     origin: 'Indo-Chinese Fusion',
     firstOriginCountry: 'China (Sui Dynasty origin) & India Adaptation',
     yearCreated: '589 AD (China) & 1970s AD (Kolkata)',
-    history: 'Wok-tossed long grain rice with finely diced vegetables, garlic, black pepper, and soy sauce.',
-    ingredients: ['Basmati Rice', 'Carrots & Beans', 'Spring Onion', 'Soy Sauce & Black Pepper'],
+    history: 'Wok-tossed long grain rice with finely diced vegetables, garlic, black pepper, and soy sauce. Also available with egg and chicken non-veg options.',
+    ingredients: ['Basmati Rice', 'Carrots & Beans', 'Spring Onion', 'Soy Sauce & Black Pepper', 'Optional: Egg / Chicken'],
     cookingTime: 'Wok Tossed (15 Mins)',
     spiceLevel: '🌶️ Mild',
-    bestPairedWith: 'Chicken Kasha'
+    bestPairedWith: 'Chili Chicken'
   },
   'aloo paratha': {
     origin: 'Punjab & North India',
@@ -542,7 +543,17 @@ const DISH_KNOWLEDGE_MAP: Record<string, DishDetails> = {
     firstOriginCountry: 'India (Created in Tangra Chinatown, Kolkata by Nelson Wang)',
     yearCreated: '1975 AD (Created at Cricket Club of India / Tangra)',
     history: 'Tender chicken bites marinated and fried, tossed with diced onions, capsicum, green chilies, and tangy soy-chili sauce.',
-    ingredients: ['Boneless Chicken Bites', 'Capsicum & Diced Onions', 'Green Chilies & Garlic', 'Dark Soy & Chili Sauce', 'Spring Onions'],
+    ingredients: ['Chicken Bites', 'Capsicum & Diced Onions', 'Green Chilies & Garlic', 'Dark Soy & Chili Sauce', 'Spring Onions'],
+    cookingTime: 'Freshly Prepared (20 Mins)',
+    spiceLevel: '🌶️🌶️🌶️ Spicy',
+    bestPairedWith: 'Fried Rice or Hakka Noodles'
+  },
+  'chilli chicken': {
+    origin: 'Indo-Chinese Classic (Kolkata Tangra Specialty)',
+    firstOriginCountry: 'India (Created in Tangra Chinatown, Kolkata by Nelson Wang)',
+    yearCreated: '1975 AD (Created at Cricket Club of India / Tangra)',
+    history: 'Tender chicken bites marinated and fried, tossed with diced onions, capsicum, green chilies, and tangy soy-chili sauce.',
+    ingredients: ['Chicken Bites', 'Capsicum & Diced Onions', 'Green Chilies & Garlic', 'Dark Soy & Chili Sauce', 'Spring Onions'],
     cookingTime: 'Freshly Prepared (20 Mins)',
     spiceLevel: '🌶️🌶️🌶️ Spicy',
     bestPairedWith: 'Fried Rice or Hakka Noodles'
@@ -1106,6 +1117,16 @@ export default function App() {
     });
   };
 
+  const updateCartItemFriedRiceOption = (cartKey: string, option: 'veg' | 'egg' | 'chicken' | 'egg_chicken') => {
+    setCart(prev => {
+      const updated = { ...prev };
+      if (updated[cartKey]) {
+        updated[cartKey].friedRiceOption = option;
+      }
+      return updated;
+    });
+  };
+
   // Add to Cart
   const addToCart = (
     name: string, 
@@ -1135,6 +1156,7 @@ export default function App() {
       const isEligible = isPotatoEligibleItem(name, itemId, hasPotatoOption);
       const isSoya = name.toLowerCase().includes('soya');
       const isChili = name.toLowerCase().includes('chili chicken') || name.toLowerCase().includes('chilli chicken');
+      const isFriedRice = name.toLowerCase().includes('fried rice');
       if (updated[cartKey]) {
         updated[cartKey].qty += 1;
       } else {
@@ -1147,7 +1169,8 @@ export default function App() {
           prices,
           hasPotatoOption: isEligible,
           withPotato: isEligible ? (isSoya ? true : false) : undefined,
-          chiliStyle: isChili ? 'dry' : undefined
+          chiliStyle: isChili ? 'dry' : undefined,
+          friedRiceOption: isFriedRice ? 'veg' : undefined
         };
       }
       return updated;
@@ -1267,6 +1290,13 @@ export default function App() {
       if (item.name.toLowerCase().includes('chili chicken') || item.name.toLowerCase().includes('chilli chicken') || item.chiliStyle) {
         details.push(item.chiliStyle === 'gravy' ? 'Gravy Style 🍲' : 'Dry Style 🥢');
       }
+      if (item.name.toLowerCase().includes('fried rice')) {
+        const frOpt = item.friedRiceOption || 'veg';
+        if (frOpt === 'egg') details.push('With Egg 🥚');
+        else if (frOpt === 'chicken') details.push('With Chicken 🍗');
+        else if (frOpt === 'egg_chicken') details.push('With Egg & Chicken 🥚🍗');
+        else details.push('Veg 🥦');
+      }
       const detailsStr = details.length > 0 ? ` (${details.join(', ')})` : '';
       const displayName = `${item.name}${detailsStr}`;
       messageText += `• ${displayName} x ${item.qty} (₹${unitPrice} each) - ₹${itemTotal}\n`;
@@ -1366,7 +1396,7 @@ export default function App() {
     let matchesFilter = false;
     if (activeFilter === 'all') matchesFilter = true;
     else if (activeFilter === 'veg') matchesFilter = item.diet === 'veg' && item.category !== 'sweets';
-    else if (activeFilter === 'nonveg') matchesFilter = item.diet === 'nonveg';
+    else if (activeFilter === 'nonveg') matchesFilter = item.diet === 'nonveg' || item.name.toLowerCase().includes('fried rice');
     else if (activeFilter === 'sweets') matchesFilter = item.category === 'sweets';
     else matchesFilter = item.category === activeFilter;
     const fitsDinnerMode = !dinnerMode || item.name.toLowerCase().includes('biriyani');
@@ -1376,7 +1406,7 @@ export default function App() {
   // Counts for filter tabs
   const availableItems = menuItems.filter(i => !dinnerMode || i.name.toLowerCase().includes('biriyani'));
   const vegCount = availableItems.filter(i => i.diet === 'veg' && i.category !== 'sweets').length;
-  const nonvegCount = availableItems.filter(i => i.diet === 'nonveg').length;
+  const nonvegCount = availableItems.filter(i => i.diet === 'nonveg' || i.name.toLowerCase().includes('fried rice')).length;
   const sweetsCount = availableItems.filter(i => i.category === 'sweets').length;
 
 
@@ -1530,6 +1560,12 @@ export default function App() {
         {isParathaItem(item.name) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#c2410c', fontWeight: 700, margin: '4px 0', background: '#fff7ed', border: '1px solid #ffedd5', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
             <span>🫓</span><span>Min. 2 Pcs Mandatory</span>
+          </div>
+        )}
+
+        {item.name.toLowerCase().includes('fried rice') && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#b71c1c', fontWeight: 700, margin: '4px 0', background: '#ffebee', border: '1px solid #ffcdd2', padding: '3px 8px', borderRadius: '12px', width: 'fit-content' }}>
+            <span>🥚🍗</span><span>Non-Veg Options: With Egg / With Chicken</span>
           </div>
         )}
 
@@ -2162,6 +2198,44 @@ export default function App() {
                         </div>
                       )}
 
+                      {/* Non-Veg Options (With Egg / With Chicken) for Fried Rice requested by Firoj Sir */}
+                      {item.name.toLowerCase().includes('fried rice') && (
+                        <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed rgba(158, 42, 43, 0.15)' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary)', display: 'block', marginBottom: '5px' }}>
+                            🍚 Fried Rice Option:
+                          </span>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                            {([
+                              { id: 'veg', label: '🥦 Veg' },
+                              { id: 'egg', label: '🥚 With Egg' },
+                              { id: 'chicken', label: '🍗 With Chicken' },
+                              { id: 'egg_chicken', label: '🥚🍗 Egg & Chicken' }
+                            ] as const).map(opt => {
+                              const currentOpt = item.friedRiceOption || 'veg';
+                              const isActive = currentOpt === opt.id;
+                              return (
+                                <button
+                                  key={opt.id}
+                                  onClick={() => updateCartItemFriedRiceOption(cartKey, opt.id)}
+                                  style={{
+                                    border: isActive ? '1px solid var(--primary)' : '1px solid rgba(158, 42, 43, 0.18)',
+                                    background: isActive ? 'var(--primary)' : 'transparent',
+                                    color: isActive ? 'white' : 'var(--text)',
+                                    fontSize: '10px',
+                                    fontWeight: 700,
+                                    padding: '3px 8px',
+                                    borderRadius: '12px',
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  {opt.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
                       {/* Biriyani Checkout Add-ons (Boiled Egg ₹15, Raita ₹15) requested by Firoj Sir */}
                       {(item.name.toLowerCase().includes('biriyani') || item.name.toLowerCase().includes('biryani')) && (
                         <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed rgba(158, 42, 43, 0.15)' }}>
@@ -2254,6 +2328,12 @@ export default function App() {
                             let addons: string[] = [];
                             if (item.withEgg) addons.push('Egg');
                             if (item.withRaita) addons.push('Raita');
+                            if (item.name.toLowerCase().includes('fried rice')) {
+                              if (item.friedRiceOption === 'egg') addons.push('With Egg');
+                              else if (item.friedRiceOption === 'chicken') addons.push('With Chicken');
+                              else if (item.friedRiceOption === 'egg_chicken') addons.push('Egg+Chicken');
+                              else addons.push('Veg');
+                            }
                             const addonText = addons.length > 0 ? ` [${addons.join('+')}]` : '';
                             const sizeText = item.size ? ` (${item.size === 'half' ? 'Half' : 'Full'})` : '';
                             return (
